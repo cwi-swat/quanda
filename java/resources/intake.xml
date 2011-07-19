@@ -1,0 +1,57 @@
+<!-- NB: ids are global, so namespace question ids and state ids. -->
+<!-- NB: undefined idrefs just vanish... -->
+
+<questionnaire>
+   	<questions>
+	<question id="q1" variable="vo">
+		<condition>true</condition>
+		<label>Wat is je vooropleiding?</label>
+	</question>
+
+	<question id="q2" variable="sc">
+		<condition>vo === "HBO"</condition>
+		<label>Moet je schakelen?</label>
+	</question>
+	
+	<question id="q3" variable="cijfer">
+		<condition>sc === "ja"</condition>
+		<label>Wat is je cijfer?</label>
+	</question>
+	
+	<question id="q4" variable="lt">
+		<condition>true</condition>
+		<label>Hoe oud ben je?</label>
+	</question>
+	
+	<question id="q5" variable="wz">
+		<condition>vo === "WO" &amp;&amp; lt === 17</condition>
+		<label>Weet je het zeker?</label>
+	</question>
+	
+	<question id="q6" variable="uni">
+		<condition>vo === "WO"</condition>
+		<label>Wat is de universiteit?</label>
+	</question>
+	
+	</questions>
+	
+	<states>
+		<state id="s1">
+			<enabled>q1 q4</enabled>
+		  	<answered/>
+		  	<transitions>
+		  	<when conds="q1 q2" state="s1"/>
+			<when conds="q1 q2" state="s1"/>
+			<when conds="q1 q2" state="s1"/>
+			<when conds="q1 q2" state="s1"/>
+			</transitions>
+		</state>
+		<state id="s2">
+			<enabled>q1 q2</enabled>
+		  	<answered>q4</answered>
+			<transitions/>
+		</state>
+	</states>
+
+</questionnaire>
+
