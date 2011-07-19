@@ -1,4 +1,4 @@
-package nl.cwi.swat.quanda.dump;
+package nl.cwi.swat.quanda.model;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

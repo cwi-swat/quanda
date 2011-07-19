@@ -5,8 +5,12 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.swing.JButton;
@@ -21,13 +25,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import net.miginfocom.swing.MigLayout;
-import nl.cwi.swat.quanda.dump.Goto;
-import nl.cwi.swat.quanda.dump.Question;
-import nl.cwi.swat.quanda.dump.Questionnaire;
-import nl.cwi.swat.quanda.dump.State;
-import nl.cwi.swat.quanda.dump.Transition;
+import nl.cwi.swat.quanda.model.Goto;
+import nl.cwi.swat.quanda.model.Question;
+import nl.cwi.swat.quanda.model.Questionnaire;
+import nl.cwi.swat.quanda.model.State;
+import nl.cwi.swat.quanda.model.Transition;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -117,15 +122,53 @@ public class Eval {
 	}
 	
 	public void update(Map<JComponent, Question> fieldMap, State s) {
+		
+		// This is terribly ugly, but it works.
+		Set<Question> reachableAnswers = new HashSet<Question>();
+		List<State> todo = new ArrayList<State>();
+		todo.add(s);
+		
+		while (!todo.isEmpty()) {
+			State cur = todo.remove(0);
+			for (Transition t: cur.getTransitions()) {
+				try {
+					if (eval(t.getAnswered())) {
+						reachableAnswers.add(t.getAnswered());
+						for (Goto g: t.getGotos()) {
+							if (!todo.contains(g.getTarget())) {
+								todo.add(g.getTarget());
+							}
+						}
+					}
+				}
+				catch (EcmaError e) {
+					continue;
+				}
+			}
+		}
+		
+		System.out.println("Reachable: " + reachableAnswers);
+		
+		
 		for (JComponent c: fieldMap.keySet()) {
 			Question q = fieldMap.get(c);
 			if (!s.getEnabled().contains(q) && !s.getAnswered().contains(q)) {
 				c.setEnabled(false);
+				if (!reachableAnswers.contains(q)) {
+					((JTextField)c).setText("");
+					env.remove(q.getVariable());
+				}
 			}
 			if (s.getAnswered().contains(q)) {
+//				if (env.containsKey(q.getVariable())) {
+//					((JTextField)c).setText((String) env.get(q.getVariable()));
+//				}
 				c.setEnabled(false);
 			}
 			if (s.getEnabled().contains(q)) {
+//				if (env.containsKey(q.getVariable())) {
+//					((JTextField)c).setText((String) env.get(q.getVariable()));
+//				}
 				c.setEnabled(true);
 			}
 		}
@@ -184,13 +227,10 @@ public class Eval {
 					if (c.isEnabled()) {
 						if (c instanceof JTextField) {
 							String txt = ((JTextField)c).getText();
-							// ai, have to have way to know if it has been entered at all.
-							if (!txt.equals("")) {
+							// empty string means undefined
+							if (!txt.equals("")) { 
 								handle(fieldMap, fieldMap.get(c), txt);
 							}
-						}
-						if (c instanceof JCheckBox) {
-							handle(fieldMap, fieldMap.get(c), ((JCheckBox)c).isSelected());
 						}
 					}
 				}

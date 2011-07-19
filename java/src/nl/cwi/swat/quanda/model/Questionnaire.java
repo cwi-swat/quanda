@@ -1,4 +1,4 @@
-package nl.cwi.swat.quanda.dump;
+package nl.cwi.swat.quanda.model;
 
 import java.util.List;
 import java.util.Set;

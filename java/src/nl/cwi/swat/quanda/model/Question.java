@@ -1,4 +1,4 @@
-package nl.cwi.swat.quanda.dump;
+package nl.cwi.swat.quanda.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
