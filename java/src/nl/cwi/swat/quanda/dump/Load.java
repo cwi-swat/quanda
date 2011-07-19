@@ -16,6 +16,8 @@ public class Load {
 		FileReader f = new FileReader("resources/example.xml");
 		Questionnaire doc = (Questionnaire)u.unmarshal(f);
 		System.out.println(doc);
+		
+		
 		for (Question q: doc.getQuestions()) {
 			System.out.println(q);
 		}
@@ -27,6 +29,7 @@ public class Load {
 			}
 		}
 
+		System.out.println(doc.getInitial());
 	}
 
 }

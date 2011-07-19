@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<questionnaire>
+<questionnaire initial="s24">
   <questions>
     <question id="q0" variable="vo">
       <condition>true</condition>
@@ -33,8 +33,8 @@
       <transitions>
         <on answered="q5">
           <goto guards="q1 q4" target="s6" />
-          <goto guards="q1" target="s51" />
           <goto guards="q4" target="s18" />
+          <goto guards="q1" target="s51" />
           <goto guards="" target="s54" />
         </on>
       </transitions>
@@ -83,12 +83,12 @@
       <transitions>
         <on answered="q3">
           <goto guards="q1 q4 q5" target="s58" />
-          <goto guards="q4 q5" target="s53" />
-          <goto guards="q1 q4" target="s45" />
           <goto guards="q1 q5" target="s16" />
+          <goto guards="q1 q4" target="s45" />
+          <goto guards="q4 q5" target="s53" />
           <goto guards="q1" target="s29" />
-          <goto guards="q5" target="s0" />
           <goto guards="q4" target="s38" />
+          <goto guards="q5" target="s0" />
           <goto guards="" target="s26" />
         </on>
       </transitions>
@@ -174,12 +174,12 @@
       <transitions>
         <on answered="q0">
           <goto guards="q1 q4 q5" target="s58" />
-          <goto guards="q1 q4" target="s45" />
           <goto guards="q4 q5" target="s53" />
+          <goto guards="q1 q4" target="s45" />
           <goto guards="q1 q5" target="s16" />
+          <goto guards="q4" target="s38" />
           <goto guards="q5" target="s0" />
           <goto guards="q1" target="s29" />
-          <goto guards="q4" target="s38" />
           <goto guards="" target="s26" />
         </on>
       </transitions>
@@ -321,8 +321,8 @@
       <transitions>
         <on answered="q3">
           <goto guards="q1 q4" target="s58" />
-          <goto guards="q1" target="s16" />
           <goto guards="q4" target="s53" />
+          <goto guards="q1" target="s16" />
           <goto guards="" target="s0" />
         </on>
         <on answered="q5">
@@ -337,8 +337,8 @@
       <transitions>
         <on answered="q2">
           <goto guards="q4 q5" target="s10" />
-          <goto guards="q4" target="s36" />
           <goto guards="q5" target="s59" />
+          <goto guards="q4" target="s36" />
           <goto guards="" target="s43" />
         </on>
       </transitions>
@@ -349,12 +349,12 @@
       <transitions>
         <on answered="q1">
           <goto guards="q2 q4 q5" target="s50" />
-          <goto guards="q2 q4" target="s37" />
-          <goto guards="q4 q5" target="s61" />
           <goto guards="q2 q5" target="s3" />
+          <goto guards="q4 q5" target="s61" />
+          <goto guards="q2 q4" target="s37" />
+          <goto guards="q2" target="s28" />
           <goto guards="q5" target="s11" />
           <goto guards="q4" target="s42" />
-          <goto guards="q2" target="s28" />
           <goto guards="" target="s33" />
         </on>
       </transitions>
@@ -469,8 +469,8 @@
       <transitions>
         <on answered="q3">
           <goto guards="q2 q4" target="s50" />
-          <goto guards="q2" target="s3" />
           <goto guards="q4" target="s61" />
+          <goto guards="q2" target="s3" />
           <goto guards="" target="s11" />
         </on>
         <on answered="q5">
@@ -497,8 +497,8 @@
       <transitions>
         <on answered="q4">
           <goto guards="q2 q5" target="s30" />
-          <goto guards="q5" target="s19" />
           <goto guards="q2" target="s15" />
+          <goto guards="q5" target="s19" />
           <goto guards="" target="s7" />
         </on>
       </transitions>
@@ -551,12 +551,12 @@
       <transitions>
         <on answered="q3">
           <goto guards="q2 q4 q5" target="s50" />
-          <goto guards="q4 q5" target="s61" />
           <goto guards="q2 q4" target="s37" />
+          <goto guards="q4 q5" target="s61" />
           <goto guards="q2 q5" target="s3" />
           <goto guards="q2" target="s28" />
-          <goto guards="q5" target="s11" />
           <goto guards="q4" target="s42" />
+          <goto guards="q5" target="s11" />
           <goto guards="" target="s33" />
         </on>
       </transitions>
@@ -619,8 +619,8 @@
       <transitions>
         <on answered="q3">
           <goto guards="q1 q4" target="s6" />
-          <goto guards="q4" target="s18" />
           <goto guards="q1" target="s51" />
+          <goto guards="q4" target="s18" />
           <goto guards="" target="s54" />
         </on>
       </transitions>
