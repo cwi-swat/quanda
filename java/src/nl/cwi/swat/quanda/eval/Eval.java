@@ -122,6 +122,10 @@ public class Eval {
 	}
 	
 	public void update(Map<JComponent, Question> fieldMap, State s) {
+		// TODO: when undoing (back) it should "just" print the state of
+		// the previous screen. No more, no less.
+		
+		// If you revise
 		
 		// This is terribly ugly, but it works.
 		Set<Question> reachableAnswers = new HashSet<Question>();
@@ -142,6 +146,7 @@ public class Eval {
 					}
 				}
 				catch (EcmaError e) {
+					// thrown when variables are undefined.
 					continue;
 				}
 			}
@@ -156,19 +161,13 @@ public class Eval {
 				c.setEnabled(false);
 				if (!reachableAnswers.contains(q)) {
 					((JTextField)c).setText("");
-					env.remove(q.getVariable());
+					//env.remove(q.getVariable());
 				}
 			}
 			if (s.getAnswered().contains(q)) {
-//				if (env.containsKey(q.getVariable())) {
-//					((JTextField)c).setText((String) env.get(q.getVariable()));
-//				}
 				c.setEnabled(false);
 			}
 			if (s.getEnabled().contains(q)) {
-//				if (env.containsKey(q.getVariable())) {
-//					((JTextField)c).setText((String) env.get(q.getVariable()));
-//				}
 				c.setEnabled(true);
 			}
 		}
