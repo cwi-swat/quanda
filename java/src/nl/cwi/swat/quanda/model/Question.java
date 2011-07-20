@@ -1,14 +1,19 @@
 package nl.cwi.swat.quanda.model;
 
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlList;
 
 public class Question {
 	private String id;
 	private String label;
 	private String condition;
 	private String variable;
+	private Set<Question> next;
 
 	@XmlAttribute @XmlID
 	public String getId() {
@@ -44,6 +49,17 @@ public class Question {
 	
 	public void setCondition(String condition) {
 		this.condition = condition;
+	}
+	
+	@XmlElement
+	@XmlList
+	@XmlIDREF
+	public Set<Question> getNext() {
+		return this.next;
+	}
+	
+	public void setNext(Set<Question> next) {
+		this.next = next;
 	}
 	
 	@Override
