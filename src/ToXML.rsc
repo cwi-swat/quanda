@@ -11,29 +11,27 @@ import List;
 import String;
 import IO;
 
-public void compile(Trans tr) {
-  writeFile(|project://quanda/output/src/Quanda.java|, quandaClass(tr));
+public void compile(list[Question] qs) {
+  writeXMLPretty(|project://quanda/java/resources/example.xml|, quandaXML(qs));
 }
 
 public Node quandaXML(list[Question] qs)  {
-  tr = transitions(qs);  
-  dep = tr<0,2>;
-  ss = carrier(dep);
-  ids = stateIds(ss);
   qids = questionIds(qs);
-  init = getOneFrom(top(dep));
-  return document(element("questionnaire", [attribute("initial", ids[init]),  
-  	                 questions(qs, qids), 
-  	                  states(ss, tr, ids, qids)]));
+  return document(element("questionnaire", [
+     element("initial", [charData(intercalate(" ", [ qids[q] | q <- qs, const(true) := q.cond ]))]), 
+     questions(qs, qids)])); 
 }
 
 
 
 public Node questions(list[Question] qs, map[Question, str] qids) {
+  nxt = next(qs);
   return element("questions", [
             element("question", [attribute("id", qids[q]), attribute("variable", q.var),
               element("condition", [charData(exp2js(q.cond))]),
-              element("label", [charData(q.label)])]) | q <- qs ]);
+              element("label", [charData(q.label)]),
+              element("next", [charData(intercalate(" ", [ qids[q1] | q1 <- nxt[q] ]))])
+               ]) | q <- qs ]);
 }
 
 public Node states(set[State] ss, Trans tr, map[State, str] ids, map[Question, str] qids) {

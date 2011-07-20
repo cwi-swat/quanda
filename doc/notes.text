@@ -39,6 +39,8 @@ Todo
   precisely captures the thing we like to support: optional things,
   tree structure (nesting), repetitions, enums, etc.
 
+- In more-of and one-of, the keys must be unique.
+
 Conditions
 
  - ||, &&, !, any, all, >, <, <=, >=, ==, !=, var, defined, in, notin
@@ -78,6 +80,8 @@ Consistency
   are in multiple environments on the top of the stack. They have to
   maintain a pointer to that specific environment, so their values end
   up in the right one. How do we do reachable in this case???
+
+- Need three valued logic: true, false, undefined.
 
 Repetition
 
@@ -142,6 +146,9 @@ Sections and grouping
     group "Winst" {
      
     }
+    
+    "Descriptition...." // optional
+    c => x: "Question?"
 
 
 Rendering    
@@ -157,3 +164,16 @@ Research challenges
 - Modularity/compositionality, inheritance
 - Impl of the DSL: how to separate layout stuff from logic.
 - constraint solving for checking stuff.
+
+
+Formalization
+=============
+
+### Abstract Syntax
+
+    data Exp = add(Exp, Exp) 
+              | sub(Exp)
+	    ...
+	    ;
+
+    data Question = question(str var, str label, 
