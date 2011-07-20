@@ -1,0 +1,133 @@
+
+
+Todo
+
+- put Environments on a stack, so that the lists in the env are only
+  used for repeats and not for backtracking.
+
+- repeats require adding components to the form.
+
+- Some notion of progress: a percentage estimate?
+
+- ticks that indicate that a question is answered?
+
+- Is the environment-as-result model expressive enough?
+  (do we need tree structured models?)
+  
+- For computed values, the action is to set the variable of a
+  question. (Is the variable enough to identify the question?)
+  It becomes readonly as a result. What if there are two mutually
+  exclusive questions that both set the same variable?
+    a => x: Q
+    b => x: Q
+    c => x = someExpression
+  This means that a, b, c should be mutually exclusive (this already
+  should be the case for a and b. SomeExpression should not reference
+  a variable that depends (transitively) on x. But which widget to use
+  for if c fires? Should be only one. Or: c => <Question> = <Exp>,
+  widget is now in Question. You want to have the other option too:
+  sometimes a value is computed, and sometimes you have to specify it.
+  E.g. in a default/else clause, from a select
+
+- Is the repeat a scope? I.e. all things dependent on stuff in repeat,
+  should be lexically in the {}. 
+
+Conditions
+
+ - ||, &&, !, any, all, >, <, <=, >=, ==, !=, var
+   (any and all implicitly work on list valued variables).
+   
+ - any(age > 18) => Q : this means that Q is enabled if there is any kid
+   which age > 18.
+   age > 18 => Q : this means that for each kid with age > 18 the Q is
+   enabled (implicit map operation) 
+   all(age > 18) => Q : Q is enabled if all kids are older than 18
+
+Consistency
+
+- Determinism: to questions assigning the same variable may never
+  be enabled at the same time.  
+  
+  
+- no two rules that assign the same variable can be enabled at the same time
+  (check for contradication on conjunction of guards). If we allow <, >, == etc
+  we need finite domain constraint solving. (is this conditional independence?)
+  
+- type checking
+  
+- unreachable questions: if ref a var never assigned anywhere
+  (trivial). For finite domains we need some kind of abstract
+  interpretation. E.g. types could be: [1..100], one-of(A, B, C),
+  more-of, bool etc.  We can then analyse if there are paths through
+  the qa that will enable its conditions. Related: no cycles in the
+  reachability graph.
+
+- Single assignment means, no question can be reenabled after it has
+  been ansewered.
+
+
+Repetition
+
+- repeat { ... }: allow arbitrary unfolding
+- repeat (exp) { ...}: repeat eval(exp) times
+
+Question syntaxes (if type is omitted it is string)
+Grouping is sugar: the condition of the group is added
+to the conditions in the body. Questions have a type, label,
+description and variable(s). Rules have a condition.
+   
+    (C) int age = "What is your age?" 
+    C => int age = "..."
+    when C { ... }
+    
+    select (x) { // only for one-of/more-of types
+      lit1, z > 1: Question
+      else  Question = <exp>
+    } // sugar for x == lit1 && z >1, and, x != lit1 && !(z > 1)
+    
+Types
+    int, str (optional), bool
+    one-of(lit*)
+    more-of(lit*)
+    
+Widgets (? derived from type?)
+
+    x: button "...." // boolean
+    x: check "...?"  // boolean
+    x: one-of/more-of { // enum/string
+       a1: "Label 2"
+       a2: "Label 2" // the options may be conditional
+    }
+    x: input "Label" // always string?
+    x: range(1..100) "Label" // slider
+    output <Expression>   // how to determine widget?
+    
+    Qid = <Expression> // sets question qid to value (this makes
+    qid readonly) 
+     
+
+Sections and grouping
+
+    section "Title" { 
+      description "....."
+    }
+  
+    group "Winst" {
+     
+    }
+
+
+Rendering    
+   
+
+- Sections: tabs, in left column menu
+- groups: field groups
+- description: for questions tooltip, sections intro
+- links: hyperlink question label
+
+Research challenges
+
+- Evolution: merging, migration etc.
+- Modularity/compositionality, inheritance
+- Impl of the DSL: how to separate layout stuff from logic.
+- constraint solving for checking stuff.
