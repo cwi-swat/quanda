@@ -3,7 +3,7 @@ package nl.cwi.swat.quanda.ast;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType
-public class Input extends Binder {
+public class Input extends Definer {
 
 	private String label;
 	private Widget widget;

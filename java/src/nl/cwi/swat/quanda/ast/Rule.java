@@ -1,6 +1,7 @@
 package nl.cwi.swat.quanda.ast;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -8,13 +9,11 @@ import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType
-public class Rule {
-
-	
+public class Rule implements User {
 	private String condition;
 	private Stat statement;
 	
-	private List<Binder> dependencies;
+	private Set<Definer> dependencies;
 	
 	@XmlAttribute
 	public String getCondition() {
@@ -36,7 +35,8 @@ public class Rule {
 	@XmlAttribute
 	@XmlIDREF
 	@XmlList
-	public List<Binder> getDependencies() {
+	@Override
+	public Set<Definer> getDependencies() {
 		return dependencies;
 	}
 	

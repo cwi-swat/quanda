@@ -1,6 +1,6 @@
 package nl.cwi.swat.quanda.ast;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -8,11 +8,11 @@ import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType
-public class Output extends Stat {
+public class Output extends Stat implements User {
 	private Widget widget;
 	private String expression;
 	
-	private List<Binder> dependencies;
+	private Set<Definer> dependencies;
 	
 	public Widget getWidget() {
 		return widget;
@@ -32,7 +32,8 @@ public class Output extends Stat {
 	@XmlAttribute
 	@XmlIDREF
 	@XmlList
-	public List<Binder> getDependencies() {
+	@Override
+	public Set<Definer> getDependencies() {
 		return dependencies;
 	}
 
