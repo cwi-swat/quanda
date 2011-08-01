@@ -1,0 +1,17 @@
+def main() {
+  doc "This form collects information on children."
+  group "Kids" {
+	  "Do you have kids?" hasKids: check
+	  if (hasKids) {
+	    "How many?" numOfKids: text
+	    kids: repeat(numOfKids) {
+	      par kid {
+		      "Enter name: " name: text
+		      "Enter age: " age: range(0..100)
+		       if (age > 18) 
+		        "BSN number: " bsn: pic("### ###")
+		  }
+	    }
+	  }
+  }
+}
