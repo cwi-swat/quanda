@@ -28,6 +28,17 @@ keyword Keyword
   | "rank"
   | "pic"
   | "text"
+  | "integer"
+  | "boolean"
+  | "string"
+  | "date"
+  | "time"
+  | "currency"
+  | "list"
+  | "item"
+  | "ref"
+  | "stack"
+  | "card"
   ;
 
 syntax Statement
@@ -39,10 +50,15 @@ syntax Statement
 
   | "doc" String 
   | "tip" String
+  | "ref" Id String
 
-  | "section" Id Statement
+  | "section" Label Statement
   | "group" Label Statement
-  | "par" Id Statement
+  | "par" Statement
+  | "list" Statement
+  | "item" Statement
+  | "stack" Statement
+  | "card" Label Statement
   | "table" Statement
   | "row" Statement
   | "col" Statement
@@ -61,8 +77,9 @@ syntax Input
   | "rank" "(" Expression ")"
   | "pic" "(" String ")"
   | "text"
+  | "number"
   | Mult "{" Option* "}"
-  | Mult Id "(" {Expression ","}* ")" ";"
+  | Mult Id "(" {Expression ","}* ")"
   ;
   
 syntax Mult
@@ -83,7 +100,7 @@ syntax Formal
   ; 
   
 syntax Option
-  = Id ":" Label When? ";"
+  = Id ":" Label When?
   ;
   
 syntax When

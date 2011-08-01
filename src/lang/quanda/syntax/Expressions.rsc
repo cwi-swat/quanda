@@ -20,6 +20,8 @@ lexical Comment
 keyword Keyword
   = "any"
   | "all"
+  | "sum"
+  | "avg"
   | "in"
   | "notin"
   | "true"
@@ -33,8 +35,11 @@ syntax Expression
   | @category="Constant" String
   | "any" "(" {Expression ","}+ ")"
   | "all" "(" {Expression ","}+ ")"
+  | "sum" "(" Expression "|" {Expression ","}+ ")"
+  | "avg" "(" Expression "|" {Expression ","}+ ")"
   | bracket "(" Expression ")"
-  | "+" Expression
+  | Expression "." Id
+  > "+" Expression
   | "-" Expression
   | "!" Expression
   > right Expression "**" Expression
@@ -61,7 +66,6 @@ syntax Expression
     ) 
   > left Expression "&&" Expression
   > left Expression "||" Expression
-  > right Expression "," Expression
   ;
   
   
