@@ -1,32 +1,7 @@
 module lang::quanda::syntax::Expressions
 
-lexical Id 
-  = ([a-z A-Z 0-9 _] !<< [a-z A-Z][a-z A-Z 0-9 _]* !>> [a-z A-Z 0-9 _]) \ Keyword 
-  ;
-  
-  
-layout LAYOUTLIST
-  = LAYOUT* !>> [\t-\n \r \ ] !>> "//" !>> "/*";
-
-lexical LAYOUT
-  = Comment 
-  | [\t-\n \r \ ] 
-  ;
-	
-lexical Comment
-	= @category="Comment" "/*" (![*] | [*] !>> [/])* "*/" 
-	| @category="Comment" "//" ![\n]* [\n]
-	;
-keyword Keyword
-  = "any"
-  | "all"
-  | "sum"
-  | "avg"
-  | "in"
-  | "notin"
-  | "true"
-  | "false"
-  ;
+extend lang::quanda::syntax::Layout;
+extend lang::quanda::syntax::Lexical;
 
 syntax Expression
   = @category="MetaVariable" Id
@@ -68,25 +43,16 @@ syntax Expression
   > left Expression "||" Expression
   ;
   
-  
-syntax Bool
-  = "true" !>> [a-zA-Z0-9_]
-  | "false" !>> [a-zA-Z0-9_]
-  ;
-  
-lexical Int
-  = [0]
-  | [1-9][0-9]* !>> [0-9]
-  ;
-  
-lexical String
-  = [\"] StrChar* [\"]
+keyword Keyword
+  = "any"
+  | "all"
+  | "sum"
+  | "avg"
+  | "in"
+  | "notin"
   ;
 
-lexical StrChar
-  = ![\"\\]
-  | [\\][\"\\]
-  ;
+
   
 
   
