@@ -33,8 +33,8 @@ syntax Range
   ;
 
 syntax Enum
-  = enum: "{" Option* "}"
-  | enumCall: Id "(" {Expression ","}* ")"
+  = inline: "{" Option* "}"
+  | call: Id "(" {Expression ","}* ")"
   ;
   
 syntax Option

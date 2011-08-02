@@ -5,10 +5,10 @@ extend lang::quanda::syntax::Widgets;
 
 syntax Statement
   // Control flow
-  = ifThen: "if" "(" Expression ")" Statement () !>> "else"
-  | ifThenElse: "if" "(" Expression ")" Statement "else" Statement 
-  | forEach: "for" "(" Expression ")" Statement
-  | switchCase: "switch" "(" Expression ")" "{" Case* "}"
+  = \if: "if" "(" Expression ")" Statement () !>> "else"
+  | \if: "if" "(" Expression ")" Statement "else" Statement 
+  | \for: "for" "(" Expression ")" Statement
+  | \switch: "switch" "(" Expression ")" "{" Case* "}"
   | block: "{" Statement* "}"
 
   // Documentation
@@ -16,15 +16,15 @@ syntax Statement
   | tip: "tip" String
   
   // Cross referencing
-  | ref: "ref" Id String
+  | ref: "ref" "(" Id "," String ")"
   | label: "label" Id
-  | link: "link" String
+  | link: "link" "(" String "," String ")"
 
   // Layouting
   | section: "section" String Statement
   | group: "group" String Statement
   | par: "par" Statement
-  | ul: "list" Statement
+  | \list: "list" Statement
   | item: "item" Statement
   | stack: "stack" Statement
   | card: "card" String Statement
@@ -36,7 +36,7 @@ syntax Statement
   | string: String 
   | output: "$" Expression 
   | bind: Id ":" Widget  
-  | bindMany: Id ":" "repeat" "(" Expression ")" Statement
+  | \repeat: Id ":" "repeat" "(" Expression ")" Statement
   | with: Id ":" "with" "(" Id ")" Statement
   | call: Id "(" {Expression ","}* ")"
   ; 
