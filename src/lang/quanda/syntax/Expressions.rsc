@@ -4,43 +4,43 @@ extend lang::quanda::syntax::Layout;
 extend lang::quanda::syntax::Lexical;
 
 syntax Expression
-  = @category="MetaVariable" Id
-  | @category="Constant" Bool
-  | @category="Constant" Int
-  | @category="Constant" String
-  | "any" "(" {Expression ","}+ ")"
-  | "all" "(" {Expression ","}+ ")"
-  | "sum" "(" Expression "|" {Expression ","}+ ")"
-  | "avg" "(" Expression "|" {Expression ","}+ ")"
+  = @category="MetaVariable" var: Id
+  | @category="Constant" \bool: Bool
+  | @category="Constant" \int: Int
+  | @category="Constant" string: String
+  | \any: "any" "(" {Expression ","}+ ")"
+  | \all: "all" "(" {Expression ","}+ ")"
+  | sum: "sum" "(" Expression "|" {Expression ","}+ ")"
+  | avg: "avg" "(" Expression "|" {Expression ","}+ ")"
   | bracket "(" Expression ")"
-  | Expression "." Id
-  > "+" Expression
-  | "-" Expression
-  | "!" Expression
-  > right Expression "**" Expression
+  | field: Expression "." Id
+  > pos: "+" Expression
+  | neg: "-" Expression
+  | not: "!" Expression
+  > right pow: Expression "**" Expression
   > non-assoc (
-      left Expression "*" Expression
-    | Expression "/" Expression
-    | Expression "%" Expression
+      left mul: Expression "*" Expression
+    | div: Expression "/" Expression
+    | mod: Expression "%" Expression
   )
   > left (
-      Expression "+" Expression
-    | Expression "-" Expression
+      add: Expression "+" Expression
+    | sub: Expression "-" Expression
   )
   > non-assoc (
-      Expression "\<" Expression
-    | Expression "\>" Expression
-    | Expression "\<=" Expression
-    | Expression "\>=" Expression
-    | Expression "in" Expression
-    | Expression "notin" Expression
+      lt: Expression "\<" Expression
+    | gt: Expression "\>" Expression
+    | leq: Expression "\<=" Expression
+    | geq: Expression "\>=" Expression
+    | \in: Expression "in" Expression
+    | \notin: Expression "notin" Expression
   )
   > left (
-      Expression "==" Expression |
-    | Expression "!=" Expression
+      eq: Expression "==" Expression |
+    | neq: Expression "!=" Expression
     ) 
-  > left Expression "&&" Expression
-  > left Expression "||" Expression
+  > left and: Expression "&&" Expression
+  > left or: Expression "||" Expression
   ;
   
 keyword Keyword

@@ -3,13 +3,13 @@ module lang::quanda::syntax::Types
 extend lang::quanda::syntax::Lexical;
 
 syntax Type
-  = "integer"
-  | "currency"
-  | "boolean"
-  | "date"
-  | "time"
-  | "string"
-  | Id
+  = integer: "integer"
+  | currency: "currency"
+  | boolean: "boolean"
+  | date: "date"
+  | time: "time"
+  | string: "string"
+  | user: Id
   ;
   
 keyword Keyword

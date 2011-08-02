@@ -9,7 +9,7 @@ keyword Keyword
   | "false"
   ;
 
-syntax Bool
+lexical Bool
   = "true" !>> [a-zA-Z0-9_]
   | "false" !>> [a-zA-Z0-9_]
   ;

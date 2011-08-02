@@ -5,18 +5,14 @@ extend lang::quanda::syntax::Statements;
 extend lang::quanda::syntax::Types;
 
 start syntax Form
-  = Declaration*
+  = form: Declaration*
   ;
 
 syntax Declaration
-  = "options" Id Signature "{" Option* "}"
-  | "def" Id Signature "{" Statement* "}"
+  = options: "options" Id "(" {Formal ","}* ")" "{" Option* "}"
+  | def: "def" Id "(" {Formal ","}* ")" "{" Statement* "}"
   ;
 
-syntax Signature
-  = "(" {Formal ","}* ")"
-  ;
-  
 syntax Formal 
   = Id ":" Type
   ; 

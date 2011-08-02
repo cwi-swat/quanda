@@ -4,46 +4,42 @@ extend lang::quanda::syntax::Expressions;
 
 syntax Widget
   // one-of
-  = "radio" Enum
-  | "dropdown" Enum
-  | "spin" Enum
-  | "select1" Enum
+  = radio: "radio" Enum
+  | dropdown: "dropdown" Enum
+  | spin: "spin" Enum
+  | select1: "select1" Enum
   // more-of
-  | "check" Enum
-  | "select" Enum
+  | check: "check" Enum
+  | select: "select" Enum
   // bool
-  | "check"
-  | "button" "(" String ")"
+  | check1: "check"
+  | button: "button" "(" String ")"
   // bounded int
-  | "slider" "(" Range ")"
+  | slider: "slider" "(" Range ")"
   // text
-  | "text"  
-  | "text" "(" Int ")"  
-  | "numeric"
-  | "numeric" "(" String ")"
-  | "area" "(" Int "," Int ")" 
+  | text: "text"  
+  | text: "text" "(" Int ")"  
+  | numeric: "numeric"
+  | numeric: "numeric" "(" String ")"
+  | area: "area" "(" Int "," Int ")" 
+  
+  // date & time
+  | date: "date"
   ;
   
 syntax Range
-  = Expression ".." Expression
-  | Expression "," Expression ".." Expression
+  = range: Expression ".." Expression
+  | range: Expression "," Expression ".." Expression
   ;
 
 syntax Enum
-  = "{" Option* "}"
-  | Id "(" {Expression ","}* ")"
+  = enum: "{" Option* "}"
+  | enumCall: Id "(" {Expression ","}* ")"
   ;
   
-syntax Case
-  = "case" Expression ":" Statement
-  ;
-
 syntax Option
-  = Id ":" String When?
-  ;
-  
-syntax When
-  = "when" Expression
+  = option: Id ":" String 
+  | option: Id ":" String "when" Expression
   ;
   
 keyword Keyword
@@ -58,4 +54,5 @@ keyword Keyword
   | "text"
   | "numeric"
   | "area"
+  | "date"
   ;
