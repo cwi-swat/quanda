@@ -36,7 +36,7 @@ syntax Expression
     | \notin: Expression "notin" Expression
   )
   > left (
-      eq: Expression "==" Expression |
+      eq: Expression "==" Expression
     | neq: Expression "!=" Expression
     ) 
   > left and: Expression "&&" Expression

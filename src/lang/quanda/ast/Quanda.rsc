@@ -1,13 +1,13 @@
 module lang::quanda::ast::Quanda
 
 
-anno loc location@Form;
-anno loc location@Declaration;
-anno loc location@Statement;
-anno loc location@Widget;
-anno loc location@Range;
-anno loc location@Enum;
-anno loc location@Option;
+anno loc Form@location;
+anno loc Declaration@location;
+anno loc Statement@location;
+anno loc Widget@location;
+anno loc Range@location;
+anno loc Enum@location;
+anno loc Option@location;
 
 data Form
   = form(list[Declaration] decls)
@@ -23,6 +23,7 @@ data Statement
   | \if(Expression cond, Statement body, Statement elseBody)
   | \for(Expression generator, Statement body)
   | \switch(Expression exp, list[tuple[Expression, Statement]] cases)
+  | block(list[Statement] statements)
   | doc(str content)
   | tip(str content)
   | ref(str label, str anchor)
@@ -32,7 +33,7 @@ data Statement
   | group(str label, Statement body)
   | par(Statement body)
   | \list(Statement body)
-  | \item(Statement body)
+  | item(Statement body)
   | stack(Statement body)
   | card(Statement body)
   | table(Statement body)
@@ -44,6 +45,38 @@ data Statement
   | \repeat(str var, Expression bound, Statement body)
   | with(str var, str field, Statement body)
   | call(str name, list[Expression] args)
+  | let(str name, Expression arg)
+  ;
+
+data Expression
+  = var(str name)
+  | \bool(bool b)
+  | \int(int n)
+  | string(str s)
+  | \any(list[Expression] conds)
+  | \all(list[Expression] conds)
+  | sum(Expression goal, list[Expression] conds)
+  | avg(Expression goal, list[Expression] conds)
+  | field(Expression target, str field)
+  | pos(Expression arg)
+  | neg(Expression arg)
+  | not(Expression arg)
+  | pow(Expression lhs, Expression rhs)
+  | mul(Expression lhs, Expression rhs)
+  | div(Expression lhs, Expression rhs)
+  | mod(Expression lhs, Expression rhs)
+  | add(Expression lhs, Expression rhs)
+  | sub(Expression lhs, Expression rhs)
+  | lt(Expression lhs, Expression rhs)
+  | gt(Expression lhs, Expression rhs)
+  | leq(Expression lhs, Expression rhs)
+  | geq(Expression lhs, Expression rhs)
+  | \in(Expression lhs, Expression rhs)
+  | \notin(Expression lhs, Expression rhs)
+  | eq(Expression lhs, Expression rhs)
+  | neq(Expression lhs, Expression rhs)
+  | and(Expression lhs, Expression rhs)
+  | or(Expression lhs, Expression rhs)
   ;
 
 data Widget
@@ -77,4 +110,15 @@ data Enum
 data Option
   = option(str key, str label)
   | option(str key, str label, Expression condition)
+  ;
+
+  
+data Type
+  = integer()
+  | currency()
+  | boolean()
+  | date()
+  | time()
+  | string()
+  | user(str name)
   ;

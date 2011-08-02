@@ -34,11 +34,14 @@ syntax Statement
 
   // Content
   | string: String 
-  | output: "$" Expression 
+  | output: "$" Expression // todo: widgets for output, e.g. output x + y: numeric 
   | bind: Id ":" Widget  
   | \repeat: Id ":" "repeat" "(" Expression ")" Statement
   | with: Id ":" "with" "(" Id ")" Statement
   | call: Id "(" {Expression ","}* ")"
+  
+  // (Single assignment)
+  | let: Id "=" Expression
   ; 
   
 syntax Case
