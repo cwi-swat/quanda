@@ -1,6 +1,14 @@
 module lang::quanda::ast::Quanda
 
 
+anno loc location@Form;
+anno loc location@Declaration;
+anno loc location@Statement;
+anno loc location@Widget;
+anno loc location@Range;
+anno loc location@Enum;
+anno loc location@Option;
+
 data Form
   = form(list[Declaration] decls)
   ;
