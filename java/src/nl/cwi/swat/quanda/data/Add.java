@@ -11,9 +11,13 @@ public class Add extends Expression {
 	
 	@Override
 	protected Object compute(int n) {
-		return ((Integer)lhs.getValue(n)) + ((Integer)rhs.getValue(n));
+		Integer a = (Integer)lhs.getValue(n);
+		Integer b = (Integer)rhs.getValue(n);
+		if (a == null || b == null) {
+			return null;
+		}
+		return a + b;
 	}
-	
 	
 	
 

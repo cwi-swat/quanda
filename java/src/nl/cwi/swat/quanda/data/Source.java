@@ -1,13 +1,13 @@
 package nl.cwi.swat.quanda.data;
 
 
-public class Input extends Notifiable {
+public class Source extends Flow {
 
 	private final Variable var;
 	private final Expression cond;
 	private boolean enabled;
 
-	public Input(Variable var, Expression cond) {
+	public Source(Variable var, Expression cond) {
 		this.var = var;
 		this.cond = cond;
 	}
@@ -18,11 +18,20 @@ public class Input extends Notifiable {
 
 	@Override
 	protected void update(int n) {
-		setEnabled(cond.getValue(n).equals(true));
+		Object c = cond.getValue(n);
+		setEnabled(c != null && c.equals(true));
 	}
 
 	private void setEnabled(boolean enabled) {
 		this.enabled = true;
+	}
+	
+	
+	public Source copy() {
+		Variable v2 = var.copy();
+		Source s = new Source(v2, cond);
+		cond.addDependent(s);
+		return s;
 	}
 	
 }

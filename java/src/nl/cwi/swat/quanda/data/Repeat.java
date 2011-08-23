@@ -1,7 +1,7 @@
 package nl.cwi.swat.quanda.data;
 
 
-public class Repeat extends Notifiable {
+public class Repeat extends Flow {
 	
 	private final Expression count;
 	
@@ -11,7 +11,10 @@ public class Repeat extends Notifiable {
 
 	@Override
 	protected void update(int n) {
-		readjust((Integer)count.getValue(n));
+		Object c = count.getValue(n);
+		if (c != null) {
+			readjust((Integer)c);
+		}
 	}
 
 	private void readjust(int size) {

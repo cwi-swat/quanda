@@ -1,7 +1,7 @@
 package nl.cwi.swat.quanda.data;
 
 
-public abstract class Expression extends Notifiable {
+public abstract class Expression extends Flow {
 	private Object value;
 	
 	public Object getValue(int n) {
@@ -23,4 +23,7 @@ public abstract class Expression extends Notifiable {
 	}
 
 	protected abstract Object compute(int n);
+	
+	
+	
 }

@@ -20,5 +20,9 @@ public class Variable extends Expression {
 	protected Object compute(int n) {
 		return getValue();
 	}
+
+	public Variable copy() {
+		return new Variable(name);
+	}
 	
 }

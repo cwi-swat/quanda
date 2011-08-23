@@ -1,11 +1,11 @@
 package nl.cwi.swat.quanda.data;
 
 
-public class Output extends Notifiable {
+public class Sink extends Flow {
 
 	private Expression exp;
 
-	public Output(Expression exp) {
+	public Sink(Expression exp) {
 		this.exp = exp;
 	}
 	
