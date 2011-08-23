@@ -7,6 +7,8 @@ public class Add extends Expression {
 	public Add(Expression lhs, Expression rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;
+		lhs.addDependent(this);
+		rhs.addDependent(this);
 	}
 	
 	@Override

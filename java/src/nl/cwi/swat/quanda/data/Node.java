@@ -21,7 +21,7 @@ public abstract class Node implements Notifiable {
 		if (outOfDate(n)) {
 			update(n);
 			setUpToDate(n);
-			notifyDeps(n);
+			notifyDependents(n);
 		}
 	}
 
@@ -29,7 +29,7 @@ public abstract class Node implements Notifiable {
 		stamp = n;
 	}
 	
-	protected void notifyDeps(int n) {
+	protected void notifyDependents(int n) {
 		for (Notifiable e: dependents) {
 			e.notify(n);
 		}

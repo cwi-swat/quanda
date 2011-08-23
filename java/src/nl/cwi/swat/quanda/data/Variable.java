@@ -9,16 +9,24 @@ public class Variable extends Expression {
 		this.name = name;
 	}
 
-	public void assign(int n, Object x) {
+	public void bind(int n, Object x) {
+		if (x == getValue()) {
+			setUpToDate(n);
+			return;
+		}
+		if (x != null && x.equals(x)) {
+			setUpToDate(n);
+			return;
+		}
 		update(n, x);
 		setUpToDate(n);
-		notifyDeps(n);
+		notifyDependents(n);
 	}
 	
 	
 	@Override
 	protected Object compute(int n) {
-		return getValue();
+		return getValue(n);
 	}
 
 	public Variable copy() {

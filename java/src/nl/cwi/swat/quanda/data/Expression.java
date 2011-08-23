@@ -9,7 +9,7 @@ public abstract class Expression extends Node {
 		return getValue();
 	}
 	
-	public Object getValue() {
+	protected Object getValue() {
 		return value;
 	}
 	
