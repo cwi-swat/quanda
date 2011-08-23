@@ -1,12 +1,10 @@
 package nl.cwi.swat.quanda.data;
 
-public class Binder extends Expression {
-
+public class Assign extends Binding {
 	private Expression exp;
-	private String name;
 
-	public Binder(String name, Expression exp) {
-		this.name = name;
+	public Assign(String name, Expression exp) {
+		super(name);
 		this.exp = exp;
 		exp.addDependent(this);
 	}
@@ -16,8 +14,4 @@ public class Binder extends Expression {
 		return exp.getValue(n);
 	}
 
-	public String getName() {
-		return name;
-	}
-	
 }

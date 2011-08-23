@@ -14,6 +14,22 @@ public abstract class Expression extends Node {
 	}
 	
 	@Override
+	public void notify(int n) {
+		if (!outOfDate(n)) {
+			return;
+		}
+		setUpToDate(n);
+
+		Object x = getValue();
+		Object y = compute(n);
+		if (x == y || (x != null && x.equals(y))) {
+			return; // no change
+		}
+		update(n, y);
+		notifyDependents(n);
+	}
+
+	@Override
 	protected void update(int n) {
 		update(n, compute(n));
 	}

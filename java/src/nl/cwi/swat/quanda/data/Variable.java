@@ -1,20 +1,14 @@
 package nl.cwi.swat.quanda.data;
 
 
-public class Variable extends Expression {
-	
-	private final String name;
-	
+public class Variable extends Binding {
 	public Variable(String name) {
-		this.name = name;
+		super(name);
 	}
 
 	public void bind(int n, Object x) {
-		if (x == getValue()) {
-			setUpToDate(n);
-			return;
-		}
-		if (x != null && x.equals(x)) {
+		Object value = getValue();
+		if (x == value || (x != null && x.equals(value))) {
 			setUpToDate(n);
 			return;
 		}
@@ -23,18 +17,9 @@ public class Variable extends Expression {
 		notifyDependents(n);
 	}
 	
-	
 	@Override
 	protected Object compute(int n) {
 		return getValue(n);
 	}
 
-	public Variable copy() {
-		return new Variable(name);
-	}
-
-	public String getName() {
-		return name;
-	}
-	
 }

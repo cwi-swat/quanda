@@ -35,7 +35,7 @@ public abstract class Node implements Notifiable {
 		}
 	}
 
-	private boolean outOfDate(int n) {
+	protected boolean outOfDate(int n) {
 		return stamp != n;
 	}
 	
