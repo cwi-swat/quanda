@@ -33,5 +33,9 @@ public class Source extends Flow {
 		cond.addDependent(s);
 		return s;
 	}
+
+	public Variable getVariable() {
+		return var;
+	}
 	
 }

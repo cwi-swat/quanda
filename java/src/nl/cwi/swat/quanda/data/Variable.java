@@ -24,5 +24,9 @@ public class Variable extends Expression {
 	public Variable copy() {
 		return new Variable(name);
 	}
+
+	public String getName() {
+		return name;
+	}
 	
 }
