@@ -1,16 +1,15 @@
-package nl.cwi.swat.quanda.gui;
+package nl.cwi.swat.quanda.data;
 
-import nl.cwi.swat.quanda.data.Expression;
-import nl.cwi.swat.quanda.data.Notifiable;
-import nl.cwi.swat.quanda.data.Variable;
 
 public class Input extends Notifiable {
 
-	private Variable var;
-	private Expression cond;
+	private final Variable var;
+	private final Expression cond;
+	private boolean enabled;
 
-	public Input(Variable var) {
+	public Input(Variable var, Expression cond) {
 		this.var = var;
+		this.cond = cond;
 	}
 	
 	public void onChange(Object x) {
@@ -23,7 +22,7 @@ public class Input extends Notifiable {
 	}
 
 	private void setEnabled(boolean enabled) {
-		
+		this.enabled = true;
 	}
 	
 }

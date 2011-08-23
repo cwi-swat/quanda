@@ -1,7 +1,5 @@
-package nl.cwi.swat.quanda.gui;
+package nl.cwi.swat.quanda.data;
 
-import nl.cwi.swat.quanda.data.Expression;
-import nl.cwi.swat.quanda.data.Notifiable;
 
 public class Output extends Notifiable {
 
