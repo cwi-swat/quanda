@@ -1,10 +1,13 @@
-package nl.cwi.swat.quanda.data;
+package nl.cwi.swat.quanda.ctl;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Group extends Flow {
+import nl.cwi.swat.quanda.data.Node;
+import nl.cwi.swat.quanda.data.Variable;
+
+public class Group extends Node {
 	private final Variable var;
 
 	private Set<Source> sources;

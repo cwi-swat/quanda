@@ -1,7 +1,7 @@
 package nl.cwi.swat.quanda.data;
 
 
-public abstract class Expression extends Flow {
+public abstract class Expression extends Node {
 	private Object value;
 	
 	public Object getValue(int n) {
@@ -9,7 +9,7 @@ public abstract class Expression extends Flow {
 		return getValue();
 	}
 	
-	protected Object getValue() {
+	public Object getValue() {
 		return value;
 	}
 	
@@ -23,7 +23,5 @@ public abstract class Expression extends Flow {
 	}
 
 	protected abstract Object compute(int n);
-	
-	
 	
 }

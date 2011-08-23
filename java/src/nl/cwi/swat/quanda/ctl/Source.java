@@ -1,7 +1,11 @@
-package nl.cwi.swat.quanda.data;
+package nl.cwi.swat.quanda.ctl;
+
+import nl.cwi.swat.quanda.data.Expression;
+import nl.cwi.swat.quanda.data.Node;
+import nl.cwi.swat.quanda.data.Variable;
 
 
-public class Source extends Flow {
+public class Source extends Node {
 
 	private final Variable var;
 	private final Expression cond;

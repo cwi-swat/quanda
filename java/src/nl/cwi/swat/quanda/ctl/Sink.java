@@ -1,7 +1,10 @@
-package nl.cwi.swat.quanda.data;
+package nl.cwi.swat.quanda.ctl;
+
+import nl.cwi.swat.quanda.data.Expression;
+import nl.cwi.swat.quanda.data.Node;
 
 
-public class Sink extends Flow {
+public class Sink extends Node {
 
 	private Expression exp;
 

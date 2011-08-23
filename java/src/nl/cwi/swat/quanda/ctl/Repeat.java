@@ -1,7 +1,10 @@
-package nl.cwi.swat.quanda.data;
+package nl.cwi.swat.quanda.ctl;
+
+import nl.cwi.swat.quanda.data.Expression;
+import nl.cwi.swat.quanda.data.Node;
 
 
-public class Repeat extends Flow {
+public class Repeat extends Node {
 	
 	private final Expression count;
 	

@@ -3,7 +3,7 @@ package nl.cwi.swat.quanda.data;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Flow implements Notifiable {
+public abstract class Node implements Notifiable {
 	private int stamp = -1;
 	
 	private List<Notifiable> dependents = new ArrayList<Notifiable>();
