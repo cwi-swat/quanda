@@ -8,10 +8,9 @@ public class Variable extends Binding {
 	
 	@Override
 	public void notify(int n) {
-		if (isOutOfDate(n)) {
-			setUpToDate(n);
-			notifyDependents(n);
-		}
+		// bind has been called before.
+		setUpToDate(n);
+		notifyDependents(n);
 	}
 
 	public void bind(int n, Object x) {
