@@ -13,16 +13,19 @@ public class Variable extends Binding {
 	@Override
 	public void notify(int n, List<Event> changes) {
 		// bind has been called before.
+		if (!outOfDate(n)) {
+			return;
+		}
 		setUpToDate(n);
 		notifyDependents(n, changes);
 	}
 
-	public void bind(int n, Object x) {
+	public void bind(Object x) {
 		Object v = getValue();
 		if (x == v || (x != null && x.equals(v))) {
 			return;
 		}
-		update(n, x);
+		setValue(x);
 	}
 	
 	@Override

@@ -1,15 +1,29 @@
 package nl.cwi.swat.quanda.event;
 
-import nl.cwi.swat.quanda.data.Output;
 
 public class Update extends Event {
 
-	private final Output output;
+	private final String name;
 	private final Object value;
 
-	public Update(Output output, Object value) {
-		this.output = output;
+	public Update(String name, Object value) {
+		this.name = name;
 		this.value = value;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Object getValue() {
+		return value;
+	}
+	
+	@Override
+	public String toString() {
+		return "update(" + name + ", " + value + ")";
+	}
+	
+	
 	
 }

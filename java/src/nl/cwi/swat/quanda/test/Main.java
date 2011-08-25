@@ -19,12 +19,13 @@ public class Main {
 		Input i1 = new Input(x, t);
 		Input i2 = new Input(y, t);
 		Add a = new Add(x, y);
-		Output o1 = new Output(a);
+		Output o1 = new Output("o1", a);
+		Output o2 = new Output("o2", x);
 		
 		int n = 1;
 		List<Event> changes = new ArrayList<Event>();
-		x.bind(n, 1);
-		y.bind(n, 2);
+		x.bind(1);
+		y.bind(2);
 		x.notify(n, changes);
 		y.notify(n, changes);
 		System.out.println(a.getValue(n, changes));
