@@ -1,5 +1,9 @@
 package nl.cwi.swat.quanda.data;
 
+import java.util.List;
+
+import nl.cwi.swat.quanda.event.Event;
+
 public class Assign extends Binding {
 	private Expression exp;
 
@@ -10,8 +14,8 @@ public class Assign extends Binding {
 	}
 	
 	@Override
-	protected Object compute(int n) {
-		return exp.getValue(n);
+	protected Object compute(int n, List<Event> changes) {
+		return exp.getValue(n, changes);
 	}
 
 }

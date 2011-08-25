@@ -3,6 +3,8 @@ package nl.cwi.swat.quanda.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.cwi.swat.quanda.event.Event;
+
 public abstract class Node implements Notifiable {
 	private int stamp = -1;
 	
@@ -17,11 +19,11 @@ public abstract class Node implements Notifiable {
 	}
 
 	@Override
-	public void notify(int n) {
+	public void notify(int n, List<Event> changes) {
 		if (outOfDate(n)) {
-			update(n);
+			update(n, changes);
 			setUpToDate(n);
-			notifyDependents(n);
+			notifyDependents(n, changes);
 		}
 	}
 
@@ -29,9 +31,9 @@ public abstract class Node implements Notifiable {
 		stamp = n;
 	}
 	
-	protected void notifyDependents(int n) {
+	protected void notifyDependents(int n, List<Event> changes) {
 		for (Notifiable e: dependents) {
-			e.notify(n);
+			e.notify(n, changes);
 		}
 	}
 
@@ -39,6 +41,6 @@ public abstract class Node implements Notifiable {
 		return stamp != n;
 	}
 	
-	protected abstract void update(int n);
+	protected abstract void update(int n, List<Event> changes);
 	
 }

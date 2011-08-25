@@ -1,11 +1,15 @@
 package nl.cwi.swat.quanda.data;
 
+import java.util.List;
+
+import nl.cwi.swat.quanda.event.Event;
+
 
 public abstract class Expression extends Node {
 	private Object value;
 	
-	public Object getValue(int n) {
-		notify(n);
+	public Object getValue(int n, List<Event> changes) {
+		notify(n, changes);
 		return getValue();
 	}
 	
@@ -14,24 +18,24 @@ public abstract class Expression extends Node {
 	}
 	
 	@Override
-	public void notify(int n) {
+	public void notify(int n, List<Event> changes) {
 		if (!outOfDate(n)) {
 			return;
 		}
 		setUpToDate(n);
 
 		Object x = getValue();
-		Object y = compute(n);
+		Object y = compute(n, changes);
 		if (x == y || (x != null && x.equals(y))) {
 			return; // no change
 		}
 		update(n, y);
-		notifyDependents(n);
+		notifyDependents(n, changes);
 	}
 
 	@Override
-	protected void update(int n) {
-		update(n, compute(n));
+	protected void update(int n, List<Event> changes) {
+		update(n, compute(n, changes));
 	}
 	
 	protected void update(int n, Object x) {
@@ -42,6 +46,6 @@ public abstract class Expression extends Node {
 		this.value = x;
 	}
 
-	protected abstract Object compute(int n);
+	protected abstract Object compute(int n, List<Event> changes);
 	
 }
