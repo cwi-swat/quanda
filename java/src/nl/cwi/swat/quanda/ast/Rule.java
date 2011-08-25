@@ -1,6 +1,5 @@
 package nl.cwi.swat.quanda.ast;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;

@@ -5,16 +5,21 @@ public class Variable extends Binding {
 	public Variable(String name) {
 		super(name);
 	}
+	
+	@Override
+	public void notify(int n) {
+		if (isOutOfDate(n)) {
+			setUpToDate(n);
+			notifyDependents(n);
+		}
+	}
 
 	public void bind(int n, Object x) {
-		Object value = getValue();
-		if (x == value || (x != null && x.equals(value))) {
-			setUpToDate(n);
+		Object v = getValue();
+		if (x == v || (x != null && x.equals(v))) {
 			return;
 		}
 		update(n, x);
-		setUpToDate(n);
-		notifyDependents(n);
 	}
 	
 	@Override

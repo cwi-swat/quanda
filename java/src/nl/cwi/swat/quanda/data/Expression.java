@@ -35,6 +35,10 @@ public abstract class Expression extends Node {
 	}
 	
 	protected void update(int n, Object x) {
+		setValue(x);
+	}
+
+	protected void setValue(Object x) {
 		this.value = x;
 	}
 

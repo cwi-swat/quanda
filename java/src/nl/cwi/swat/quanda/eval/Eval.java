@@ -20,6 +20,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.EcmaError;
+import org.mozilla.javascript.Scriptable;
+
 import net.miginfocom.swing.MigLayout;
 import nl.cwi.swat.quanda.model.Question;
 import nl.cwi.swat.quanda.model.Questionnaire;
@@ -62,6 +66,24 @@ public class Eval {
 			}
 		}
 		update(fieldMap);
+	}
+	
+	public boolean isEnabled(Env env) {
+		Context ctx = Context.enter();
+		try {
+			Scriptable scope = ctx.initStandardObjects();
+			env.define(scope);
+			try {
+				Object result = ctx.evaluateString(scope, getCondition(), getId(), 1, null);
+				return result == null ? false : result.equals(true);
+			}
+			catch (EcmaError e) {
+				return false;
+			}
+		}
+		finally {
+			Context.exit();
+		}
 	}
 	
 	
