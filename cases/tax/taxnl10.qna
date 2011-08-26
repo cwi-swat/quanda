@@ -1,0 +1,187 @@
+
+options yesno() {
+  true: "Yes"
+  false: "No"
+}
+
+options situation() {
+  married2010: "Married for the whole duration of 2010"
+  unmarried2010: "Not married for the whole duration of 2010"
+  partlyMarried2010: "Married during part of 2010"
+}
+
+def updateBankAccountNr(cond) {
+   if (cond) {
+       "Bank account nr." newBankNr:numeric
+    }
+}
+
+def periodLivingTogether(cond) {
+  if (cond) {
+     "Period during which you lived together" from:daymonth to:daymonth
+  }
+}
+
+def basicInfo() {
+  "Name" name:text
+  "Social security number" ssn:numeric("####.##.###")
+  "Date of birth" birthday:date
+}
+
+def partnerPersonalInfo(ssnMain) {
+  section "Personal Information of your spouse"
+  basicInfo()
+  if (ssn == ssnMain) {
+    error "SSN of your spouse cannot be the same as your own";
+  }
+}
+
+def personalInfo() {
+  section "Personal Information"
+  basicInfo()
+  "Phone number" phone:numeric("##########")
+  "Phone number Tax consultant" phone:numeric("#########")?
+  "Did you receive a letter to file?" notice:radio yesno()
+  if (notice) {
+    "Does the letter contain the right bank account nr.?" bankOk:radio yesno()
+    updateBankAccountNr(!bankOk)
+  }
+
+  else {
+    "Do you want to submit or change a back account nr.?" 
+       subChangeBank:radio yesno()
+    updateBankAccountNr(subChangeBank)
+  }
+ "Your personal situation in 2010" personalSituation:select1 situation()
+  // akkoord button expliciet modelerren?
+
+  switch (personalSituation) {
+   married2010 => partnerInfo: partnerPersonalInfo()
+   unmarried2010 => 
+     "Did you share housing with someone?" houseSharing:radio yesno()
+       periodLivingTogether(houseSharing);
+   partlyMarried2010 =>
+      "Period during which you were married" from:daymonth to:daymonth
+      "Did you live together with your spouse before or after this period?"
+          togetherBeforeAfter:radio yesno()
+       if (togetherBeforeAfter) {
+         "Period during which you lived together with your spouse" 
+             from:daymonth to:daymonth
+       }
+       else {
+         "Do you and your spouse want to be considered fiscal partners?"
+            fiscalPartners: radio yesno()
+         if (!fiscalPartners) {
+           "Did you share a house with someone else outside of the 
+               period that you were married?"
+               marriedSharedHouse: radio yesno()
+            periodLivingTogether(marriedSharedHouse)
+         }
+       }
+       partnerInfo: partnerPersonalInfo(ssn);
+  }
+}
+
+def Box1/WorkHousing() {
+  section "Box 1: work and living"
+  par "Choose the subjects that applied in 2010"
+  hasWages:check "Wages, health care benefits, tips and so forth" 
+  hasPension:check "Pension, welfare and other benefits to be taxed as income"
+  hasAnnuity:check "Annuity buyouts (more than 4.146)"
+  hasFreeIncome: check "Tax-free income if you're wokring for international 
+     organizations like EU, UN, or NATO"
+  hasForeignIncome: check "Wages, pension, benefits from abroad"
+  if (hasWages || hasFreeIncome || hasForeignIncome) {
+    hasTravelDeduction: check "Deduction for travelinf with public transport"
+  }
+  hasHouse: check "Owning a house (main stay)"
+  if (hasWages) {
+    Box1/Wages()    
+  }
+}
+
+def Box1/Wages(name) {
+  subsection "Wages for <name>"
+  subsubsection "Income from wages"
+  
+  par "Wages and healthcare benefits"
+  
+  table {
+    row { cell {"Employer/Benefits org."} cell{"Work discount"} cell{ "Wages tax"} cell { "Wages" } }
+    jobs: repeat {
+      row { cell {employer:text}  cell {discount:money}  cell{wagesTax:money}  cell{wages:money} }
+    }
+    row { cell{} cell {money(sum(s.discount | s: jobs))} cell {money(sum(s.wagesTax | s: jobs))}
+             cell{totalWages: money(sum(s.wages | s: jobs))} }
+    row { cell{"Total life plan discount"} cell{ lifePlanDiscount:money } }
+    row { cell(3) { "Tips, stock options, and other income" } cell { otherIncome:money  }}
+    row { cell(3) { "Total income from working" } cell { money(totalWages + otherIncome) } }
+  }
+  
+}
+
+func ownershipIncome(woz, frac) {
+  frac * cond {
+   woz <= 12,500: 0.0
+   woz > 12,500, woz <= 25,000: 0.0020 * woz
+   woz > 25,000, woz <= 50,000: 0.0030 * woz
+   woz > 50,000, woz <= 75,000: 0.0040 * woz
+   woz > 75,000, woz <= 1,010,000: 0.0055 * woz
+   woz > 1,010,000: 5,555 + 0.0080 * (woz - 1,010,000)
+  }
+}
+
+def Box1/HouseOwning(name) {
+  subsection "Owned house <name>" {
+    subsubsection "Main house buying, selling or reconstructing" {
+      "Did you sell a house in 2010?" hasSoldHouse:radio yesno()
+      "Did you buy a house in 2010?" hasBoughtHouse:radio yesno()
+      "Did enter a loan for maintenance or reconstruction of the house?" hasMaintLoan:radio yesno()
+      if (hasSoldHouse) {
+        "Price the house was sold for without selling costs" sellingPrice:money
+        "Private debt for the sold house" privateDebt:money
+        "Value residue" money(sellingPrice - privateDebt)
+      }
+      if (hasBoughtHouse) {
+         "Buying price of the house including buying costs" buyingPrice:money
+      }
+      if (hasMaintLoan) {
+         "Maintenance/reconstruction cost" maintCost:money
+      } 
+    }
+    subsubsection "Income and deduction owned house" {
+      "Were you the sole owner of the house" soleOwner:radio yesno()
+      table {
+        row {
+          cell {"Zipcode and streetnr"} cell(2) { "Period" } cell {"WOZ value"} 
+            cell { if (!soleOwner) { "% ownership" } } cell {"Ownership forfait"}
+        }
+        houses: repeat {
+          row {
+            cell {zipcodeStreetNr:text} cell{from:daymonth} cell{to:daymonth}
+            cell {wozValue:money}
+            cell { if (!soleOwner) { ownershipFrac:percentage } else { ownershipFrac: 1 } } 
+            cell { forfait:money(ownershipIncome(wozValue, ownershipFrac)) }
+          }
+        }                                              // default value if not entered???
+        row { cell(5) {"Forfait in special situations" specialForfait[0]:modal(specifyForfaitSpecial)}
+               cell {money(specialForfait)} } 
+        row { cell(5) {"Taxable part of benefits from capital insurance or savings account onthe house"}
+              cell { taxableBenefits:money } }
+        row { cell(5) {"Income from temporary renting of the place"} cell { tempRentIncome:money } }
+        row { cell(5) {"Total income based on house ownership"} 
+              cell { totalIncome:money(sum(h.forfait | h : houses) + forfaitSpecial + taxableBenefits
+                      tempRentIncome) } }
+        row { cell(4) {"Deductible interest and fincancing costs" deductions:modal(specDeductions)}
+               cell { money(deductions) } }
+        row { cell(4) {"Periodical payments for groundrent..."} cell {periodicalPayments:money } }
+        row { cell(5) {"Total deductions house ownership" } 
+             cell { totalDeductions:money(deductions + periodicalPayments) } }
+        row { cell(4) {"Balance income and deductions" } cell {"Taxable"} 
+                cell { money(totalIncome - totalDeductions) } }
+      }
+    }
+  }
+}
+
+  

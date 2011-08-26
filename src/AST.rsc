@@ -6,31 +6,29 @@ data Form
   ;
 
 data Section 
-  = section(list[Rule] rules)
+  = section(str name, str description, list[Rule] rules)
   ;
 
 data Rule
-  = \rule(list[Exp] conds, Stat stat)
-  | \rule(Stat stat)
+  = \rule(Exp cond, Stat stat)
   ;
-
-public Rule \rule(Stat s) = \rule([], s);  
 
 data Stat 
   = group(list[Rule] rules)
-  | \repeat(Exp exp, Rule arg)
+  | \repeat(Var var, Exp count, Rule arg)
   | select(Var var, list[Case] cases)
   | input(Var var, Widget widget)
-  | output(str label, Widget widget, Exp exp)
+  | output(Widget widget, Exp exp)
   ;
 
 data Var
   = var(str name)
-  | subscript(Var var, int i)
+  | subscript(Var var, int index)
+  | field(Var var, str name)
   ;
 
 data Case 
-  = when(list[Exp] conds, Widget widget)
+  = when(Exp cond, Widget widget)
   | otherwise(Widget widget)
   ;
 
@@ -51,10 +49,10 @@ data Option
   
 data Exp
   = lookup(Var var)
-  | boolean(bool val)
-  | number(int val)
-  | string(str val)
-  | defined(str var)
+  | boolean(bool b)
+  | number(int n)
+  | string(str s)
+  | defined(Var var)
   | not(Exp arg)
   | neg(Exp arg)
   | add(Exp lhs, Exp rhs)
@@ -69,6 +67,6 @@ data Exp
   | leq(Exp lhs, Exp rhs)
   | neq(Exp lhs, Exp rhs)
   | eq(Exp lhs, Exp rhs)
-  | exist(list[Exp] args)
-  | forall(list[Exp] args)
+  | exist(Exp coll, Exp cond)
+  | forall(Exp coll, Exp cond)
   ;

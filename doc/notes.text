@@ -54,6 +54,8 @@ Conditions
 
 Consistency
 
+ (No-cycles, Reachability, Determinism)
+
 - Determinism: two questions assigning the same variable may never
   be enabled at the same time.  
   

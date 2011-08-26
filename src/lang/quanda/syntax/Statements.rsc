@@ -8,7 +8,8 @@ syntax Statement
   = \if: "if" "(" Expression ")" Statement () !>> "else"
   | \if: "if" "(" Expression ")" Statement "else" Statement 
   | \for: "for" "(" Expression ")" Statement
-  | \switch: "switch" "(" Expression ")" "{" Case* "}"
+  | \switch: "switch" "(" Expression ")" "{" Case* Otherwise? "}"
+  | \cond: "cond" "{" Case* Otherwise? "}"
   | block: "{" Statement* "}"
 
   // Documentation
@@ -45,7 +46,11 @@ syntax Statement
   ; 
   
 syntax Case
-  = "case" Expression ":" Statement
+  = Expression "=\>" Statement
+  ;
+  
+syntax Otherwise
+  = "else" Statement
   ;
   
 keyword Keyword
@@ -54,6 +59,7 @@ keyword Keyword
   | "for"
   | "def"
   | "switch"
+  | "cond"
   | "case"
   | "doc"
   | "tip"

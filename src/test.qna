@@ -15,22 +15,32 @@ def main() {
   group "Kids" {
 	  "Do you have kids?" hasKids: check
 	  if (hasKids) {
-	    "How many?" numOfKids: text
+	    "How many?" numOfKids: numeric
 	    kids: repeat(numOfKids) {
 	      list {
 		     item { "Enter name: " name: text }
-		     item { "Enter sex: " sex: one-of sex() }
-		     item { "Enter age: " age: range(0..100) }
+		     item { "Enter sex: " sex: radio sex() }
+		     item { "Enter age: " age: slider(0..100) }
 		     if (age > 18) {
-		        item { "BSN number: " bsn: pic("### ###") }
+		        item { "BSN number: " bsn: numeric("### ###") }
 		        item { "Driver's license?" dl: check }
 		     }
-		     item { "What is the education?" edu: more-of education(age) }
+		     item { "What is the education?" edu: select education(age) }
 		  }
 	    }
 	    "Total age of kids: " $sum(k.age | k in kids)
 	    if (avg(k.age | k in kids) > 18) 
 	      "They could be all adults"
+	    x = sum(+k.age + 2 | k in kids)
+	  }
+	  switch (a) {
+	   "a" => $n + 1
+	    else $n + 2
+	  }
+	  cond {
+	    n > 1 => bla()
+	    n <= 1 => foo()
+	    else "cannot happen"
 	  }
   }
 }
