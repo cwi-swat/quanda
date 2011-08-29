@@ -1,0 +1,21 @@
+
+
+<!--- conditional elements (spans, divs, li's etc.)
+are enabled/disabled if their contained inputs are
+enabled/disabled.
+For instance the span below will be display: none if newBankNr
+is disabled
+
+check: grouped logical elements in ifs, should be individual elements
+(e.g. in a list, row in table etc.) or contained in the same container.
+Propagation of display:none to container does not fire if there's
+something in the same container that is not disabled.
+ --->
+<span>
+Enter a new bank account number: <input id="newBankNr"/>
+</span>
+
+<!---
+For instance the span below will be display: none if newBankNr
+is disabled
+ --->

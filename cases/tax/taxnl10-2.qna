@@ -1,0 +1,160 @@
+
+options situation() {
+  married2010
+  unmarried2010
+  partlyMarried2010
+}
+
+def updateBankAccountNr(cond) {
+   if (cond) {
+       newBankNr:numeric
+   }
+}
+
+def periodLivingTogether(cond) {
+  if (cond) {
+     from:daymonth to:daymonth
+  }
+}
+
+def basicInfo() {
+  name:text
+  ssn:numeric("####.##.###")
+  birthday:date
+}
+
+def partnerPersonalInfo(ssnMain) {
+  basicInfo()
+  assert ssn == ssnMain: "SSN of your spouse cannot be the same as your own";
+}
+
+def personalInfo() {
+  basicInfo()
+  phone: text("##########")
+  phoneConsultant: text("#########")?
+  hasNotice: boolean
+  if (hasNotice) {
+    bankOk: boolean
+    updateBankAccountNr(!bankOk)
+  }
+  else {
+    subChangeBank: boolean
+    updateBankAccountNr(subChangeBank)
+  }
+ personalSituation: one-of(situation())
+ 
+ switch (personalSituation) {
+   married2010 => partnerInfo: partnerPersonalInfo()
+   unmarried2010 => 
+      houseSharing: boolean
+      periodLivingTogether(houseSharing);
+   partlyMarried2010 =>
+      fromMarried:daymonth 
+      toMarried:daymonth
+      togetherBeforeAfter: boolean
+      if (togetherBeforeAfter) {
+        fromTogether:daymonth 
+        toTogether:daymonth
+      }
+      else {
+        fiscalPartners: boolean
+        if (!fiscalPartners) {
+           marriedSharedHouse: boolean
+           periodLivingTogether(marriedSharedHouse)
+        }
+      }
+      partnerInfo: partnerPersonalInfo(ssn);
+  }
+}
+
+def Box1/WorkHousing() {
+  hasWages: boolean
+  hasPension: boolean
+  hasAnnuity: boolean
+  hasFreeIncome: boolean
+  hasForeignIncome: boolean
+  if (hasWages || hasFreeIncome || hasForeignIncome) {
+    hasTravelDeduction: boolean
+  }
+  hasHouse: boolean
+  if (hasWages) {
+    Box1/Wages()    
+  }
+}
+
+def Box1/Wages {
+  jobs: repeat {
+     employer:text
+     discount:money
+     wagesTax:money
+     wages:money
+  }
+  totalDiscount: money(sum(s.discount | s: jobs))
+  totalWagesTax: money(sum(s.wagesTax | s: jobs))
+  totalWages: money(sum(s.wages | s: jobs))
+  lifePlanDiscount: money
+  otherIncome: money
+  totalIncome: money(totalWages + otherIncome)
+}
+
+func ownershipIncome(woz, frac) {
+  frac * cond {
+   woz <= 12,500: 0.0
+   woz > 12,500, woz <= 25,000: 0.0020 * woz
+   woz > 25,000, woz <= 50,000: 0.0030 * woz
+   woz > 50,000, woz <= 75,000: 0.0040 * woz
+   woz > 75,000, woz <= 1,010,000: 0.0055 * woz
+   woz > 1,010,000: 5,555 + 0.0080 * (woz - 1,010,000)
+  }
+}
+
+def Box1/HouseOwning {
+  hasSoldHouse: boolean
+  hasBoughtHouse: boolean
+  hasMaintLoan: boolean
+  if (hasSoldHouse) {
+    sellingPrice:money
+    privateDebt:money
+    valueResidue: money(sellingPrice - privateDebt)
+  }
+  if (hasBoughtHouse) {
+     buyingPrice:money
+  }
+  if (hasMaintLoan) {
+    maintCost:money
+  } 
+  soleOwner: boolean
+  houses: repeat {
+    zipcodeStreetNr:text 
+    from:daymonth
+    to:daymonth
+    wozValue:money
+    if (!soleOwner) { 
+       ownershipFrac: fraction 
+    } 
+    else {  // TODO is this right?
+       ownershipFrac: 1
+    } 
+    forfait: money(ownershipIncome(wozValue, ownershipFrac))
+  }
+  // todo: = optional, need default
+  // inline? result should be displayed computed return value?
+  specialForfait: money(modal(specifyForfaitSpecial))
+  taxableBenefits: money
+  tempRentIncome: money
+  totalIncome: money(sum(h.forfait | h : houses) + forfaitSpecial 
+                        + taxableBenefits + tempRentIncome)
+  deductions: money(modal(specDeductions))
+  periodicalPayments: money
+  totalDeductions: money(deductions + periodicalPayments)
+  balanceIncomeDeductions: money(totalIncome - totalDeductions)
+  hasExemption: boolean
+  if (hasExemption) {
+    exemption: money
+  }
+}
+
+
+def Box1/OtherIncome {
+
+}
