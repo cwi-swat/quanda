@@ -1,5 +1,10 @@
 
 
+GUI part is independent of
+editability/iteration/optionality/outputness of data nodes.
+
+
+
 Todo
 
 - put Environments on a stack, so that the lists in the env are only

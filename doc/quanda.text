@@ -1,0 +1,190 @@
+
+QuandA: Formalizing Questionnaires
+==================================
+
+### Introduction ###
+
+Forms-based software for data collection has found application is
+various areas, including scientific surveys, online course-ware and
+guidance material to support the auditing process. As an overall term
+for this kind of software applications we use the term
+"questionnaire".  In the context of guidance material for auditors we
+are investigating the use of domain-specific languages (DSLs) to
+facilitate the construction of complex questionnaires. Such
+questionnaires are characterized by conditional entry fields and
+(spreadsheet-like) dependency-directed computation.
+
+Our current intuition is to separate the specification of the data
+model from the specification of the user interface. This leads to two
+DSLs, one for the specification of the conceptual data model, and one
+language to map such a conceptual data model to a GUI rendering. The
+controller aspect of the traditional Model-View-Controller pattern is
+captured using conditions on input fields in the data model.
+
+- The data model specification can be checked for non-ambiguity,
+  consistency and completeness without having to deal with the user
+  interface aspect. It essentially defines a truth maintenance system.
+  
+- The GUI specification only deals with rendering the interactive data
+  model, having no knowledge of logical constraints and rules.
+
+We are currently looking for example questionnaires for getting a
+better understanding of the domain. We are collecting examples from
+the domain of auditing. The Easytax tax filing application is another
+example that perfectly fits the domain.
+
+### Data Model Specification ###
+
+The data model specification captures the structure of the data that
+has to be acquired from the customer. It includes the following:
+
+- _input fields_ and their _type_. For instance: a "name" field with
+  type "string". This includes grouping of fields in to _structures_
+  to express document-like nesting.
+- _option types_ like enums in Java/C#. For instance: married,
+  unmarried; male, female; or yes, no, and dontKnow.
+- _conditions_: input fields may be conditionally enabled or
+  disabled. For instance, a sub-form about owned property only has to
+  be filled out if the user actually owns property.
+- mathematical _functions_ to express the computation of derived
+  value. For instance, to compute simple aggregations (totals,
+  averages) or more involved derived values, like ownership income
+  (based on "WOZ"-value and fraction of ownership).
+- a mechanism for _abstraction_ (somewhat like macros) in order to
+  reuse sets of fields in multiple contexts in the same form. For
+  instance, to collect personal information on the primary user and
+  his/her spouse, the same set of fields could be used. 
+
+### GUI specification ###
+
+Whereas the data model describes the structural and logical
+well-formedness of the required data, the GUI model specifies how such
+a data model is rendered on the screen so that the user can actually
+fill in the data. It includes notation for specifying the following: 
+
+- mapping of input fields to _widgets_. For instance a boolean field
+  could be mapped to two radio buttons or a single checkbox. Option
+  types can be mapped to radio buttons (exclusive), selection list or
+  drop-down boxes. Range types (e.g. 0..100) can be mapped to sliders
+  etc. 
+- _layouting_ of the widgets. This includes GUI layout constructs, like
+  (nested) sections, tables, tabbed panes, etc.
+  
+GUI specifications can be checked against a data model to ensure that
+a data model can be properly represented.  Note that the GUI
+specification ideally should not specifiy any control flow but be
+purely declarative. How the GUI will behave when rendered is solely
+determined by the conditional flow in the data model.
+  
+### Mockup data model ###
+
+
+     form Box1HouseOwning {
+       hasSoldHouse: boolean
+       hasBoughtHouse: boolean
+       hasMaintLoan: boolean
+       if (hasSoldHouse) {
+         sellingPrice: money
+         privateDebt: money
+         valueResidue: money(sellingPrice - privateDebt)
+       }
+       if (hasBoughtHouse) buyingPrice:money
+       if (hasMaintLoan) maintCost:money
+       soleOwner: boolean
+       houses: repeat {
+         zipcodeStreetNr:text 
+         from:daymonth
+         to:daymonth
+         wozValue:money
+         if (!soleOwner) ownershipFrac: fraction 
+           else ownershipFrac: 1
+         forfait: money(ownershipIncome(wozValue, ownershipFrac))
+       }
+       specialForfait: money(specifyForfaitSpecial)
+       taxableBenefits: money
+       tempRentIncome: money
+       totalIncome: money(sum(h.forfait | h : houses) + forfaitSpecial 
+                             + taxableBenefits + tempRentIncome)
+       deductions: money(modal(specDeductions))
+       periodicalPayments: money
+       totalDeductions: money(deductions + periodicalPayments)
+       balanceIncomeDeductions: money(totalIncome - totalDeductions)
+       hasExemption: boolean
+       if (hasExemption) exemption: money
+     }
+
+    func ownershipIncome(woz, frac) {
+      frac * cond {
+        woz <= 12,500: 0.0
+        woz > 12,500, woz <= 25,000: 0.0020 * woz
+        woz > 25,000, woz <= 50,000: 0.0030 * woz
+        woz > 50,000, woz <= 75,000: 0.0040 * woz
+        woz > 75,000, woz <= 1,010,000: 0.0055 * woz
+        woz > 1,010,000: 5,555 + 0.0080 * (woz - 1,010,000)
+       }
+     }
+     
+
+
+### Mockup GUI specification ###
+
+
+     subsection "Owned house <name>"
+     subsubsection "Main house buying selling or reconstruction"
+     
+     table (l,l) {
+       row { "Did you sell a house in 2010?" radio(hasSoldHouse) }
+       row { "Did you buy a house in 2010?" radio(hasBoughtHouse) }
+       row { "Did enter a loan for maintenance or reconstruction?" radio(hasMaintLoan) }
+       row { "Price the house was sold for without selling costs" money(sellingPrice) }
+       row { "Private debt for the sold house" money(privateDebt) }
+       row { "Value residue" money(valueResidue) }
+       row { "Buying price of the house including buying costs" money(buyingPrice) }
+       row { "Maintenance/reconstruction cost" money(maintCost) }
+     }  
+     
+     subsubsection "Income and deduction owned house" 
+     
+     table (l,l,l,l,l,l) {
+       row { cs(5) "Were you the sole owner of the house" radio(soleOwner) }
+       row { "Zipcode and streetnr." cs(2) "Period"  "WOZ value" 
+              "% ownership" "Ownership forfait" }
+	      
+       row { edit(zipcodeStreetNr)   dayMonth(from) dayMonth(to)  money(wozValue)  
+              percentage(ownershipFrac)     money(forfait) }
+       row { cs(4) "Forfait in special situation"                                  
+              modal(specifyForfaitSpecial)  money(specifalForfait) }
+       row { cs(5) "Taxable part of benefits from capital insurance or savings account on the house"
+              money(taxableBenefits:money) }
+       row { cs(5) "Income from temporary renting of the place"                                                  
+              money(tempRentIncome) }
+       row { cs(5) "Total income based on house ownership"                                                       
+              money(totalIncome) }
+       row { cs(4) "Deductible interest and fincancing costs"                      
+             modal(specDeductions)   money(deductions) }
+       row { cs(4) "Periodical payments for groundrent..."                         
+             money(periodicalPayments)     _ }
+       row { cs(5) "Total deductions house ownership"                                                            
+             money(totalDeductions) }
+       row { cs(4) "Balance income and deductions" "Taxable" money(balanceIncomeDeductions) }
+       row { cs(5) "Were you exempted, e.g., by using money from a capital insurance?"
+            radio(hasExemption) }
+       row { cs(5) "The used exemption"
+             money(exemption) }
+     }
+
+## Mockup of GUI (three steps) ##
+
+__Step 1__
+
+![Step 1](step1.png)
+
+__Step 2__
+
+![Step 2](step2.png)
+
+__Step 3__
+
+![Step 3](step3.png)
+
+
