@@ -20,13 +20,13 @@ while line do
     count += 1
     cur.name = $1
     line = lines.shift
-    while line !~ /^Identificatie/
+    while line !~ /^[Ii]dentificatie/
       cur.name << line
       line = lines.shift
     end
     next
   end
-  if cur && line =~ /^Identificatie (.*)$/
+  if cur && line =~ /^[Ii]dentificatie (.*)$/
     cur.id = $1
     line = lines.shift
     next
