@@ -111,10 +111,14 @@ def to_dsl(groups)
       puts "\t\tname \"#{d.name}\""
       print "\t\tdescription "
       print_long(d.description)
-      cs = d.conditions.split(/\[[0-9]+\]/)
+      cs = d.conditions.split(/(\[[0-9.]+\])/)
       cs = cs[1..-1] # get strange first thing out of the way
-      cs.each do |c|
-        print "\t\tcond "
+      i = 0
+      while i < cs.length - 1 do
+        id = cs[i].sub(/\./, '/')
+        c = cs[i+1]
+        i += 2
+        print "\t\tcond #{id} "
         print_long(c)
         print "\n"
       end
