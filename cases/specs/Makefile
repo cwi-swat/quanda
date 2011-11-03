@@ -6,7 +6,7 @@ PDFBOX = pdfbox-app-1.6.0.jar
 	java -jar ${PDFBOX} ExtractText -encoding UTF-8 $^
 
 %.dsl: %.txt
-	ruby parse.rb to_dsl $^ | iconv -c -f UTF-8 -t US-ASCII > $@
+	(ruby parse.rb to_dsl $^ | iconv -c -f UTF-8 -t US-ASCII > $@) || true
 
 %.html: %.txt
 	ruby parse.rb to_html $^ > $@

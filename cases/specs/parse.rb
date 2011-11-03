@@ -80,7 +80,7 @@ end
 
 
 def escape(l)
-  l.gsub(/"/, '\\"')
+  l.gsub(/"/, '\\"').gsub(/Pagina [0-9]+ van [0-9]+/, '')
 end
 
 def print_long(s)
@@ -89,7 +89,7 @@ def print_long(s)
     return
   end
   print "\""
-  print s.split(/\n/).map { |l| escape(l) }.join("\n\t\t\t")
+  print s.split(/\n/).map { |l| escape(l).strip }.join("\n\t\t\t")
   puts "\""
 end
 
@@ -111,6 +111,13 @@ def to_dsl(groups)
       puts "\t\tname \"#{d.name}\""
       print "\t\tdescription "
       print_long(d.description)
+      cs = d.conditions.split(/\[[0-9]+\]/)
+      cs = cs[1..-1] # get strange first thing out of the way
+      cs.each do |c|
+        print "\t\tcond "
+        print_long(c)
+        print "\n"
+      end
       print "\t\texplanation "
       print_long(d.explanation)    
       print "\t}\n\n"
