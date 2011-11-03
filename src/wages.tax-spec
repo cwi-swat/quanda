@@ -1,0 +1,3175 @@
+group "Bericht" {
+	datum not_applicable_1: N(4) {
+		name "Belastingjaar"
+		description "Het jaar waarvoor aangifte wordt gedaan."
+		cond [0301] "Verplicht"
+
+		explanation "Dit gegeven is onderkend om een ontvangen Aangifte Loonheffingenop juiste wijze te kunnen interpreteren en verwerken. Aangiften
+			betreffen het belastingjaar 2011. Dit gegeven wordt niet expliciet
+			uitgevraagd in het bericht maar maakt onderdeel uit van de
+			namespace van de schemadefinitie (XSD)."
+	}
+
+	datum not_applicable_2: N(1) {
+		name "Berichtversie"
+		description "De versie van de berichtspecificatie waarvan gebruik gemaakt is bij hetsamenstellen van de aangifte."
+		cond [0299] "Verplicht"
+
+		explanation "Dit gegeven is onderkend om een ontvangen aangifte Loonheffingen opjuiste wijze te kunnen interpreteren en verwerken. Aangiften betreffen
+			berichtversie 1.
+			Dit gegeven wordt niet expliciet uitgevraagd maar maakt onderdeel uit
+			van de versie van de schemadefinitie (XSD)."
+	}
+
+	datum IdBer: X(32) {
+		name "Bericht kenmerk aanleveraar"
+		description "Unieke door de inzender aan het bericht toegekende code teridentificatie van het bericht."
+		cond [0302] "Verplicht"
+
+		explanation "Het verdient aanbeveling om het loonheffingennummer van deadministratieve eenheid onderdeel te laten zijn van het kenmerk. Dit
+			kenmerk kan de Belastingdienst gebruiken bij de terugkoppeling over
+			fouten in de aangifte."
+	}
+
+	datum DatTdAanm: Datumtijd {
+		name "Datum en tijdstip aanmaak"
+		description "De dag en het tijdstip waarop het bericht is aangemaakt."
+		cond [0303] "Verplicht"
+
+		cond [1117] "De datum en tijdstip aanmaak mag niet liggen na de
+			datum en tijdstip van ontvangst van het bericht door de
+			Belastingdienst. Bij controle op deze conditie hanteert de
+			Belastingdienst een marge van 24 uren."
+
+		explanation "Van belang om de berichten per loonheffingennummer in juistevolgorde ten opzichte van elkaar te kunnen interpreteren. Het meest
+			recent aangemaakt bericht is de meest recente weergave van de
+			administratie van de werkgever.
+			De gehanteerde marge in conditie [1117] is bedoeld om de
+			verschillende tijdzones te overbruggen. Dit betekent, dat als
+			bijvoorbeeld in Pakistan een aangifte wordt aangemaakt en direct wordt
+			ingezonden, conditie [1117] niet wordt geschonden. De Belastingdienst
+			gaat met betrekking tot de marge van 24 uur uit van datum en tijdstip
+			van ontvangst van het bericht door de Belastingdienst (Midden-
+			Europese Tijd)."
+	}
+
+	datum ContPers: X(35) {
+		name "Contactpersoon aanleveraar"
+		description "De naam van de persoon die namens de aanleveraar eventuele fiscaal-technische vragen en vragen over de inhoud van het bericht kan
+			beantwoorden."
+		cond [0304] "Verplicht"
+
+		explanation "Aan A&A kantoren en andere intermediairs die voor verschillendeinhoudingsplichtigen aangifte doen, wordt gevraagd dit gegeven
+			conform het volgende masker te vullen: \"KC-
+			XXXXXXXXXXXX...............\". De vaste waarde \"KC-\" fungeert dan als
+			een indicator dat het veld gevuld is volgens deze invulinstructie. Op de
+			plek van de 12 X-en komt het loonheffingennummer van de aanleveraar
+			te staan. Op de 20 puntjes kan de naam van de contactpersoon worden
+			ingevuld. Indien deze invulinstructie (die overigens niet verplicht is)
+			wordt gevolgd, kan de Belastingdienst analyses uitvoeren betreffende
+			de kwaliteit van alle berichten die door een bepaalde aanleveraar zijn
+			ingestuurd."
+	}
+
+	datum TelNr: X(25) {
+		name "Telefoonnummer contactpersoon aanleveraar"
+		description "Het telefoonnummer van de contactpersoon van de aanleveraar."
+		cond [0305] "Verplicht"
+
+		explanation "Voor buitenlandse telefoonnummers moet in plaats van de tweevoorloopnullen een + opgegeven worden. Verder mag de rubriek
+			alleen cijfers bevatten."
+	}
+
+	datum RelNr: X(8) {
+		name "Relatienummer"
+		description "Het (relatie)nummer waaronder de softwareontwikkelaar als abonneebekend is bij de Belastingdienst."
+		cond [1015] "Verplicht"
+
+		explanation "Het relatienummer wordt door OSWO verstrekt en heeft het patroonSWOxxxxx, waarbij x een numeriek teken is."
+	}
+
+	datum GebrSwPakket: X(27) {
+		name "Gebruikt softwarepakket"
+		description "Beschrijving van het softwarepakket dat de aanleveraar van het berichtheeft gebruikt voor de vervaardiging van het bericht."
+		cond [1016] "Verplicht"
+
+		explanation "Deze rubriek mag door de softwareontwikkelaar worden gebruikt om denaam en versienummer van het pakket aan te geven."
+	}
+
+}
+
+group "Administratieve eenheid" {
+	datum LhNr: X(12) {
+		name "Loonheffingennummer"
+		description "Een door de Belastingdienst toegekende identificatie waaronder deadministratieve eenheid bekend is bij de UWV/Belastingdienst."
+		cond [0310] "Verplicht."
+
+		cond [0311] "Het loonheffingennummer bestaat uit het fiscaal nummer
+			gevolgd door de hoofdletter L en een subnummer. De waarden 01
+			tot en met 99 zijn toegestaan voor het subnummer.
+			"
+
+		cond [0312] "Het fiscaal nummer moet u met 9 cijfers (zonder punten)
+			aanleveren. Fiscale nummers die uit minder dan 9 cijfers bestaan
+			vult u aan met voorloopnullen. Het fiscaal nummer 1212126 levert
+			u aan als 001212126.
+			"
+
+		cond [0313] "Van de eerste drie cijfers moet er minimaal n niet een nul
+			zijn.
+			"
+
+		cond [0014/1] "Het fiscaal nummer moet aan de volgende elfproef voldoen:
+			1 beschouw de cijfers op de posities van het nummer van links
+			naar rechts als a0, a1, a2, a3, a4, a5, a6, a7 en a8
+			2 het nummer voldoet aan de elfproef indien a8 gelijk is aan de
+			restwaarde van de volgende berekening:
+			(9*a0 + 8*a1 + 7*a2 + 6*a3 + 5*a4 + 4*a5 + 3*a6 + 2*a7) / 11
+			"
+
+		cond [0014/2] "Het fiscaal nummer moet bestaan en in gebruik zijn.
+			"
+
+		cond [0074] "Het Loonheffingennummer moet bestaan en in gebruik zijn."
+
+		explanation "Voor softwarepakketten is het niet mogelijk om softwarematig tecontroleren of het loonheffingennummer bestaat en in gebruik is."
+	}
+
+	datum NmIP: X(200) {
+		name "Naam inhoudingsplichtige"
+		description "De naam van de inhoudingsplichtige zoals die door de Belastingdienstaan hem is medegedeeld in de aangiftebrief waarin de aangifte- en
+			betaaldata bekend zijn gemaakt."
+		cond [0309] "Verplicht."
+
+		explanation ""
+	}
+
+}
+
+group "Tijdvak" {
+	datum DatAanvTv: Datum {
+		name "Datum aanvang tijdvak"
+		description "De datum van de eerste dag van het aangiftetijdvak waarop hetcollectieve deel van de aangifte (werkgeverdeel) betrekking heeft."
+		cond [0314] "Verplicht"
+
+		cond [0019/1] "Waardebereik: zie onderstaande tabel Toegestane
+			combinaties van tijdvakdatums"
+
+		explanation "Voor het eerste tijdvak in het jaar is dit altijd 1 januari. Ook voorvierwekenaangevers; zie ook: datum einde tijdvak.
+			Let op!
+			De inhoudingsplichtige moet het aangiftetijdvak gebruiken zoals deze is
+			vermeld in de aangiftebrief. Hij kan in de loop van het kalenderjaar niet
+			wijzigen van aangifte frequentie. Dit kan alleen op verzoek wijzigen met
+			ingang van het daarop volgende kalenderjaar."
+	}
+
+	datum DatEindTv: Datum {
+		name "Datum einde tijdvak"
+		description "De datum van de laatste dag van het aangiftetijdvak waarop hetcollectieve deel van de aangifte betrekking heeft."
+		cond [0316] "Verplicht"
+
+		cond [0019/2] "Waardebereik: zie onderstaande tabel Toegestane
+			combinaties van tijdvakdatums"
+
+		explanation "Deze datum is afleidbaar van de datum aanvang tijdvak van het tijdvakin relatie tot het door de administratieve eenheid gehanteerde
+			aangiftetijdvak.
+			Voor het eerste vierwekentijdvak in het jaar moet voor de vaststelling
+			van de einddatum uitgegaan worden van een datum aanvang tijdvak
+			volgens de formule: de maandag voorafgaande aan de eerste
+			donderdag van het kalenderjaar; de einddatum is dan gelijk aan die
+			aanvangsdatum + 27.
+			Voor het laatste tijdvak in het jaar geldt dat de datum einde tijdvak altijd
+			gelijk is aan 31 december van dat jaar."
+	}
+
+}
+
+group "Collectieve aangifte" {
+	datum TotLnLbPh: Bedrag(10) {
+		name "Totaal loon LB/PH"
+		description "Het bedrag dat in totaal in het aangiftetijdvak door de administratieveeenheid is vastgesteld aan loon dat onderworpen is aan
+			loonbelasting/premie volksverzekeringen."
+		cond [0319] "Verplicht"
+
+		cond [0001] "In een volledige aangifte moet het Totaal loon LB/PH gelijk
+			zijn aan de afgeronde som van het loon LB/PH van alle opgegeven
+			werknemers."
+
+		explanation ""
+	}
+
+	datum TotLnSV: Bedrag(10) {
+		name "Totaal loon SV"
+		description "Het bedrag dat in totaal in het aangiftetijdvak door de administratieveeenheid is vastgesteld aan loon voor de werknemersverzekeringen."
+		cond [0320] "Verplicht"
+
+		cond [0002] "In een volledige aangifte moet het Totaal loon SV gelijk zijn
+			aan de afgeronde som van het loon SV van alle opgegeven
+			werknemers.
+			"
+
+		cond [1002] "Als vr de Datum aanvang tijdvak van het betreffende
+			tijdvak wordt aangegeven, mag geen Totaal loon SV van
+			toepassing zijn; er dient hier dan 0 aangegeven te worden."
+
+		explanation "Dit is het loon zonder rekening te houden met maximumpremieloon enfranchise.
+			Let op!
+			Zie voor conditie [1002] ook paragraaf 2.1 het derde bolletje van de
+			tekst onder het kopje Acceptatie van de aangifte."
+	}
+
+	datum PrLnWAOAof: Bedrag(10) {
+		name "Totaal premieloon WAO/IVA/WGA"
+		description "Het totaalbedrag waarover in het aangiftetijdvak door deadministratieve eenheid de premie voor WAO/IVA/WGA is berekend."
+		cond [0321] "Verplicht"
+
+		cond [0025] "Als dit bedrag groter is dan 0, dan moet het gelijk zijn aan of
+			kleiner zijn dan het Totaal premieloon unif. premie WAO/gediff.
+			premie WGA.
+			"
+
+		cond [0026] "Als Totaal basispremie WAO/IVA/WGA ongelijk is aan 0, dan
+			moet ook Totaal premieloon WAO/IVA/WGA ongelijk zijn aan 0.
+			"
+
+		cond [1017] "In een volledige aangifte moet het Totaal premieloon
+			WAO/IVA/WGA  gelijk zijn aan de (afgeronde) som van het
+			Premieloon WAO/IVA/WGA van alle opgegeven werknemers."
+
+		explanation ""
+	}
+
+	datum PrLnWaoPma: Bedrag(10) {
+		name "Totaal premieloon WAO/IVA/WGA waarop de PMA is toegepast"
+		description "Het totaalbedrag aan premieloon WAO/IVA/WGA waarvoor in hetaangiftetijdvak door de administratieve eenheid premievrijstelling
+			marginale arbeid is toegepast."
+		cond [1018] "Verplicht"
+
+		cond [1020] "In een volledige aangifte moet het Totaal Premieloon
+			WAO/IVA/WGA waarop de PMA is toegepast gelijk zijn aan de
+			(afgeronde) som van het Premieloon WAO/IVA/WGA van die
+			werknemers voor wie in het aangiftetijdvak tenminste n keer de
+			rubriek Indicatie premievrijstelling marginale arbeid met J is
+			ingevuld."
+
+		explanation ""
+	}
+
+	datum PrLnWAOAok: Bedrag(10) {
+		name "Totaal premieloon unif. premie WAO / gediff. premie WGA"
+		description "Het totaalbedrag waarover in het aangiftetijdvak door deadministratieve eenheid de premie voor WGA(Whk) is berekend."
+		cond [0322] "Verplicht"
+
+		cond [1022] "Dit bedrag moet groter zijn dan of gelijk zijn aan de som van
+			het Totaal premieloon Ufo en het Totaal premieloon premie
+			sectorfonds.
+			"
+
+		cond [1052] "In een volledige aangifte zonder werknemers met Indicatie
+			wachtgeld oude regeling = J geldt dat Totaal premieloon unif.
+			premie WAO / gediff. premie WGA gelijk moet zijn aan de som van
+			het Totaal premieloon Ufo en het Totaal premieloon premie
+			sectorfonds.
+			"
+
+		cond [1023] "Als Totaal uniforme premie WAO / gedifferentieerde premie
+			WGA ongelijk is aan 0, dan moet ook Totaal premieloon unif.
+			premie WAO / gediff. premie WGA ongelijk zijn aan 0.
+			"
+
+		cond [1024] "In een volledige aangifte moet het Totaal premieloon unif.
+			premie WAO/gediff. premie WGA gelijk zijn aan de (afgeronde)
+			som van het Premieloon unif. premie WAO / gediff. premie WGA
+			van alle opgegeven werknemers."
+
+		explanation "Let op!Bij de Tweede Kamer is het wetsvoorstel Harmonisatie (Wet
+			harmonisatie en vereenvoudiging socialezekerheidswetgeving)
+			ingediend. De parlementaire behandeling van dit wetsvoorstel is echter
+			nog niet afgerond. In dit wetsvoorstel is onder andere opgenomen dat
+			de Arbeidsongeschiktheidskas (Aok) wordt opgeheven. De beoogde
+			invoeringsdatum van deze maatregel is 1 januari 2011. Het opheffen
+			van de Aok betekent, dat ook de uniforme premie WAO met ingang van
+			de beoogde ingangsdatum van 1 januari 2011 komt te vervallen. Bij de
+			samenstelling van dit document is er van uitgegaan dat de
+			invoeringsdatum inderdaad 1 januari 2011 zal zijn, maar was het
+			technisch niet meer mogelijk om met ingang van 2011 deze
+			samengestelde rubriek te laten vervallen en te vervangen door een
+			nieuwe enkelvoudige rubriek welke uitsluitend betrekking heeft op de
+			gedifferentieerde premie WGA. Om deze reden blijft de huidige
+			samengestelde rubriek in 2011 gehandhaafd, maar met betrekking tot
+			aangiftetijdvakken vanaf 2011 moet in deze rubriek uitsluitend het
+			totaal premieloon voor de gedifferentieerde premie WGA worden
+			opgenomen.
+			Het Totaal premieloon unif. premie WAO / gediff. premie WGA is in
+			beginsel gelijk aan de som van het Totaal premieloon Ufo en het Totaal
+			premieloon premie sectorfonds. Voor wachtgelders die onder de oude
+			regeling van vr 2001 vallen, is geen Ufo-premie maar zijn wel de Aof-
+			en Whk-premies verschuldigd. Omdat voor deze wachtgelders ook
+			geen sprake is van Premieloon UFO geldt de gelijkheid van de
+			premielonen niet. Wel geldt dat het Totaal premieloon unif. premie
+			WAO/gediff. premie WGA in dat geval groter moet zijn dan de som van
+			het Totaal premieloon Ufo en het Totaal premieloon premie
+			sectorfonds. Zie ook conditie 1022 en 1052."
+	}
+
+	datum PrLnAWF: Bedrag(10) {
+		name "Totaal premieloon WW Awf"
+		description "Het totaalbedrag waarover in het aangiftetijdvak door deadministratieve eenheid de premie voor Awf is berekend."
+		cond [0323] "Verplicht"
+
+		cond [0029] "Dit bedrag moet lager zijn dan of gelijk zijn aan de som van
+			alle Totaal premieloon premie sectorfonds van alle
+			risicopremiegroepen.
+			"
+
+		cond [0030] "Als Totaalpremie WW Awf ongelijk is aan 0, dan moet ook
+			Totaal premieloon WW Awf ongelijk zijn aan 0.
+			"
+
+		cond [1025] "In een volledige aangifte moet het Totaal premieloon WW
+			Awf gelijk zijn aan de (afgeronde) som van het Premieloon WW Awf
+			van alle opgegeven werknemers."
+
+		explanation ""
+	}
+
+	datum PrLnUFO: Bedrag(10) {
+		name "Totaal premieloon Ufo"
+		description "Het totaalbedrag waarover in het aangiftetijdvak door deadministratieve eenheid de premie voor Ufo is berekend."
+		cond [0324] "Verplicht"
+
+		cond [0031] "Als Totaal premie Ufo ongelijk is aan 0, dan moet ook Totaal
+			premieloon Ufo ongelijk zijn aan 0.
+			"
+
+		cond [1026] "In een volledige aangifte moet het Totaal premieloon Ufo
+			gelijk zijn aan de (afgeronde) som van het Premieloon Ufo van alle
+			opgegeven werknemers."
+
+		explanation ""
+	}
+
+	datum TotVergZvw: Bedrag(10) {
+		name "Totaalbedrag vergoeding Zvw"
+		description "Het bedrag dat in totaal in het aangiftetijdvak door de administratieveeenheid is vergoed aan werknemers in verband met ingehouden
+			bijdragen voor de Zvw."
+		cond [0325] "Verplicht"
+
+		cond [0009] "In een volledige aangifte moet de Totaalbedrag vergoeding
+			Zvw gelijk zijn aan de (afgeronde) som van het Bedrag vergoeding
+			Zvw door inhoudingsplichtige van alle opgegeven werknemers."
+
+		explanation "Voor gemoedsbezwaarde werknemers voor de Zvw dient hieronder ookde vergoeding voor de bijdragevervangende belasting vermeld te
+			worden."
+	}
+
+	datum IngLbPh: Bedrag(10) {
+		name "Ingehouden loonbelasting/premie volksverzekeringen"
+		description "Het bedrag dat in totaal in het aangiftetijdvak door de administratieveeenheid aan loonbelasting en premie volksverzekeringen is
+			ingehouden."
+		cond [0326] "Verplicht"
+
+		cond [0003] "In een volledige aangifte moet de Ingehouden
+			loonbelasting/premie volksverzekeringen gelijk zijn aan de
+			(afgeronde) som van de Ingehouden loonbelasting/premie
+			volksverzekeringen van alle opgegeven werknemers."
+
+		explanation ""
+	}
+
+	datum EHPubUitk: Bedrag(10) {
+		name "Eindheffing publiekrechtelijke uitkeringen en tijdelijke knelpuntenvan ernstige aard
+"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekering afdraagt in
+			verband met publiekrechtelijke uitkeringen en tijdelijke knelpunten van
+			ernstige aard."
+		cond [0327] "Optioneel"
+
+		explanation ""
+	}
+
+	datum EHLnBestKar: Bedrag(10) {
+		name "Eindheffing loon met een bestemmingskarakter"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt in
+			verband met bepaalde bij ministerile regeling aangewezen soorten
+			van aan de werknemer verstrekte vergoedingen met een
+			bestemmingskarakter."
+		cond [0328] "Optioneel"
+
+		explanation "Let op!Deze eindheffing kan met uitzondering van het eerste aangiftetijdvak in
+			een kalenderjaar niet samenlopen met de Eindheffing overschrijding
+			forfaitaire werkkostenregeling. Zie ook de toelichting in de rubriek
+			Eindheffing overschrijding forfaitaire werkkostenregeling."
+	}
+
+	datum EHSpLn: Bedrag(10) {
+		name "Eindheffing spaarloon"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt in
+			verband met (bruto) loon dat is uitbetaald op geblokkeerde
+			spaarrekeningen van haar werknemers (en waarover de werknemer
+			geen loonbelasting/premie volksverzekeringen en premies
+			werknemersverzekeringen is verschuldigd)."
+		cond [0329] "Optioneel"
+
+		explanation ""
+	}
+
+	datum EHLnNat: Bedrag(10) {
+		name "Eindheffing moeilijk te individualiseren loon"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt in
+			verband met moeilijk te individualiseren loon."
+		cond [0330] "Optioneel"
+
+		explanation "Let op!Deze eindheffing kan met uitzondering van het eerste aangiftetijdvak in
+			een kalenderjaar niet samenlopen met de Eindheffing overschrijding
+			forfaitaire werkkostenregeling. Zie ook de toelichting in de rubriek
+			Eindheffing overschrijding forfaitaire werkkostenregeling.
+			Met moeilijk te individualiseren loon wordt bezwaarlijk te
+			individualiseren loon bedoeld."
+	}
+
+	datum EHFeest: Bedrag(10) {
+		name "Eindheffing geschenken in natura"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt in
+			verband met beloningen in natura aan de werknemers."
+		cond [0331] "Optioneel"
+
+		explanation "Het gaat hierbij om de eindheffing over geschenken in natura aan dewerknemers voor zover de waarde van de geschenken in het
+			economische verkeer niet meer is dan  70 per kalenderjaar.
+			Let op!
+			Deze eindheffing kan met uitzondering van het eerste aangiftetijdvak in
+			een kalenderjaar niet samenlopen met de Eindheffing overschrijding
+			forfaitaire werkkostenregeling. Zie ook de toelichting in de rubriek
+			Eindheffing overschrijding forfaitaire werkkostenregeling."
+	}
+
+	datum EHBmVerg: Bedrag(10) {
+		name "Eindheffing bovenmatige vergoedingen en verstrekkingen"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt in
+			verband met het uitkeren van bovenmatige vergoedingen of
+			verstrekkingen aan werknemers."
+		cond [0332] "Optioneel"
+
+		explanation "Let op!Deze eindheffing kan met uitzondering van het eerste aangiftetijdvak in
+			een kalenderjaar niet samenlopen met de Eindheffing overschrijding
+			forfaitaire werkkostenregeling. Zie ook de toelichting in de rubriek
+			Eindheffing overschrijding forfaitaire werkkostenregeling."
+	}
+
+	datum EHGebrAuto: Bedrag(10) {
+		name "Eindheffing doorlopend afwisselend gebruik bestelauto"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt over
+			het doorlopend afwisselend gebruik van een bestelauto, bij moeilijk
+			vaststellen van privgebruik."
+		cond [0334] "Optioneel"
+
+		explanation ""
+	}
+
+	datum EHVUT: Bedrag(10) {
+		name "Eindheffing VUT-regeling"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt over
+			de werkgeversbijdragen in een VUT-regeling."
+		cond [0333] "Optioneel"
+
+		explanation ""
+	}
+
+	datum EhOvsFrfWrkkstrg: Bedrag(10) {
+		name "Eindheffing overschrijding forfaitaire werkkostenregeling"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak alseindheffing aan loonbelasting/premie volksverzekeringen afdraagt in
+			verband met overschrijding van de forfaitaire werkkostenregeling."
+		cond [1115] "Optioneel"
+
+		explanation "Met ingang van 2011 is de forfaitaire werkkostenregeling ingevoerd. Deinhoudingsplichtige kan er echter bij aanvang van het kalenderjaar, dan
+			wel bij aanvang van de inhoudingsplicht, voor kiezen om deze regeling
+			voor alle werknemers buiten toepassing te laten. Als de
+			inhoudingsplichtige daarvoor kiest geldt de in 2010 geldende regeling
+			voor vrije vergoedingen en verstrekkingen. De inhoudingsplichtige kan
+			deze keuze - gedurende de overgangsperiode - ieder jaar opnieuw
+			maken en is derhalve niet gehouden de voor het ene jaar gemaakte
+			keuze ook voor het volgende jaar te laten gelden. De overgangsperiode
+			geldt tot en met 2013. Met ingang van 2014 kan alleen de forfaitaire
+			werkkostenregeling worden toegepast. Het niet in hetzelfde
+			kalenderjaar gelijktijdig mogen toepassen van de forfaitaire
+			werkkostenregeling en de in 2010 geldende regeling voor vrije
+			vergoedingen en verstrekkingen, sluit de samenloop van de rubriek
+			Eindheffing overschrijding forfaitaire werkkostenregeling uit met n
+			of meer van de rubrieken Eindheffing loon met een
+			bestemmingskarakter, Eindheffing moeilijk te individualiseren loon,
+			Eindheffing geschenken in natura of Eindheffing bovenmatige
+			vergoedingen en verstrekkingen.
+			Een uitzondering hierop is als de inhoudingsplichtige met betrekking tot
+			deEindheffing overschrijding forfaitaire werkkostenregeling in het
+			eerste aangiftetijdvak van een jaar de herrekening van het daaraan
+			voorafgaande jaar doet en tevens weer gebruik gaat maken van het in
+			2010 geldende systeem van vergoedingen en verstrekkingen. In dat
+			aangiftetijdvak kan er wel samenloop plaatsvinden."
+	}
+
+	datum AVZeev: Bedrag(10) {
+		name "Afdrachtvermindering zeevaart"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak inmindering brengt op de door haar af te dragen loonbelasting/premie
+			volksverzekeringen in verband met door haar aan zeevarenden, die
+			werken op een schip dat onder Nederlandse vlag vaart en voornamelijk
+			op zee wordt gexploiteerd, betaald loon."
+		cond [0335] "Optioneel"
+
+		explanation "Het bedrag van de afdrachtvermindering wordt bepaald op eenpercentage van het loon uit tegenwoordige dienstbetrekking van de
+			zeevarende in het desbetreffende loontijdvak. Er gelden afzonderlijke
+			percentages voor:
+			 zeevarenden die wonen in Nederland of in een van de landen van
+			de Europese Unie of de Europese Economische Ruimte (40%);
+			 zeevarenden die wonen in een land buiten de Europese Unie of
+			Europese Economische Ruimte en die aan de loonbelasting zijn
+			onderworpen of premieplichtig zijn voor de volksverzekeringen
+			(10%);
+			Let op!
+			Het gaat hier om het bedrag dat de inhoudingsplichtige in deze aangifte
+			verrekent, niet het bedrag waar hij recht op heeft."
+	}
+
+	datum AVOnd: Bedrag(10) {
+		name "Afdrachtvermindering onderwijs"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak inmindering brengt op de door haar af te dragen loonbelasting/premie
+			volksverzekeringen in verband met werknemers of leerlingen die de
+			volgende vormen van onderwijs volgen:
+			 beroepspraktijkvorming van de beroepsbegeleidende leerweg;
+			 assistent of onderzoeker in opleiding;
+			 aanstelling bij privaatrechtelijke rechtspersoon of TNO;
+			 arbeid in het kader van initile opleiding in het HBO;
+			 voormalig werkloze met scholing tot startkwalificatieniveau;
+			 leer-werktraject derde of vierde jaar basisberoepsgerichte leerweg
+			VMBO;
+			 stage beroepsopleiding in beroepsopleidende leerweg mbo-niveau
+			1 of 2;
+			 werknemer die een EVC-procedure volgt."
+		cond [0336] "Optioneel"
+
+		explanation "Let op!Alleen in 2010 gold de afdrachtvermindering onderwijs voor de vorm
+			van onderwijs waarbij de werknemer in 2010 startte met een opleiding
+			die relevant is voor zijn huidige of toekomstige functie bij de werkgever
+			en waarmee hij een hoger opleidingsniveau behaalt dan waar hij bij het
+			begin van de opleiding over beschikt (bijvoorbeeld bij een mbo-niveau
+			een opleiding volgen tot hbo-niveau). Deze afdrachtvermindering
+			vervalt met ingang van 2011. Als deze opleiding in het laatste
+			aangiftetijdvak van 2010 is gestart (stel december 2010), dan mag deze
+			afdrachtvermindering in aanmerking worden genomen in het
+			aangiftetijdvak over december 2010 of in het eerste aangiftetijdvak van
+			2011 (stel januari 2011). Dus bij de aangifte over het eerste tijdvak van
+			2011 moet het nog wel mogelijk blijven deze afdrachtvermindering in de
+			aangifte te verwerken. Als de opleiding voor deze vorm van onderwijs
+			op of na 1 januari 2011 start, kan hiervoor in geen enkel aangiftetijdvak
+			in 2011 de afdrachtvermindering onderwijs in aanmerking worden
+			genomen.
+			Let op!
+			Het gaat in deze rubriek om het bedrag dat de inhoudingsplichtige in
+			deze aangifte verrekent, niet het bedrag waar hij recht op heeft.
+			Toelichtende tekst met betrekking tot de categorie voormalig werkloze
+			met scholing tot startkwalificatieniveau:
+			Onder een werkloze wordt hier mede verstaan: een voormalig werkloze
+			die uitsluitend als gevolg van deelname aan een rentegratietraject van
+			een gemeente in het kader van de Wet werk en bijstand of van UWV in
+			het kader van de Werkloosheidswet niet langer werkloos is."
+	}
+
+	datum VrlAVSO: Bedrag(10) {
+		name "Afdrachtvermindering speur- en ontwikkelingswerk"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak inmindering brengt op de door haar af te dragen loonbelasting/premie
+			volksverzekeringen, in het kader van een aan haar afgegeven S&O-
+			verklaring/correctie S&O-verklaring. Het in mindering gebrachte bedrag
+			dient, binnen een marge, tijdsevenredig te zijn met het in de S&O-
+			verklaring/correctie S&O-verklaring genoemde bedrag."
+		cond [0337] "Optioneel"
+
+		explanation "In het geval dat er een correctie S&O verklaring is afgegeven, moetdeze correctie als negatieve afdrachtvermindering worden aangegeven
+			in de maand van dagtekening van de correctie S&O verklaring of in de
+			aangifte over het daaropvolgende tijdvak. De correctie komt hierdoor in
+			mindering op de verrekende afdrachtvermindering speur- en
+			ontwikkelingswerk.
+			Door een correctie S&O verklaring kan het voorkomen dat er een
+			negatief bedrag aan afdrachtvermindering moet worden aangegeven
+			(dus een bijtelling in plaats van een aftrekpost).
+			Let op!
+			Het gaat hier om het bedrag dat de inhoudingsplichtige in deze aangifte
+			verrekent, niet het bedrag waar hij recht op heeft."
+	}
+
+	datum PrWAOAof: Bedrag(10) {
+		name "Totaal basispremie WAO/IVA/WGA"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak aanBasispremie WAO/IVA/WGA, tezamen moet afdragen."
+		cond [0338] "Optioneel"
+
+		cond [0016] "In een volledige aangifte moet Totaal basispremie
+			WAO/IVA/WGA gelijk zijn aan de (afgeronde) som van de
+			Basispremie WAO/IVA/WGA van alle opgegeven werknemers."
+
+		explanation "Eventuele premiekortingen mogen niet op dit bedrag in minderingworden gebracht, maar moeten in n of meer van de rubrieken
+			Premiekorting worden opgegeven."
+	}
+
+	datum PrWAOAok: Bedrag(10) {
+		name "Totaal uniforme premie WAO / gedifferentieerde premie WGA"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak aangedifferentieerde premie WGA moet afdragen."
+		cond [0339] "Optioneel"
+
+		cond [0021] "In een volledige aangifte moet de Totaal uniforme premie
+			WAO / gedifferentieerde premie WGA gelijk zijn aan de (afgeronde)
+			som van de Uniforme premie WAO / gedifferentieerde premie WGA
+			van alle opgegeven werknemers."
+
+		explanation "Let op!Bij de Tweede Kamer is het wetsvoorstel Harmonisatie (Wet
+			harmonisatie en vereenvoudiging socialezekerheidswetgeving)
+			ingediend. De parlementaire behandeling van dit wetsvoorstel is echter
+			nog niet afgerond. In dit wetsvoorstel is onder andere opgenomen dat
+			de Arbeidsongeschiktheidskas (Aok) wordt opgeheven. De beoogde
+			invoeringsdatum van deze maatregel is 1 januari 2011. Het opheffen
+			van de Aok betekent, dat ook de uniforme premie WAO met ingang van
+			de beoogde ingangsdatum van 1 januari 2011 komt te vervallen. Bij de
+			samenstelling van dit document is er van uitgegaan dat de
+			invoeringsdatum inderdaad 1 januari 2011 zal zijn, maar was het
+			technisch niet meer mogelijk om met ingang van 2011 deze
+			samengestelde rubriek te laten vervallen en te vervangen door een
+			nieuwe enkelvoudige rubriek welke uitsluitend betrekking heeft op de
+			gedifferentieerde premie WGA. Om deze reden blijft de huidige
+			samengestelde rubriek in 2011 gehandhaafd, maar met betrekking tot
+			aangiftetijdvakken vanaf 2011 moet in deze rubriek uitsluitend het
+			totaal gedifferentieerde premie WGA worden opgenomen.
+			Eventuele premiekortingen mogen niet op dit bedrag in mindering
+			worden gebracht, maar moeten in n of meer van de rubrieken
+			Premiekorting worden opgegeven."
+	}
+
+	datum PrAWF: Bedrag(10) {
+		name "Totaal premie WW Awf"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak aanpremie moet afdragen in verband met wettelijke bijdragen aan het
+			fonds Awf (Algemeen werkloosheidsfonds), zowel werkgevers- als
+			werknemersdeel."
+		cond [0422] "Optioneel."
+
+		cond [0032] "Wanneer rubriek Premieloon WW Awf de waarde 0 heeft,
+			dan ook dit veld vullen met 0 of weglaten.
+			"
+
+		cond [0006] "In een volledige aangifte moet de Totaalpremie WW Awf
+			gelijk zijn aan de (afgeronde) som van de Premie WW Awf van alle
+			opgegeven werknemers.
+			"
+
+		cond [1059] "Totaalpremie WW Awf is verplicht als minstens n
+			exemplaar van de gegevensgroep Specificatie premie sectorfonds
+			is aangeleverd."
+
+		explanation "Eventuele premiekortingen mogen niet op dit bedrag in minderingworden gebracht, maar moeten in n of meer van de rubrieken
+			Premiekorting worden opgegeven."
+	}
+
+	datum PrUFO: Bedrag(10) {
+		name "Totaal premie Ufo"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak aanpremie moet afdragen in verband met wettelijke bijdragen aan het
+			fonds Ufo (Uitvoeringsfonds Overheid)."
+		cond [0340] "Optioneel"
+
+		cond [0008] "In een volledige aangifte moet de Totaalpremie Ufo gelijk zijn
+			aan de (afgeronde) som van de Premie Ufo van alle opgegeven
+			werknemers."
+
+		explanation "Eventuele premiekortingen mogen niet op dit bedrag in minderingworden gebracht, maar moeten in n of meer van de rubrieken
+			Premiekorting worden opgegeven."
+	}
+
+	datum IngBijdrZvw: Bedrag(10) {
+		name "Totaal ingehouden bijdragen Zvw"
+		description "Het bedrag dat de administratieve eenheid in het aangiftetijdvak aaningehouden bijdragen Zvw moet afdragen."
+		cond [0341] "Verplicht."
+
+		cond [0012] "In een volledige aangifte moet de Totaal ingehouden
+			bijdragen Zvw gelijk zijn aan de (afgeronde) som van de
+			Ingehouden bijdrage Zvw van alle opgegeven werknemers."
+
+		explanation "Bij de berekening van Zvw wordt uitgegaan van 260 dagen per jaar.Voor gemoedsbezwaarde werknemers voor de Zvw dient hieronder ook
+			de ingehouden bijdragevervangende belasting vermeld te worden."
+	}
+
+	datum PkAgh: Bedrag(10) {
+		name "Premiekorting arbeidsgehandicapten"
+		description "Het bedrag dat de administratieve eenheid voor bij hem werkzamepersonen met een arbeidshandicap mag korten op de verschuldigde
+			basispremie WAO/IVA/WGA, gedifferentieerde premie WGA en WW-
+			Awf (werkgevers- en werknemersdeel) of UFO."
+		cond [1005] "Optioneel"
+
+		explanation "In de loonopgave mogen de premiekortingen niet met de betreffendepremies worden verrekend; de korting komt tot uitdrukking in de rubriek
+			Totaal te betalen over tijdvak. Eenmalige verrekening achteraf per jaar
+			is niet mogelijk.
+			De inhoudingsplichtige vermeldt hier het totaal van de bedragen, dat
+			hij/zij in het aangiftetijdvak aan premiekorting arbeidsgehandicapten
+			mag toepassen.
+			Bij de premiekorting arbeidsgehandicapten moet de inhoudingsplichtige
+			de systematiek van voortschrijdend cumulatief rekenen (VCR)
+			toepassen (zie ook de toelichting in de rubriek Indicatie premiekorting
+			arbeidsgehandicapten).
+			Als de inhoudingsplichtige in een aangiftetijdvak een hoger bedrag aan
+			premiekorting(en) mag toepassen dan het bedrag aan de verschuldigde
+			premies werknemersverzekeringen toelaat, is het mogelijk het niet
+			verrekende deel van die premiekorting(en) mee te nemen in een later
+			aangiftetijdvak of te verrekenen bij een andere administratieve eenheid
+			van dezelfde inhoudingsplichtige. De af te dragen premie mag niet
+			negatief worden.
+			Bij verrekening moet de inhoudingsplichtige eerst berekenen of er in
+			dat aangiftetijdvak ruimte overblijft om nog iets te verrekenen.
+			Verrekening mag alleen plaatsvinden in hetzelfde kalenderjaar."
+	}
+
+	datum PkNwArbvOudWn: Bedrag(10) {
+		name "Premiekorting nieuwe arbeidsverhouding oudere werknemers"
+		description "Het bedrag dat de administratieve eenheid voor door hem in dienstgenomen personen uit een uitkeringssituatie van 50 jaar of ouder mag
+			korten op de verschuldigde basispremie WAO/IVA/WGA,
+			gedifferentieerde premie WGA en WW-Awf (werkgevers- en
+			werknemersdeel) of UFO."
+		cond [1006] "Optioneel"
+
+		explanation "In de loonopgave mogen de premiekortingen niet met de betreffendepremies worden verrekend; de korting komt tot uitdrukking in de rubriek
+			Totaal te betalen over tijdvak. Eenmalige verrekening achteraf per jaar
+			is niet mogelijk.
+			De inhoudingsplichtige vermeldt hier het totaal van de bedragen, dat
+			hij/zij in het aangiftetijdvak aan premiekorting indienstneming oudere
+			werknemers mag toepassen.
+			Als de inhoudingsplichtige in een aangiftetijdvak een hoger bedrag aan
+			premiekorting(en) mag toepassen dan het bedrag aan de verschuldigde
+			premies werknemersverzekeringen toelaat, is het mogelijk het niet
+			verrekende deel van die premiekorting(en) mee te nemen in een later
+			aangiftetijdvak of te verrekenen bij een andere administratieve eenheid
+			van dezelfde inhoudingsplichtige. De af te dragen premie mag niet
+			negatief worden.
+			Bij verrekening moet de inhoudingsplichtige eerst berekenen of er in
+			dat aangiftetijdvak ruimte overblijft om nog iets te verrekenen.
+			Verrekening mag alleen plaatsvinden in hetzelfde kalenderjaar."
+	}
+
+	datum PkInDnstOudWn: Bedrag(10) {
+		name "Premiekorting in dienst hebben oudere werknemers"
+		description "Het bedrag dat de administratieve eenheid voor bij hem in dienst zijndepersonen van 62, 63 of 64 jaar mag korten op de verschuldigde
+			basispremie WAO/IVA/WGA, gedifferentieerde premie WGA en WW-
+			Awf (werkgevers- en werknemersdeel) of UFO."
+		cond [1007] "Optioneel"
+
+		explanation "In de loonopgave mogen de premiekortingen niet met de betreffendepremies worden verrekend; de korting komt tot uitdrukking in de rubriek
+			Totaal te betalen over tijdvak. Eenmalige verrekening achteraf per jaar
+			is niet mogelijk.
+			De inhoudingsplichtige vermeldt hier het totaal van de bedragen, dat
+			hij/zij in het aangiftetijdvak aan premiekorting in dienst hebben oudere
+			werknemers mag toepassen.
+			Als de inhoudingsplichtige in een aangiftetijdvak een hoger bedrag aan
+			premiekorting(en) mag toepassen dan het bedrag aan de verschuldigde
+			premies werknemersverzekeringen toelaat, is het mogelijk het niet
+			verrekende deel van die premiekorting(en) mee te nemen in een later
+			aangiftetijdvak of te verrekenen bij een andere administratieve eenheid
+			van dezelfde inhoudingsplichtige. De af te dragen premie mag niet
+			negatief worden.
+			Bij verrekening moet de inhoudingsplichtige eerst berekenen of er in
+			dat aangiftetijdvak ruimte overblijft om nog iets te verrekenen.
+			Verrekening mag alleen plaatsvinden in hetzelfde kalenderjaar."
+	}
+
+	datum TotTeBet: Bedrag(10) {
+		name "Totaal te betalen over tijdvak"
+		description "Het totaalbedrag dat verschuldigd is aan loonheffingen in hetaangiftetijdvak."
+		cond [0343] "Verplicht"
+
+		cond [0010] "Totaal te betalen over tijdvak is gelijk aan Ingehouden
+			loonbelasting / premie volksverzekeringen plus de som van alle
+			Eindheffingen, Totaal ingehouden bijdragen Zvw en alle Totaal
+			premies minus de som van alle Afdrachtverminderingen en de
+			Premiekortingen."
+
+		explanation ""
+	}
+
+	datum TotGen: Bedrag(10) {
+		name "Totaal Generaal"
+		description "Het totaalbedrag dat verschuldigd is in het aangiftetijdvak onderverrekening van in dat tijdvak aangeleverde correcties."
+		cond [0344] "Totaal generaal kan alleen worden opgegeven in eenvolledige aangifte of in een aanvullende aangifte en is dan ook
+			verplicht.
+			"
+
+		cond [0011] "Totaal Generaal is gelijk aan Totaal te betalen over tijdvak
+			plus de eventuele Saldi van correcties voorgaand aangiftetijdvak."
+
+		explanation ""
+	}
+
+}
+
+group "Specificatie premie sectorfonds" {
+	datum RisGrp: N(2) {
+		name "Risicopremiegroep"
+		description "Code ter aanduiding van de risicopremiegroep (binnen de sector)waarvoor de premie sectorfonds is berekend."
+		cond [0346] "Verplicht (binnen de groep)"
+
+		cond [0034] "In een volledige aangifte geldt dat voor iedere (code)
+			Risicopremiegroep voor tenminste n werknemer deze (code)
+			Risicopremiegroep in de gegevensgroep Sector risicogroep is
+			aangegeven."
+
+		explanation "Bij een aantal sectoren komen meerdere risicopremiegroepen voor.Hierbij worden de premie sectorfonds en het premieloon sectorfonds
+			per risicopremiegroep gespecificeerd. De hele gegevensgroep moet
+			meerdere malen worden opgegeven indien meerdere
+			risicopremiegroepen van toepassing zijn."
+	}
+
+	datum PrLnWgf: Bedrag(10) {
+		name "Totaal premieloon premie sectorfonds"
+		description "Het totaalbedrag waarover in het aangiftetijdvak door deadministratieve eenheid de premie voor het sectorfonds en de
+			risicopremiegroep is berekend."
+		cond [0347] "Verplicht (binnen de groep)"
+
+		cond [0035] "Als Totaalpremie sectorfonds ongelijk is aan 0, dan moet ook
+			Totaal premieloon premie sectorfonds ongelijk zijn aan 0.
+			"
+
+		cond [1027] "In een volledige aangifte moet het Totaal premieloon premie
+			sectorfonds gelijk zijn aan de (afgeronde) som van het voor
+			dezelfde code Risicopremiegroep opgegeven Premieloon premie
+			sectorfonds van alle werknemers."
+
+		explanation "Met betrekking tot conditie [1027] is het de bedoeling dat alleonafgeronde bedragen van werknemers met dezelfde code
+			risicopremiegroep bij elkaar worden opgeteld en dat dit totaalbedrag
+			daarna wordt afgerond."
+	}
+
+	datum PrWgf: Bedrag(10) {
+		name "Totaal premie sectorfonds"
+		description "Het bedrag dat door de administratieve eenheid in het aangiftetijdvakverschuldigd is in verband met wettelijke bijdragen aan het sectorfonds
+			voor de betreffende sectorrisicogroep."
+		cond [0348] "Verplicht (binnen de groep)"
+
+		cond [1028] "In een volledige aangifte moet het Totaal  premie sectorfonds
+			per code risicopremiegroep gelijk zijn aan de (afgeronde) som van
+			de voor dezelfde code Risicopremiegroep opgegeven Premie
+			sectorfonds van alle werknemers."
+
+		explanation "Met betrekking tot conditie [1028] is het de bedoeling dat alleonafgeronde bedragen van werknemers met dezelfde code
+			risicopremiegroep bij elkaar worden opgeteld en dat dit totaalbedrag
+			daarna wordt afgerond."
+	}
+
+}
+
+group "Saldo correcties voorgaand aangiftetijdvak" {
+	datum DatAanvTv: Datum {
+		name "Datum aanvang aangiftetijdvak"
+		description "De datum van de eerste dag van het aangiftetijdvak waarvoor het saldovan de correcties wordt opgegeven."
+		cond [0350] "Verplicht"
+
+		cond [1019/1] "Waardebereik: zie tabel Toegestane combinaties van
+			aangiftetijdvakdatums in paragraaf 3.3 Tijdvak."
+
+		explanation ""
+	}
+
+	datum DatEindTv: Datum {
+		name "Datum einde aangiftetijdvak"
+		description "De datum van de laatste dag van het aangiftetijdvak waarvoor hetsaldo van de correcties wordt opgegeven."
+		cond [0351] "Verplicht"
+
+		cond [1019/2] "Waardebereik: zie tabel Toegestane combinaties van
+			aangiftetijdvakdatums in paragraaf 3.3 Tijdvak."
+
+		explanation ""
+	}
+
+	datum Saldo: Bedrag(10) {
+		name "Saldo"
+		description "Het bedrag dat het verschil aangeeft tussen een voor eenaangiftetijdvak aangeleverde correctie ten opzichte van de
+			oorspronkelijke aangifte voor dat tijdvak of ten opzichte van een
+			eerdere reeds verrekende correctie voor dat tijdvak."
+		cond [0352] "Verplicht"
+
+		explanation ""
+	}
+
+}
+
+group "Inkomstenverhouding" {
+	datum NumIV: N(4) {
+		name "Nummer inkomstenverhouding"
+		description "Nummer waarmee de inkomstenverhouding in combinatie met het BSN(bij het ontbreken ervan het sofinummer) of het personeelsnummer
+			wordt gedentificeerd."
+		cond [0353] "Verplicht"
+
+		cond [0423] "Het Nummer inkomstenverhouding moet groter of gelijk zijn
+			aan 0.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def"
+
+		explanation "Het betreft een unieke nummering van inkomstenverhoudingen van npersoon binnen n administratieve eenheid. Zolang de
+			inkomstenverhouding bestaat, moet dit nummer gelijk blijven. Als in
+			enig jaar een inkomstenverhouding met een bepaald nummer
+			inkomstenverhouding wordt beindigd, dan mag dit nummer niet binnen
+			7 jaar na het verstrijken van dat kalenderjaar worden hergebruikt voor
+			een andere inkomstenverhouding van dezelfde persoon binnen
+			dezelfde administratieve eenheid.
+			Let op!
+			Als de inhoudingsplichtige een nabetaling doet voor een
+			inkomstenverhouding nadat deze is beindigd, dan mag geen nieuw
+			Nummer inkomstenverhouding worden aangeleverd. Hiervoor geldt dat
+			het oorspronkelijke Nummer inkomstenverhouding moet worden
+			gebruikt.
+			Het nummer inkomstenverhouding maakt de inkomstenverhouding
+			uniek in combinatie met het BSN/sofinummer (of bij afwezigheid
+			daarvan het personeelsnummer). Indien de inhoudingsplichtige meer
+			inkomstenverhoudingen voor dezelfde werknemer opgeeft, moet voor
+			ieder van deze inkomstenverhoudingen een ander nummer opgeven
+			worden. Het nummer dat wordt toegekend, moet in het vervolg steeds
+			gebruikt worden voor die betreffende inkomstenverhouding:
+			 Ook bij een jaargrensovergang moet dit nummer gelijk blijven.
+			 Ook bij een overgang naar een ander softwarepakket voor
+			salarisadministratie of aangiftepakket moet dit nummer gelijk
+			blijven.
+			 Het gebruikte nummer mag niet binnen 7 jaar na het verstrijken van
+			het kalenderjaar hergebruikt worden voor een nieuwe (andere)
+			inkomstenverhouding van dezelfde natuurlijke persoon bij dezelfde
+			administratieve eenheid.
+			Wanneer er met een werknemer een nieuwe inkomensverhouding
+			ontstaat moet er een nieuw nummer toegekend worden. Bijvoorbeeld
+			als de inhoudingsplichtige een voormalig werknemer opnieuw in dienst
+			neemt.
+			Let op!
+			Als de rechter bepaalt dat een inkomstenverhouding onterecht is
+			beindigd, is er geen sprake van een nieuwe inkomstenverhouding en
+			moet de inhoudingsplichtige het eerder toegekende nummer blijven
+			gebruiken.
+			Omdat de uniciteit van het nummer cruciaal is voor een goede
+			identificatie van inkomstenverhoudingen, geldt het dringend advies om
+			per BSN/sofinummer of personeelsnummer het nummer als oplopend
+			nummer, beginnend bij 1, toe te passen. Dit geeft  een betere garantie
+			dat geen nummers worden hergebruikt na overgang naar een ander
+			salaris-/aangiftepakket. Immers, indien willekeurige nummering zou
+			worden toegepast, zouden bij overgang naar een ander softwarepakket
+			tevens alle eerder gebruikte nummers in het nieuwe pakket moeten
+			worden vastgelegd opdat deze niet opnieuw worden uitgegeven
+			(uniciteit!).
+			Onder geen beding mogen inkomstenverhoudingen hernummerd
+			worden! Immers, het nummer is mede identificerend voor de
+			inkomstenverhouding.
+			Zie in het geval een voor de werknemersverzekeringen verzekerde
+			werknemer in het aangiftetijdvak 65 jaar wordt ook de toelichting in de
+			rubrieken Indicatie verzekerd WAO/IVA/WGA, Indicatie verzekerd
+			WW en Indicatie verzekerd ZW.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def"
+	}
+
+	datum DatAanv: Datum {
+		name "Datum aanvang inkomstenverhouding"
+		description "De datum van de eerste dag van de periode waarop deinkomstenverhouding geldig is."
+		cond [0081] "Verplicht; behalve voor inhoudingsplichtigen uit deuitzendbranche die ook weekaanleveringen doen.
+			"
+
+		cond [0038] "De Datum aanvang inkomstenverhouding moet gelijk zijn aan
+			of groter zijn dan de Geboortedatum (indien gevuld), behalve bij
+			Soort inkomstenverhouding 21 en 24.
+			"
+
+		cond [0039] "De Datum aanvang inkomstenverhouding moet gelijk zijn aan
+			of kleiner zijn dan de Datum einde van het aangiftetijdvak.
+			"
+
+		cond [0084] "De Datum aanvang inkomstenverhouding moet gelijk zijn aan
+			of groter zijn dan de begindatum van de administratieve eenheid.
+			"
+
+		cond [0085] "De Datum aanvang inkomstenverhouding moet gelijk zijn aan
+			of kleiner zijn dan de einddatum van de administratieve eenheid."
+
+		explanation "Bij de Datum aanvang inkomstenverhouding vult u de exacte dagwaarop de inkomstenverhouding (dienstverband, recht op een uitkering
+			of pensioen) ingaat. Of  in geval van een dienstverband  de
+			werkzaamheden ook echt op die dag aanvangen, is niet relevant. Vangt
+			het dienstverband op zaterdag 3 maart aan, terwijl de werknemer op
+			maandag de 5e begint, dan is de datum aanvang toch zaterdag de 3e.
+			Indien de inkomstenverhouding ontstaat/eindigt vanwege overgang
+			naar een andere administratieve eenheid, die tot een andere sector
+			behoort, moet als Datum aanvang/einde inkomstenverhouding de
+			datum van overgang naar de nieuwe/oude administratieve eenheid
+			gehanteerd worden."
+	}
+
+	datum DatEind: Datum {
+		name "Datum einde inkomstenverhouding"
+		description "De datum van de laatste dag van de periode waarop deinkomstenverhouding geldig is."
+		cond [0354] "Optioneel"
+
+		cond [0040] "Alleen vullen indien de datum op of voor de Datum einde
+			tijdvak ligt.
+			"
+
+		cond [0041] "De Datum einde inkomstenverhouding moet op of na de
+			Datum aanvang inkomstenverhouding liggen.
+			"
+
+		cond [0086] "De Datum einde inkomstenverhouding moet op of voor de
+			einddatum van de administratieve eenheid liggen."
+
+		explanation "Bij datum einde inkomstenverhouding moet u de exacte dag waarop dedienstbetrekking eindigt (of het recht op uitkering of pensioen eindigt)
+			invullen. Of de werkzaamheden ook echt op die dag eindigen, is niet
+			relevant.
+			Een einddatum in een toekomstig aangiftetijdvak vult u nog niet omdat
+			dit niet de daadwerkelijke einddatum hoeft te zijn (bijvoorbeeld bij
+			contractverlenging en dergelijke).
+			Indien de inkomstenverhouding ontstaat/eindigt vanwege overgang
+			naar een andere administratieve eenheid, die tot een andere sector
+			behoort, moet als datum aanvang/einde inkomstenverhouding de
+			datum van overgang naar de nieuwe/oude administratieve eenheid
+			gehanteerd worden.
+			Het kan zijn, dat de werkgever voor een al uit dienst zijnde werknemer
+			en waarbij in een eerdere aangifte de rubriek \"Datum einde
+			inkomstenverhouding\" is gevuld, opnieuw aangifte moet doen
+			(bijvoorbeeld in verband met een nabetaling). In deze situatie moet in
+			de aangifte waarin de nabetaling is opgenomen in de rubriek \"Datum
+			aanvang inkomstenverhouding\" de historische aanvangsdatum van de
+			inkomstenverhouding worden gevuld en moet in de rubriek \"Datum
+			einde inkomstenverhouding\" de einddatum van de
+			inkomstenverhouding zoals al eerder is aangegeven worden gevuld."
+	}
+
+	datum RdnEindFlx: N(2) {
+		name "Code reden einde inkomstenverhouding flexwerker"
+		description "Code die de reden van het einde van een inkomstenverhouding in deuitzendbranche aangeeft."
+		cond [0355] "Optioneel"
+
+		cond [0042] "Alleen vullen indien er sprake is van een flexwerker, dat wil
+			zeggen, als Code aard arbeidsverhouding = 11 (uitzendkracht).
+			"
+
+		cond [0043] "Alleen vullen indien Datum einde inkomstenverhouding is
+			gevuld.
+			"
+
+		cond [0201] "Waardebereik: zie toelichting."
+
+		explanation "Waardebereik:CODE   BETEKENIS
+			0           Niet van toepassing
+			1           Einde werk/einde contract, geen werk aangeboden
+			2           Einde werk/einde contract, werk aangeboden
+			3           Geen einde werk/einde contract; lopend arbeidscontract
+			4           Inlener heeft opdracht ingetrokken
+			5           Uitzendkracht heeft ontslag genomen"
+	}
+
+	datum PersNr: X(35) {
+		name "Personeelsnummer"
+		description "Het nummer waaronder de persoon bij de werkgever bekend is."
+		cond [0044] "Verplicht indien voor de werknemer geen BSN/sofinummer isingevuld.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def"
+
+		explanation "Als de inhoudingsplichtige geen BSN/sofinummer heeft van eenwerknemer, dan moet hij een Personeelsnummer vermelden. Dit speelt
+			bij buitenlandse artiesten of buitenlandse beroepssporters (code
+			loonbelastingtabel is 221, 224 of 225) en bij anonieme werknemers
+			(code loonbelastingtabel is 940).
+			Als de inhoudingsplichtige het BSN/sofinummer niet heeft, maar wel
+			zou moeten hebben, dan moet hij een Personeelsnummer vermelden.
+			Hij moet in dat geval ook het anoniementarief voor alle loonheffingen
+			toepassen.
+			Vermeld het personeelsnummer ook als u voor deze werknemer nu wel
+			een BSN/sofinummer heeft ingevuld, maar als deze in het vorige tijdvak
+			ontbrak. Het personeelsnummer mag niet als BSN/sofinummer worden
+			gebruikt.
+			Als u voor een werknemer een eerstedagsmelding heeft gedaan met
+			een personeelsnummer, vermeld dan in de eerstvolgende aangifte
+			loonheffingen zowel het personeelsnummer als BSN/sofinummer."
+	}
+
+}
+
+group "Natuurlijk persoon" {
+	datum SofiNr: N(9) {
+		name "BSN/sofinummer"
+		description "BSN: Een door de Gemeente aan een natuurlijk persoon toegekenduniek administratief nummer.
+			Sofinummer: Een door de Belastingdienst aan een natuurlijk persoon
+			toegekend uniek administratief nummer.
+			Opmerking: De rubriek BSN/sofinummer moet worden gevuld met het
+			Burgerservicenummer of bij het ontbreken ervan met het sofinummer."
+		cond [0045] "Het BSN/sofinummer moet aan de volgende elfproef voldoen:1 beschouw de cijfers op de posities van het nummer van links
+			naar rechts als a0, a1, a2, a3, a4, a5, a6, a7 en a8
+			2 het nummer voldoet aan de elfproef indien a8 gelijk is aan de
+			restwaarde van de volgende berekening:
+			(9*a0 + 8*a1 + 7*a2 + 6*a3 + 5*a4 + 4*a5 + 3*a6 + 2*a7) / 11
+			"
+
+		cond [0087] "Opgaaf van een BSN/sofinummer is verplicht tenzij de Code
+			loonbelastingtabel gelijk is aan 221, 224, 225 of 940.
+			"
+
+		cond [0356] "Het BSN/sofinummer moet u met 9 cijfers aanleveren. Een
+			BSN/sofinummer dat uit minder dan 9 cijfers bestaat vult u aan met
+			voorloopnullen. Het BSN/sofinummer 12312319 levert u aan als
+			012312319.
+			"
+
+		cond [0357] "Van de eerste drie posities moet er minimaal n niet een nul
+			zijn.
+			"
+
+		cond [0088] "Het BSN/sofinummer moet bestaan en in gebruik zijn."
+
+		explanation "De inhoudingsplichtige is verplicht om voor haar werknemers (ofuitkerings- dan wel pensioengerechtigden) een BSN/sofinummer te
+			administreren. De enige formele uitzondering hierop zijn buitenlandse
+			artiesten.
+			Als de inhoudingsplichtige niet beschikt of kan beschikken over het
+			BSN/sofinummer, dan moet de aangifte gedaan worden met vermelding
+			van het personeelsnummer (in de daarvoor bestemde rubriek). Tevens
+			moet het anoniementarief voor alle loonheffingen worden toegepast.
+			Veelal zal bij de volgende aangifte het BSN/sofinummer wel bekend
+			zijn en moet het dan alsnog, samen met het personeelsnummer,
+			gemeld worden.
+			Wat moet er gebeuren bij de volgende situaties:
+			a) in de eerste periode is het BSN/sofinummer onbekend bij de
+			werkgever. In de tweede periode is het BSN/sofinummer wel
+			bekend. Moet dit leiden tot een correctie?
+			Nee, dat is niet nodig. Belangrijk is wel dat bij de eerstvolgende
+			keer ook het personeelsnummer wordt meegegeven.
+			b) Het opgegeven BSN/sofinummer is niet consistent met de
+			opgegeven naam en/of geboortedatum.
+			Bij Belastingdienst/UWV vindt een controle op naam, geboorte-
+			datum en BSN/sofinummer plaats. Wanneer deze gegevens niet
+			consistent zijn dan leidt dat tot een melding onjuiste werknemers-
+			gegevens of een correctieverplichting. U moet dan voor die
+			werknemer opnieuw een volledige regel inzenden. Als het
+			BSN/sofinummer fout was, moet deze regel met foutief
+			BSN/sofinummer worden ingetrokken.
+			Het is voor softwarepakketten niet mogelijk om softwarematig te
+			controleren of het BSN/sofinummer daadwerkelijk bestaat en in gebruik
+			is."
+	}
+
+	datum Voorl: X(6) {
+		name "Voorletters"
+		description "De verzameling letters die wordt gevormd door de eerste letter van allein volgorde voorkomende voornamen."
+		cond [0358] "Optioneel"
+
+		explanation "Bestaan uit hoofdletters, zijn aaneengesloten en bevatten geen punten.Alleen alfabetische tekens zijn toegestaan."
+	}
+
+	datum Voorv: X(10) {
+		name "Voorvoegsel"
+		description "De verzameling van n of meer voorzetsels en/of lidwoorden die aanhet significante deel van de achternaam vooraf gaat en daarmee
+			gezamenlijk de achternaam vormt."
+		cond [0359] "Optioneel"
+
+		explanation ""
+	}
+
+	datum SignNm: X(200) {
+		name "Significant deel van de achternaam"
+		description "De achternaam zonder voorvoegsels."
+		cond [0090] "De opgegeven naam van de werknemer moet toebehorenaan de persoon die is aangeduid met het opgegeven
+			BSN/sofinummer.
+			"
+
+		cond [0046] "Verplicht wanneer BSN/sofinummer is opgegeven en
+			wanneer de code loonbelastingtabel ongelijk is aan 940."
+
+		explanation "Het betreft de geboortenaam van de persoon (en niet van de partner)zonder voorvoegsels, zoals opgenomen op het identiteitsbewijs van de
+			werknemer. Toevoegingen ten behoeve van de eigen administratie zijn
+			niet toegestaan."
+	}
+
+	datum Gebdat: Datum {
+		name "Geboortedatum"
+		description "Datum waarop de natuurlijke persoon is geboren."
+		cond [0047] "Verplicht wanneer BSN/sofinummer is opgegeven enwanneer de code loonbelastingtabel ongelijk is aan 940.
+			"
+
+		cond [0091] "De opgegeven geboortedatum van de werknemer moet
+			toebehoren aan de persoon die is aangeduid met het opgegeven
+			BSN/sofinummer."
+
+		explanation "Als de geboortedatum niet bekend is moet een bestaanbaregeboortedatum worden ingevuld. Hierbij moet de volgende werkwijze
+			worden gehanteerd:
+			1. Als de dag, maand en jaar niet bekend zijn moet u het jaar schatten
+			en voor de dag en maand 01-07 invullen.
+			2. Als de dag en de maand niet bekend zijn: 01-07-jaar
+			3. Als de dag niet bekend is: 16-maand-jaar."
+	}
+
+	datum Nat: N(4) {
+		name "Nationaliteit"
+		description "De nationaliteit waarmee de natuurlijke persoon zich bij deinhoudingsplichtige heeft gedentificeerd."
+		cond [0048] "Verplicht wanneer BSN/sofinummer is ingevuld en wanneerde code loonbelastingtabel ongelijk is aan 940.
+			"
+
+		cond [0092] "Code conform codering van de GBA, zoals deze door de
+			Belastingdienst is gepubliceerd op www.oswo.nl/cso"
+
+		explanation "Een werknemer kan meer dan n nationaliteit hebben. Als eenpersoon meer dan n nationaliteit heeft (waaronder de Nederlandse),
+			moet bij voorkeur de Nederlandse nationaliteit worden doorgegeven.
+			Vul anders, als dat van toepassing is, eerst de nationaliteit in van een
+			EU/EER-land (zie hoofdstuk 16 van het Handboek Loonheffingen).
+			De tabel met codes van nationaliteiten is te downloaden van
+			www.oswo.nl/cso.
+			Als de nationaliteit niet voorkomt in de tabel of als de nationaliteit
+			onbekend is, vul dan code 0000 in."
+	}
+
+	datum Gesl: N(1) {
+		name "Geslacht"
+		description "Code die het geslacht van een natuurlijk persoon aangeeft."
+		cond [0049] "Verplicht wanneer BSN/sofinummer is opgegeven enwanneer de code loonbelastingtabel ongelijk is aan 940.
+			"
+
+		cond [0202] "Waardebereik: zie toelichting."
+
+		explanation "Waardebereik:CODE BETEKENIS
+			0 Onbekend
+			1 Mannelijk
+			2 Vrouwelijk
+			9 Niet gespecificeerd
+			Indien in een personeels-/salarisadministratie het gegeven geslacht
+			niet wordt gevoerd, moet in de loonaangifte de waarde 9 worden
+			opgegeven.
+			Wordt in de administratie het geslacht wel geregistreerd, maar is van
+			de werknemer het geslacht niet bekend, dan de code 0 invullen."
+	}
+
+}
+
+group "Adres binnenland" {
+	datum Str: X(24) {
+		name "Straatnaam"
+		description "De officile door de gemeente vastgestelde naam van een straat."
+		cond [0360] "Verplicht"
+
+		explanation "Het woonadres moet opgegeven worden. Indien dit niet bekend is, mageen postadres worden opgegeven."
+	}
+
+	datum HuisNr: N(5) {
+		name "Huisnummer"
+		description "De numerieke aanduiding zoals deze door de gemeente aan het objectis toegekend."
+		cond [0093] "Huisnummer moet ingevuld zijn als huisnummer toevoegingis ingevuld.
+			"
+
+		cond [0361] "Optioneel
+			"
+
+		cond [0424] "Het Huisnummer moet groter of gelijk zijn aan 1."
+
+		explanation ""
+	}
+
+	datum HuisNrToev: X(4) {
+		name "Huisnummer toevoeging"
+		description "De alfanumerieke aanduiding achter het huisnummer, zoals toegekenddoor de gemeente."
+		cond [0362] "Optioneel"
+
+		explanation ""
+	}
+
+	datum LocOms: X(35) {
+		name "Locatieomschrijving"
+		description "Een nadere aanduiding bij de straatnaam en  indien aanwezig  hethuisnummer."
+		cond [0363] "Optioneel"
+
+		explanation "Informatie over de plaatsbepaling van een adres indien deze niet teplaatsen is in een van de andere optionele velden van het adres en
+			zonder deze locatieomschrijving het adres niet compleet is."
+	}
+
+	datum Pc: X(6) {
+		name "Postcode"
+		description "De officile TPG-codering, bestaande uit een numeriekewoonplaatscode en een alfabetische lettercode."
+		cond [0204] "Verplicht"
+
+		cond [0364] "De postcode bestaat uit vier cijfers onmiddellijk gevolgd door
+			twee hoofdletters. Er mogen geen spaties gebruikt worden. Het
+			eerste cijfer mag bovendien niet nul (0) zijn. Voorbeeld: 3583VN."
+
+		explanation ""
+	}
+
+	datum Woonpl: X(24) {
+		name "Woonplaatsnaam"
+		description "De door de gemeente vastgestelde naam van een woonplaats."
+		cond [0365] "Verplicht"
+
+		explanation ""
+	}
+
+}
+
+group "Adres buitenland" {
+	datum Str: X(24) {
+		name "Straatnaam buitenland"
+		description "De naam van een straat in het buitenland."
+		cond [0205] "Verplicht"
+
+		explanation ""
+	}
+
+	datum HuisNr: X(9) {
+		name "Huisnummer buitenland"
+		description "De aanduiding van een (deel van een) pand in het buitenland."
+		cond [0366] "Optioneel"
+
+		explanation ""
+	}
+
+	datum LocOms: X(35) {
+		name "Locatieomschrijving buitenland"
+		description "Een nadere aanduiding bij een buitenlands adres."
+		cond [0367] "Optioneel"
+
+		explanation "Informatie over de plaatsbepaling van een adres indien deze niet teplaatsen is in een van de andere optionele velden van het adres en
+			zonder deze locatieomschrijving het adres niet compleet is."
+	}
+
+	datum Pc: X(9) {
+		name "Postcode buitenland"
+		description "De door een buitenlandse postdienst vastgestelde codering van eenadres in het buitenland."
+		cond [0368] "Optioneel"
+
+		explanation ""
+	}
+
+	datum Woonpl: X(24) {
+		name "Woonplaatsnaam buitenland"
+		description "De naam van een woonplaats in het buitenland."
+		cond [0206] "Verplicht"
+
+		explanation ""
+	}
+
+	datum Reg: X(24) {
+		name "Regionaam buitenland"
+		description "De naam van een gebiedsdeel binnen een land."
+		cond [0369] "Optioneel"
+
+		explanation ""
+	}
+
+	datum LandCd: X(2) {
+		name "Landcode ISO buitenland"
+		description "De code van een huidig land of gebiedsdeel conform ISO 3166-1."
+		cond [0207] "Verplicht"
+
+		cond [0094] "Code conform ISO 3166-1, zoals deze door de
+			Belastingdienst is gepubliceerd op www.oswo.nl/cso"
+
+		explanation "De officile aanduiding van het land of gebiedsdeel waar de werknemerwoont."
+	}
+
+}
+
+group "Inkomstenperiode" {
+	datum DatAanv: Datum {
+		name "Datum aanvang inkomstenperiode"
+		description "De begindatum van de inkomstenperiode."
+		cond [0208] "Verplicht"
+
+		cond [0051] "Als de inkomenscode gelijk is aan 11, 12, 13, 14, 15, 17, 18,
+			21 of 23, dan geldt dat de Datum aanvang inkomstenperiode moet
+			liggen binnen het aangiftetijdvak. Met andere woorden: de Datum
+			aanvang inkomstenperiode moet op of na de Datum aanvang
+			tijdvak vallen en voor of op de Datum einde tijdvak."
+
+		cond [0052] "De Datum aanvang inkomstenperiode moet uniek zijn binnen
+			een inkomstenverhouding.
+			"
+
+		cond [0096] "De Datum aanvang inkomstenperiode moet gelijk zijn aan of
+			groter zijn dan 01-01-2006."
+
+		explanation "De datum vanaf wanneer de onder de gegevensgroepInkomstenperiode gemelde gegevens over de inkomstenverhouding
+			geldig zijn in het aangiftetijdvak.
+			De inkomstenperiode begint niet voor aanvang van het dienstverband.
+			Een uitzondering hierop geldt voor de inkomenscodes 22, 24, 31-40,
+			42-46, 50, 51 of 52. Als met terugwerkende kracht een eerste
+			inkomstenverhouding ontstaat met deze inkomenscode, dan mag
+			eenmalig voor het eerste aangiftetijdvak de Datum aanvang
+			inkomstenperiode buiten het aangiftetijdvak liggen.
+			Als periodegegevens in het aangiftetijdvak wijzigen, moet het
+			periodeblok meerdere keren worden gevuld met bijbehorende
+			aanvangsdata.
+			Zie in het geval een voor de werknemersverzekeringen verzekerde
+			werknemer in het aangiftetijdvak 65 jaar wordt ook de toelichting in de
+			rubrieken Indicatie verzekerd WAO/IVA/WGA, Indicatie verzekerd
+			WW en Indicatie verzekerd ZW."
+	}
+
+	datum SrtIV: X(2) {
+		name "Code soort inkomstenverhouding / inkomenscode"
+		description "Code ter aanduiding van het soort inkomstenverhouding."
+		cond [0209] "Verplicht"
+
+		cond [0210] "Waardebereik: zie toelichting."
+
+		explanation "In de praktijk stelt de werkgever eenmaal deze code vast. Bestaat debehoefte om deze code tussentijds te wijzigen, dan is dat toegestaan.
+			Waardebereik:
+			CODE BETEKENIS:
+			11 Loon of salaris ambtenaren in de zin van de Ambtenarenwet 1929
+			12 Loon of salaris werknemers van gepremieerde, gesubsidieerde of
+			gebudgetteerde instellingen, inclusief uitvoeringsorganen sociale
+			zekerheden
+			13 Loon of salaris directeuren van een nv/bv, wel verzekerd voor de
+			werknemersverzekeringen
+			14 Loon of salaris overige werknemers niet verzekerd voor de Wet Werk en
+			inkomen naar Arbeidsvermogen (WIA) of WAO
+			15 Loon of salaris niet onder te brengen onder 11 tot en met 14 of 17
+			17 Loon of salaris directeur-grootaandeelhouder van een nv/bv, niet verzekerd
+			voor de werknemersverzekeringen
+			18 Wachtgeld van een overheidsinstelling
+			21 Overige pensioenen, lijfrenten, enz. (niet 23 (Oorlogs- en
+			verzetspensioenen))
+			22 Uitkering in het kader van de Algemene Ouderdomswet (AOW)
+			23 Oorlogs- en verzetspensioenen
+			24 Uitkering in het kader van de Algemene nabestaandenwet (ANW)
+			31 Uitkering in het kader van de Ziektewet (ZW) en vrijwillige verzekering
+			Ziektewet
+			32 Uitkering in het kader van de Wet op de Arbeidsongeschiktheidsverzekering
+			/ Wet werk en inkomen naar arbeidsvermogen (WAO/WIA) en particuliere
+			verzekering ziekte, invaliditeit en ongeval
+			33 Uitkering in het kader van de Nieuwe Werkloosheidswet (nWW)
+			34 Uitkering in het kader van de Wet inkomensvoorziening oudere en
+			gedeeltelijk arbeidsongeschikte werkloze werknemers (IOAW)
+			35 Vervolguitkering in het kader van de Nieuwe Werkloosheidswet (nWW)
+			36 Uitkering in het kader van de Wet arbeidsongeschiktheidsverzekering
+			zelfstandigen (Waz)
+			37 Wet werk en ondersteuning jonggehandicapten (Wajong)
+			38 Samenloop (gelijktijdig of volgtijdelijk) van uitkeringen van Wajong met
+			Waz, WAO/IVA of WGA
+			39 Uitkering in het kader van de Regeling inkomensvoorziening volledig
+			arbeidsongeschikten (IVA)
+			40 Uitkering in het kader van de Regeling werkhervatting gedeeltelijk
+			arbeidsgeschikten WGA)
+			42 Uitkering in het kader van bijstandsbesluit Zelfstandigen (Bbz)
+			43 Uitkering in het kader van de Wet Werk en bijstand (WWB)
+			44         Uitkering in het kader van de Wet Werk en Inkomen Kunstenaars (WWIK)
+			45 Uitkering in het kader van de Wet inkomensvoorziening oudere en
+			gedeeltelijk arbeidsongeschikte gewezen zelfstandigen (IOAZ)
+			46 Uitkering uit hoofde van de Toeslagenwet
+			50 Uitkeringen in het kader van overige sociale verzekeringswetten, hieronder
+			vallen tevens: Ongevallenwet 1921, Land- en tuinbouwongevallenwet 1922
+			en Zeeongevallenwet 1919 (niet 22, 24 tot en met 45, 51 of 52).
+			51         Uitkering in het kader van de Wet investeren in jongeren (WIJ)
+			52         Uitkering in het kader van de Wet inkomensvoorziening oudere werklozen
+			(IOW)
+			Let op!
+			Waar in dit document wordt gesproken over een Wajong-uitkering, wordt bedoeld
+			een uitkering op grond van de Wet werk en ondersteuning jonggehandicapten .
+			Bij samenloop van een uitkering in het kader van de Wet
+			arbeidsongeschiktheidsverzekering zelfstandigen (Waz) met een Wajong-uitkering
+			moet code 38 toegepast worden. Bij samenloop van een uitkering in het kader van
+			de Wet arbeidsongeschiktheidsverzekering zelfstandigen (Waz) met andere
+			arbeidsongeschiktheidsuitkeringen dan een Wajong-uitkering, moet code 32
+			toegepast worden.
+			Als een eigenrisicodrager/payrollbedrijf een vervangende ZW-uitkering betaalt, dan
+			moet voor deze vervangende ZW-uitkering code 31 toegepast worden."
+	}
+
+	datum CdAard: N(2) {
+		name "Code aard arbeidsverhouding"
+		description "Code die aangeeft welke soort arbeidsverhouding bepalend is voor devaststelling dat de werknemer verplicht verzekerd is voor de
+			werknemersverzekeringen."
+		cond [0053] "Verplicht wanneer Code soort inkomstenverhouding = 11, 12,13, 14, 15 of 18.
+			"
+
+		cond [0211] "Waardebereik: zie toelichting.
+			"
+
+		cond [0054] "Als de Code soort inkomstenverhouding gelijk is aan 18
+			(Wachtgeld van een overheidsinstelling), dan moet als Code aard
+			arbeidsverhouding ook 18 worden opgegeven"
+
+		explanation "Als de werknemer niet is verzekerd voor de werknemersverzekeringen(zoals meewerkende kinderen) kiest u de code 1.
+			In geval van ontslag met een doorbetalingsregeling moet de code die
+			voor het ontslag gold ook gebruikt worden bij de betalingen in het kader
+			van de doorbetalingsregeling.
+			Waardebereik:
+			CODE BETEKENIS
+			1 Arbeidsovereenkomst
+			2 Aanneming van werk
+			3 Bestuurder coperatieve vereniging met werknemerszelfbestuur
+			4 Deelvisser
+			5 Dienstplichtig militair
+			6 Musicus / artiest
+			7 Stagiair
+			8 Thuiswerker
+			9 Vertegenwoordiger / provisiewerker
+			10 Wet sociale werkvoorziening (WSW)
+			11 Uitzendkracht
+			12 Persoonlijke arbeid tegen beloning
+			13 Ambtenaar / ABP'er
+			14 A-Topsporter
+			17 Vutter
+			18 Publiekrechtelijke aanstelling
+			19 Ontslaguitkering
+			78 Werk als zelfstandige
+			79          Opting-in regeling
+			80          Sekswerker in fictieve dienstbetrekking
+			Code 1 (arbeidsovereenkomst) komt pas in aanmerking indien andere
+			codes niet van toepassing zijn.
+			Als de code aard arbeidsverhouding 80 (Sekswerker in fictieve
+			dienstbetrekking) is, dan moet de loonbelastingtabel voor aannemers
+			van werk, thuiswerkers, sekswerkers en andere gelijkgestelden (code
+			loonbelastingtabel 210) toegepast worden."
+	}
+
+	datum CdInvlVpl: X(3)  {
+		name "Code invloed verzekeringsplicht"
+		description "Code die bijzondere omstandigheden voor het verzekerd zijn voorwerknemersverzekeringen aangeeft."
+		cond [0370] "Optioneel"
+
+		cond [0212] "Waardebereik: zie toelichting."
+
+		explanation "Als deze situatie zich voordoet, moet de inhoudingsplichtige ditopgeven, met name indien de werknemer verzekerd is voor de
+			werknemersverzekeringen.
+			Combinaties van maximaal 3 letters uit het waardebereik zijn
+			toegestaan.
+			Selecteer/vermeld de code van de bijzondere omstandigheid als die
+			van toepassing is.
+			Waardebereik:
+			CODE BETEKENIS
+			A Familie van eigenaar
+			B Vorige eigenaar
+			C Directeur-grootaandeelhouder
+			D Oproep/invalkracht zonder verplichting om te komen
+			E Oproep/invalkracht met verplichting om te komen
+			F           Premievrijstelling kleinebanenregeling
+			"
+	}
+
+	datum CdBepTd: X(1) {
+		name "Code contract onbepaalde/bepaalde tijd"
+		description "Code die aangeeft of het arbeidscontract voor bepaalde of onbepaaldetijd geldig is."
+		cond [0055] "Verplicht wanneer Code soort inkomstenverhouding = 11, 12,13, 14, 15 of 18.
+			"
+
+		cond [0213] "Waardebereik: zie toelichting"
+
+		explanation "Waardebereik:CODE BETEKENIS
+			O Onbepaalde tijd
+			B Bepaalde tijd"
+	}
+
+	datum FsIndFZ: N(2) {
+		name "Code fase indeling F&Z"
+		description "Code die aangeeft in welke fase de inkomstenverhouding voorbepaalde tijd zich bevindt in het kader van de Wet flexibiliteit en
+			zekerheid."
+		cond [0097] "Code fase indeling F&Z is verplicht indien code sector = 52(uitzendbedrijven)
+			"
+
+		cond [0371] "Optioneel in de overige gevallen
+			"
+
+		cond [0214] "Waardebereik: zie toelichting"
+
+		explanation "Waardebereik:CODE BETEKENIS
+			0 Onbekend of n.v.t.
+			1 Fase 1 (met uitzendbeding)
+			2 Fase 2 (met uitzendbeding)
+			3 Fase 3
+			4 Fase 4
+			5 Wettelijk regime
+			6 Ketensysteem
+			17 Fase A met uitzendbeding
+			18 Fase B
+			19 Fase C
+			38 Fase A zonder uitzendbeding, met loonuitsluiting
+			40 Fase A zonder uitzendbeding
+			41 Fase 1 zonder uitzendbeding
+			42 Fase 2 zonder uitzendbeding"
+	}
+
+	datum CAO: N(4) {
+		name "Code CAO"
+		description "De code die aangeeft welke collectieve arbeidsovereenkomst op deinkomstenverhouding van toepassing is."
+		cond [0056] "Verplicht wanneer code soort inkomstenverhouding = 11, 12,13, 14, 15, 17 of 18.
+			"
+
+		cond [0098] "De code CAO moet voorkomen in de codetabel CAO en moet
+			geldig zijn op de peildatum datum aanvang inkomstenperiode.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def"
+
+		explanation "Dit is de code die het Ministerie van Sociale Zaken enWerkgelegenheid heeft vastgesteld.
+			Let op:
+			Gebruik geen eigen brancheigen CAO-codes, alleen de code die het
+			ministerie heeft afgegeven is geldig.
+			Deze codes staan in een tabel. Als u toegang heeft tot de community
+			van OSWO, dan kunt u deze tabel downloaden van www.oswo.nl/cso.
+			Als u deze toegang niet heeft, dat kunt u deze tabel downloaden van
+			www.cbsvooruwbedrijf.nl.
+			Met collectieve regelingen worden twee verschillende soorten
+			regelingen bedoeld die in twee aparte delen van de lijst staan.
+			1. CAOs (aangemeld bij het Ministerie van Sociale Zaken en Werk-
+			gelegenheid) en arbeidsvoorwaardenregelingen bij de overheid.
+			Het gaat hier om de CAOs die conform de Wet op de loonvorming
+			bij het Ministerie van Sociale Zaken en Werkgelegenheid zijn
+			aangemeld (en om arbeidsvoorwaardenregelingen bij de overheid).
+			Deze regelingen kennen een CAO-code tussen nummer 1 en 7999.
+			2. Overige arbeidsvoorwaardenregelingen.
+			Als in uw organisatie andere arbeidsvoorwaardenregelingen tot
+			stand zijn gekomen (bijvoorbeeld met de OR), dan is er geen
+			sprake van een CAO. Dergelijke regelingen zijn genummerd vanaf
+			code 8000.
+			In beide gevallen gaat het alleen om reguliere regelingen. Sociale
+			plannen, VUT-CAOs, O&O-fondsen en andere sociale fondsen kennen
+			geen CAO-code en hoeven niet te worden ingevuld.
+			Als een collectieve regeling ontbreekt in de lijst, moet de
+			inhoudingsplichtige contact opnemen met het CBS, afdeling CAO-
+			gegevens, e-mail caolijst@cbs.nl.
+			Aandachtspunten:
+			 Bij het invullen van de CAO-code maakt het niet uit of de werk-
+			nemer rechtstreeks onder de CAO valt of via avv (algemeen
+			verbindend verklaarde CAOs); ook indien een CAO recent
+			verlopen is, moet nog steeds de desbetreffende CAO-code
+			ingevuld worden zolang er geen nieuwe CAO gepubliceerd is
+			(maximaal twee jaar).
+			 Soms gelden voor een bedrijf meerdere caos, bijvoorbeeld een
+			raam-CAO en een ondernemings-CAO; kies de CAO waarin de
+			belangrijkste arbeidsvoorwaarden geregeld zijn, zoals het loon van
+			de werknemer.
+			 Hoewel vaak alle werknemers van een bedrijf onder dezelfde CAO
+			vallen, komt het ook voor dat binnen een bedrijf meerdere CAOs
+			gelden of dat sommige werknemers buiten de werkingssfeer van
+			een CAO vallen: vul per werknemer in welke CAO van toepassing
+			is.
+			 Indien geen collectieve regeling van toepassing is of een bepaalde
+			regeling op vrijwillige basis wordt gevolgd, geldt de code 9999.
+			 Als een code vervalt of wijzigt moet u met ingang van het
+			eerstvolgende tijdvak waarvoor u aangifte moet doen na publicatie
+			van de nieuwe CAO code lijst, rekening houden met de gewijzigde
+			of vervallen code.
+			 Het kan zijn, dat aan de inhoudingsplichtige een CAO-code of een
+			code arbeidsvoorwaardenregeling is toegekend welke als
+			gereserveerde code in de tabel is opgenomen. In die situatie moet
+			de toegekende code en niet code 9999 vermeld worden."
+	}
+
+	datum IndPkAgh: X(1) {
+		name "Indicatie premiekorting arbeidsgehandicapten"
+		description "Indicatie of Premiekorting arbeidsgehandicapten door deadministratieve eenheid is toegepast voor de natuurlijke persoon waar
+			de inkomstenverhouding betrekking op heeft."
+		cond [1008] "Optioneel"
+
+		cond [1009] "Toegestane waarden zijn J of N"
+
+		explanation "De inhoudingsplichtige kan onder voorwaarden een korting toepassenop de verschuldigde Awf/WW-premie (Ufo-premie), de basispremie
+			WAO/IVA/WGA en de gedifferentieerde premie WGA voor werknemers
+			met een arbeidshandicap. In het handboek Loonheffingen treft u
+			nadere informatie aan over deze premiekorting.
+			De inhoudingsplichtige vult hier J in als de premiekorting
+			arbeidsgehandicapten voor de werknemer is toegepast.
+			Bij de premiekorting arbeidsgehandicapten moet de inhoudingsplichtige
+			de systematiek van voortschrijdend cumulatief rekenen (VCR)
+			toepassen. Dat leidt in het algemeen tot een positief bedrag, dat in
+			mindering op de te betalen premies werknemersverzekeringen moet
+			worden gebracht.
+			Echter in de situatie dat de werkgever als gevolg van een
+			loonsverlaging van een werknemer op kalenderbasis niet meer in
+			aanmerking komt voor de hoge AGH korting, maar voor de lage AGH
+			korting, dan moet dit in de aangifte over het tijdvak van constatering
+			worden hersteld. Dit kan leiden tot een negatief bedrag aan
+			premiekorting."
+	}
+
+	datum IndPkNwArbvOudWn: X(1) {
+		name "Indicatie premiekorting nieuwe arbeidsverhouding ouderewerknemers
+"
+		description "Indicatie of Premiekorting nieuwe arbeidsverhouding ouderewerknemers door de administratieve eenheid is toegepast voor de
+			natuurlijke persoon waar de inkomstenverhouding betrekking op heeft."
+		cond [1010] "Optioneel"
+
+		cond [1011] "Toegestane waarden zijn J of N"
+
+		explanation "De inhoudingsplichtige kan onder voorwaarden een korting toepassenop de verschuldigde Awf/WW-premie (Ufo-premie), de basispremie
+			WAO/IVA/WGA en de gedifferentieerde premie WGA voor werknemers
+			van 50 jaar of ouder die hij vanuit een uitkeringssituatie in dienst
+			neemt. In het handboek Loonheffingen treft u nadere informatie aan
+			over deze premiekorting.
+			De inhoudingsplichtige vult hier J in als de premiekorting nieuwe
+			arbeidsverhouding oudere werknemers voor de werknemer is
+			toegepast.
+			Voor deze korting moet u het jaarbedrag evenredig over de
+			aangiftetijdvakken verdelen, waarbij de korting per tijdvak nog nader
+			evenredig aan het deeltijdpercentage in het betreffende tijdvak (zie het
+			toepassingsvoorschrift) moet worden aangepast.
+			Verrekening over tijdvakken heen is niet toegestaan."
+	}
+
+	datum IndPkInDnstOudWn: X(1) {
+		name "Indicatie premiekorting in dienst hebben oudere werknemers"
+		description "Indicatie of Premiekorting in dienst hebben oudere werknemers door deadministratieve eenheid is toegepast voor de natuurlijke persoon waar
+			de inkomstenverhouding betrekking op heeft."
+		cond [1012] "Optioneel"
+
+		cond [1013] "Toegestane waarden zijn J of N"
+
+		explanation "De inhoudingsplichtige kan onder voorwaarden een korting toepassenop de verschuldigde Awf/WW-premie (Ufo-premie), de basispremie
+			WAO/IVA/WGA en de gedifferentieerde premie WGA voor zijn
+			werknemers van 62, 63 of 64 jaar. In het handboek Loonheffingen treft
+			u nadere informatie aan over deze premiekorting.
+			De inhoudingsplichtige vult hier J in als de premiekorting in dienst
+			hebben oudere werknemers voor de werknemer is toegepast.
+			Voor deze korting moet u het jaarbedrag evenredig over de
+			aangiftetijdvakken verdelen, waarbij de korting per tijdvak nog nader
+			evenredig aan het deeltijdpercentage in het betreffende tijdvak (zie het
+			toepassingsvoorschrift) moet worden aangepast.
+			Verrekening over tijdvakken heen is niet toegestaan."
+	}
+
+	datum IndLhKort: X(1)  {
+		name "Indicatie loonheffingskorting"
+		description "Een aanduiding dat de loonheffingskorting is toegepast."
+		cond [0216] "Verplicht"
+
+		cond [0217] "Toegestane waarden zijn J of N"
+
+		explanation "De inhoudingsplichtige vult  hier J in als n of meerloonheffingskortingen zijn toegepast.
+			Vanaf 1 januari 2008 mogen werkgevers, als hun salarispakket dit
+			toestaat, de jonggehandicaptenkorting ook toepassen als zij geen
+			Wajong-uitkering aan de werknemers (door)betalen. Het gaat hierbij
+			dan om werknemers die recht hebben op een Wajong-uitkering, maar
+			deze niet krijgen omdat zij andere inkomsten hebben. UWV stuurt
+			werknemers die hiervoor in aanmerking komen een brief die zij dan aan
+			hun werkgever moeten geven."
+	}
+
+	datum CdRdnGnBijt: X(1)  {
+		name "Code reden geen bijtelling auto"
+		description "Code die aangeeft waarom er geen bijtelling voor het privgebruik vaneen ter beschikking gestelde auto is."
+		cond [0373] "Optioneel"
+
+		cond [0374] "Waardebereik: zie toelichting"
+
+		explanation "Waardebereik:CODE OMSCHRIJVING
+			1 Afspraak via werkgever met Belastingdienst
+			2 Werknemer heeft verklaring geen privgebruik auto Belastingdienst
+			3 Ander bewijs personen- en bestelauto
+			5 Doorlopend afwisselend gebruik bestelauto
+			6            0% bijtelling voor auto zonder CO2-uitstoot
+			Code 1 moet ook aangegeven worden als de werkgever het
+			privgebruik van een bestelauto heeft verboden.
+			Let op!
+			Als de werkelijke waarde van het privgebruik van een auto meer is
+			dan 25% van de waarde van de auto, is de werkelijke waarde van het
+			privgebruik belast. In deze situatie heeft een verlaging met 25% van
+			de waarde van de auto zonder CO2-uitstoot tot gevolg dat er per saldo
+			wel een bijtelling moet plaatsvinden. Deze bijtelling moet u in de rubriek
+			\"Waarde privgebruik auto\" vermelden. Code 6 mag dus niet gebruikt
+			worden als in de rubriek \"Waarde privgebruik auto\" een groter bedrag
+			dan 0 is ingevuld."
+	}
+
+	datum LbTab: X(3) {
+		name "Code loonbelastingtabel"
+		description "Een code waarmee aangegeven wordt welke tabel voor de inhoudingvan LB/PH is toegepast"
+		cond [0218] "Verplicht"
+
+		cond [0219] "Waardebereik: zie toelichting."
+
+		explanation "De code is samengesteld uit drie cijfers:Soort tabel (eerste cijfer)
+			CODE BETEKENIS
+			0 Tabel zonder herleidingsregels, werknemer zowel belasting als
+			premieplichtig
+			3 Werknemer alleen premieplichtig
+			5 Werknemer alleen belastingplichtig
+			6 Werknemer belastingplichtig en niet premieplichtig voor de AWBZ
+			7 Werknemer belastingplichtig en alleen premieplichtig voor de AWBZ
+			Kleur tabel (tweede cijfer)
+			CODE BETEKENIS
+			1 Wit
+			2 Groen
+			Loontijdvak (derde cijfer)
+			CODE BETEKENIS
+			1 Kwartaal
+			2 Maand
+			3 Week
+			4 4-weken
+			5 Dag
+			0 Uitsluitend tabel voor bijzondere beloningen toegepast
+			Voor bijzondere situaties gelden de volgende codes:
+			CODE BETEKENIS
+			210 Aannemers van werk, thuiswerkers, sekswerkers en andere gelijkgestelden
+			220 Binnenlandse artiesten
+			221 Buitenlandse artiesten of beroepssporters (verlaagd tarief)
+			224 Buitenlandse artiestengezelschappen en sportploegen
+			225 Buitenlandse beroepssporters met een verlaagd tarief op grond van een
+			ministerieel besluit
+			226 Werknemer niet belastingplichtig en alleen premieplichtig voor de AWBZ
+			227 Werknemer niet belastingplichtig en alleen premieplichtig voor de ANW
+			228 Werknemer niet belastingplichtig en alleen premieplichtig voor de
+			AOW/ANW
+			250 Percentagetarief bijstand of WIJ-uitkering
+			940 52%-tarief in verband met anonieme werknemers
+			950       52%-tarief in verband met negatieve uitgaven bij afkoop van
+			inkomensvoorzieningen
+			999 Overige gevallen waarin geen tabel is toegepast
+			Als een werknemer wel is verzekerd voor de werknemersverzekeringen
+			en niet belasting- en premieplichtig is voor de LB/PH dan moet code
+			999 ingevuld worden.
+			Bij gelijktijdig toepassen van meerdere tabellen moet de tabelcode
+			worden opgegeven van het grootste bedrag waarop de tabel wordt
+			toegepast.
+			Let op!
+			Met betrekking tot de bovenstaande alinea gelden de volgende
+			aanvullende opmerkingen:
+			1. Samenloop negatieve uitgaven bij afkoop van
+			inkomensvoorzieningen en andere belaste uitkeringen
+			Als een bank, verzekeringsmaatschappij of een andere financile
+			instelling loonbelasting/premie volksverzekeringen moet inhouden in
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def
+			verband met negatieve uitgaven bij afkoop van inkomensvoorzieningen,
+			is code loonbelastingtabel 950 van toepassing. Als dezelfde instelling
+			aan dezelfde persoon daarnaast n of meerdere andere belaste
+			uitkeringen betaalt, dan moet de afkoopsom waarvoor code
+			loonbelastingtabel 950 van toepassing is (negatieve uitgaven bij afkoop
+			van inkomensvoorzieningen) altijd onder een apart nummer
+			inkomstenverhouding in het aangiftebericht worden opgenomen. De
+			uitkeringen waarvoor code loonbelastingtabel 950 niet van toepassing
+			is moeten onder n nummer inkomstenverhouding worden
+			samengevoegd.
+			2. Samenloop werkaanvaardingspremie en andere belaste uitkeringen
+			op grond van de Wet werk en bijstand (WWB), de Wet
+			inkomensvoorziening oudere en gedeeltelijk arbeidsongeschikte
+			werkloze werknemers (IOAW) of de Wet inkomensvoorziening oudere
+			en gedeeltelijk arbeidsongeschikte gewezen zelfstandigen (IOAZ)
+			Als aan een persoon in het kader van de Wet werk en bijstand (de
+			WWB), de Wet inkomensvoorziening oudere en gedeeltelijk
+			arbeidsongeschikte werkloze werknemers (de IOAW) of de Wet
+			inkomensvoorziening oudere en gedeeltelijk arbeidsongeschikte
+			gewezen zelfstandigen (de IOAZ) een belaste werkaanvaardingspremie
+			wordt betaald, dan geldt daarvoor  in tegenstelling tot de andere
+			belaste uitkeringen op grond van de WWB, de IOAW of de IOAZ  de
+			witte tabel. Als dezelfde administratieve eenheid aan dezelfde persoon
+			daarnaast n of meerdere andere belaste uitkeringen op grond van de
+			WWB, de IOAW of de IOAZ betaalt, dan moet de belaste
+			werkaanvaardingspremie altijd onder een apart nummer
+			inkomstenverhouding in het aangiftebericht worden opgenomen."
+	}
+
+	datum IndWAO: X(1) {
+		name "Indicatie verzekerd WAO/IVA/WGA"
+		description "Code die aangeeft of de natuurlijke persoon voor deze inkomsten-verhouding voor de Wet op de arbeidsongeschiktheidsverzekering
+			en/of de Wet werk en inkomen naar arbeidsvermogen is verzekerd."
+		cond [0220] "Verplicht"
+
+		cond [0221] "Toegestane waarden zijn J of N
+			"
+
+		cond [0057] "Voor een voor de WAO/IVA/WGA verzekerd persoon die in
+			het aangiftetijdvak 65 jaar is geworden, moet de indicatie tot de
+			datum waarop hij 65 jaar is geworden J zijn. Met ingang van de
+			datum waarop hij 65 jaar is geworden moet de indicatie N zijn."
+
+		explanation "Als in een aangiftetijdvak een voor de WAO/IVA/WGA verzekerdpersoon 65 jaar wordt en blijft doorwerken (d.w.z.: de Datum einde
+			inkomstenverhouding is niet gevuld of ligt op of na de datum van 65
+			jaar worden), moeten in dat tijdvak verschillende indicaties worden
+			aangegeven. Met ingang van de datum waarop deze persoon 65 jaar is
+			geworden ontstaat een nieuwe inkomstenverhouding. Het is toegestaan
+			om de bestaande inkomstenverhouding te splitsen in twee
+			inkomstenperiodes. Als deze persoon ook na dit aangiftetijdvak blijft
+			doorwerken, geldt het volgende:
+			- Als de inhoudingsplichtige heeft gekozen voor een nieuwe
+			inkomstenverhouding, dan geldt in de latere aangiftetijdvakken dit
+			nieuwe nummer.
+			- Als de inhoudingsplichtige niet heeft gekozen voor een nieuwe
+			inkomstenverhouding, maar voor twee inkomstenperiodes, dan blijft
+			ook in latere aangiftetijdvakken hetzelfde nummer
+			inkomstenverhouding gelden.
+			Op www.oswo.nl/cso zijn meerdere voorbeelden over dit onderwerp
+			gepubliceerd.
+			Voor gemoedsbezwaarden moet de indicatie worden ingevuld die van
+			toepassing zou zijn indien de desbetreffende persoon niet
+			gemoedsbezwaard zou zijn."
+	}
+
+	datum IndWW: X(1) {
+		name "Indicatie verzekerd WW"
+		description "Code die aangeeft of de natuurlijke persoon voor dezeinkomstenverhouding voor de Werkloosheidswet is verzekerd."
+		cond [0222] "Verplicht"
+
+		cond [0223] "Toegestane waarden zijn J of N
+			"
+
+		cond [0058] "Voor een voor de WW verzekerd persoon die in het
+			aangiftetijdvak 65 jaar is geworden, moet de indicatie tot de datum
+			waarop hij 65 jaar is geworden J zijn. Met ingang van de datum
+			waarop hij 65 jaar is geworden moet de indicatie N zijn."
+
+		explanation "Als in een aangiftetijdvak een voor de WW verzekerd persoon 65 jaarwordt en blijft doorwerken (d.w.z.: de Datum einde
+			inkomstenverhouding is niet gevuld of ligt op of na de datum van 65
+			jaar worden), moeten in dat tijdvak verschillende indicaties worden
+			aangegeven. Met ingang van de datum waarop deze persoon 65 jaar is
+			geworden ontstaat een nieuwe inkomstenverhouding. Het is toegestaan
+			om de bestaande inkomstenverhouding te splitsen in twee
+			inkomstenperiodes. Als deze persoon ook na dit aangiftetijdvak blijft
+			doorwerken, geldt het volgende:
+			- Als de inhoudingsplichtige heeft gekozen voor een nieuwe
+			inkomstenverhouding, dan geldt in de latere aangiftetijdvakken dit
+			nieuwe nummer.
+			- Als de inhoudingsplichtige niet heeft gekozen voor een nieuwe
+			inkomstenverhouding, maar voor twee inkomstenperiodes, dan blijft
+			ook in latere aangiftetijdvakken hetzelfde nummer
+			inkomstenverhouding gelden.
+			Op www.oswo.nl/cso zijn meerdere voorbeelden over dit onderwerp
+			gepubliceerd.
+			Voor gemoedsbezwaarden moet de indicatie worden ingevuld die van
+			toepassing zou zijn indien de desbetreffende persoon niet
+			gemoedsbezwaard zou zijn."
+	}
+
+	datum IndZW: X(1) {
+		name "Indicatie verzekerd ZW"
+		description "Code die aangeeft of de natuurlijke persoon voor dezeinkomstenverhouding voor de Ziektewet is verzekerd."
+		cond [0224] "Verplicht"
+
+		cond [0225] "Toegestane waarden zijn J of N
+			"
+
+		cond [0059] "Voor een voor de ZW verzekerd persoon die in het
+			aangiftetijdvak 65 jaar is geworden, moet de indicatie tot de datum
+			waarop hij 65 jaar is geworden J zijn. Met ingang van de datum
+			waarop hij 65 jaar is geworden moet de indicatie N zijn."
+
+		explanation "Als in een aangiftetijdvak een voor de ZW verzekerd persoon 65 jaarwordt en blijft doorwerken (d.w.z.: de Datum einde
+			inkomstenverhouding is niet gevuld of ligt op of na de datum van 65
+			jaar worden), moeten in dat tijdvak verschillende indicaties worden
+			aangegeven. Met ingang van de datum waarop deze persoon 65 jaar is
+			geworden ontstaat een nieuwe inkomstenverhouding. Het is toegestaan
+			om de bestaande inkomstenverhouding te splitsen in twee
+			inkomstenperiodes. Als deze persoon ook na dit aangiftetijdvak blijft
+			doorwerken, geldt het volgende:
+			- Als de inhoudingsplichtige heeft gekozen voor een nieuwe
+			inkomstenverhouding, dan geldt in de latere aangiftetijdvakken dit
+			nieuwe nummer.
+			- Als de inhoudingsplichtige niet heeft gekozen voor een nieuwe
+			inkomstenverhouding, maar voor twee inkomstenperiodes, dan blijft
+			ook in latere aangiftetijdvakken hetzelfde nummer
+			inkomstenverhouding gelden.
+			Op www.oswo.nl/cso zijn meerdere voorbeelden over dit onderwerp
+			gepubliceerd.
+			Een stagiair is over het algemeen alleen verzekerd voor de ZW.
+			Voor gemoedsbezwaarden moet de indicatie worden ingevuld die van
+			toepassing zou zijn indien de desbetreffende persoon niet
+			gemoedsbezwaard zou zijn."
+	}
+
+	datum IndPma: X(1) {
+		name "Indicatie premievrijstelling marginale arbeid"
+		description "Indicatie of premievrijstelling marginale arbeid door de administratieveeenheid is toegepast voor de natuurlijke persoon waar de
+			inkomstenverhouding betrekking op heeft."
+		cond [1029] "Optioneel"
+
+		cond [1030] "Toegestane waarden zijn J of N"
+
+		explanation "De inhoudingsplichtige kan onder voorwaarden premievrijstellingtoepassen op de verschuldigde Awf/WW-premie (of Ufo-premie), de
+			premie sectorfonds, de basispremie WAO/IVA/WGA , en de
+			gedifferentieerde premie WGA voor werknemers die slechts korte tijd in
+			dienst zijn. In het handboek Loonheffingen treft u nadere informatie aan
+			over deze premievrijstelling.
+			De inhoudingsplichtige vult hier J in als de premievrijstelling marginale
+			arbeid voor de werknemer is toegepast."
+	}
+
+	datum IndWgldOudRegl: X(1) {
+		name "Indicatie wachtgeld oude regeling"
+		description "Indicatie of het loon (de uitkering) van de werknemer onder dewachtgeldregeling van vr 2001 valt."
+		cond [1031] "Optioneel"
+
+		cond [1032] "Toegestane waarden zijn J of N"
+
+		explanation "Wachtgelders die onder de oude regeling van vr 2001 vallen, zijngeen Ufo-premie, maar wel de Aof- en Whk-premies verschuldigd.
+			De inhoudingsplichtige vult hier J in, als het loon (de uitkering) van de
+			werknemer onder de wachtgeldregeling van vr 2001 valt."
+	}
+
+	datum CdZvw: X(1) {
+		name "Code verzekeringssituatie Zvw"
+		description "Code die aangeeft of de natuurlijke persoon al dan nietverzekeringsplichtig is voor de Zvw en welk tarief van toepassing is."
+		cond [0226] "Verplicht"
+
+		cond [0227] "Waardebereik: zie Toelichting
+			"
+
+		cond [0060] "De waarde G is alleen toegestaan indien Code
+			loonbelastingtabel gelijk is aan 221, 224 of 225.
+			"
+
+		cond [0061] "De waarde H is alleen toegestaan indien Code
+			loonbelastingtabel gelijk is aan 220.
+			"
+
+		cond [1055] "De waarde J moet worden toegepast als en alleen als code
+			invloed verzekeringsplicht bevat F."
+
+		explanation "Voor gemoedsbezwaarden moet u de code invullen die van toepassingzou zijn geweest als de betreffende persoon niet gemoedsbezwaard
+			zou zijn.
+			De waarde B  is onwaarschijnlijk als de sector ongelijk is aan 63.
+			Waardebereik:
+			CODE BETEKENIS
+			A Niet verzekeringsplichtig omdat persoon niet verzekerd is voor AWBZ.
+			B Niet verzekeringsplichtig omdat persoon militair ambtenaar is in werkelijke
+			dienst of met buitengewoon verlof
+			C Wel verzekeringsplichtig, normaal tarief
+			D Wel verzekeringsplichtig, afwijkend tarief zeelieden
+			E Wel verzekeringsplichtig, verlaagd tarief
+			F Wel verzekeringsplichtig, meer tarieven toegepast
+			Let op!
+			Wanneer binnen het aangiftetijdvak volgtijdelijk verschillende codes van
+			toepassing zijn geweest, dan levert u per inkomstenperiode de juiste code
+			aan. U gebruikt hiervoor dus niet de code F.
+			G Niet verzekeringsplichtig omdat persoon buitenlands artiest of buitenlands
+			beroepssporter is waarbij code loonbelastingtabel 221, 224 of 225 is
+			toegepast.
+			H Wel verzekeringsplichtig, geen tarief toegepast omdat persoon binnenlands
+			artiest is waarbij code loonbelastingtabel 220 is toegepast
+			I Niet verzekeringsplichtig omdat persoon niet verzekerd is voor de AWBZ,
+			maar wel pseudobijdrage verschuldigd omdat in het woonland recht bestaat
+			op zorg ten laste van Nederland (artikel 69 Zvw).
+			Let op!
+			Deze pseudo-bijdrage moet u niet verantwoorden in de loonaangifte maar
+			betalen aan CvZ
+			J            Wel verzekeringsplichtig, 0%-tarief toegepast omdat persoon onder de
+			kleinebanenregeling valt
+			Let op!
+			De code I is optioneel. U mag deze codering toepassen voor de
+			situaties zoals beschreven bij Code I. Als u deze codering niet wilt
+			toepassen dan moet u de betreffende personen coderen met letter A"
+	}
+
+	datum IndVakBn: X(1)  {
+		name "Indicatie vakantiebonnen toegepast"
+		description "Code die aangeeft dat binnen de inkomstenverhouding de regelingvakantiebonnen is toegepast."
+		cond [0375] "Optioneel"
+
+		cond [0376] "Toegestane waarden zijn J of N"
+
+		explanation "Vakantiebonnen, vakantietoeslagbonnen en daarmee overeenkomendeaanspraken geven de werknemer een zelfstandig recht op
+			vakantiebijslag en vakantieloon (loon over vakantiedagen) tegenover
+			een derde, bijvoorbeeld tegenover een vakantiefonds of tijdspaarfonds
+			dat de bedrijfsorganisatie heeft ingesteld.
+			Als vakantiebonnen niet van toepassing zijn, dan veld niet invullen of
+			de waarde N invullen.
+			Let op!
+			Bij tijdsparen zijn de normale inhoudingstabellen (dus zonder
+			vakantiebonnen) van toepassing en is de forfaitaire regeling voor
+			vakantiebonnen niet van toepassing. De waardering is dus 100%."
+	}
+
+	datum IndSA71: X(1)  {
+		name "Indicatie loon bestaat (mede) uit een AOW-uitkering vooralleenstaande (met of zonder kinderen)
+"
+		description "Code die aangeeft dat het loon uit deze inkomstenverhouding (mede)bestaat uit een AOW-uitkering voor alleenstaande (met of zonder
+			kinderen)."
+		cond [0377] "Optioneel"
+
+		cond [0378] "Toegestane waarden zijn J of N"
+
+		explanation "Als deze uitkering niet van toepassing is, dan veld niet invullen of dewaarde N invullen."
+	}
+
+	datum IndSA72: X(1)  {
+		name "Indicatie loon inclusief Wajong-uitkering"
+		description "Code die aangeeft dat in het loon uit deze inkomstenverhouding eenbetaalde Wajong-uitkering is begrepen."
+		cond [0379] "Optioneel"
+
+		cond [0380] "Toegestane waarden zijn J of N"
+
+		explanation "Als deze uitkering niet van toepassing is, dan veld niet invullen of dewaarde N invullen."
+	}
+
+	datum IndSA43: X(1)  {
+		name "Indicatie personeelslening waarvan de rente- en/ofkostenvoordelen niet tot het loon zijn gerekend
+"
+		description "Code die aangeeft dat in het kader van deze inkomstenverhouding eenpersoneelslening is afgesloten waarvan de rente- en/of
+			kostenvoordelen niet tot het loon hoeven te worden gerekend."
+		cond [0381] "Optioneel"
+
+		cond [0382] "Toegestane waarden zijn J of N"
+
+		explanation "Als deze personeelslening niet van toepassing is, dan veld niet invullenof de waarde N invullen."
+	}
+
+	datum IndSA03: X(1)  {
+		name "Indicatie vervoer vanwege de inhoudingsplichtige"
+		description "Code die aangeeft dat in het kader van deze inkomstenverhoudingvervoer vanwege de inhoudingsplichtige is geregeld."
+		cond [0383] "Optioneel"
+
+		cond [0384] "Toegestane waarden zijn J of N"
+
+		explanation "Als vervoer vanwege de inhoudingsplichtige niet van toepassing is, danveld niet invullen of de waarde N invullen."
+	}
+
+	datum CdIncInkVerm: X(1) {
+		name "Code incidentele inkomstenvermindering"
+		description "Code welke aangeeft dat het loon door ziekte of onbetaald verloftijdelijk lager is dan het overeengekomen loon."
+		cond [0385] "Optioneel"
+
+		cond [0228] "Waardebereik: zie toelichting"
+
+		explanation "Deze code geeft aan dat het genoten loon in het aangiftetijdvak lager isdan het overeengekomen loon, dit als gevolg van onbetaald verlof of
+			omdat de bedongen arbeid niet is verricht in verband met
+			ongeschiktheid ten gevolge van ziekte, zwangerschap of bevalling.
+			Onder (onbetaald) verlof wordt verstaan: een tussen de werkgever en
+			werknemer voor een gedeelte of het geheel van de arbeidstijd
+			overeengekomen periode van verlof, waarin de werknemer geen arbeid
+			voor de werkgever verricht. Hieronder valt ook ouderschapsverlof en
+			zorgverlof.
+			De code moet altijd worden gevuld indien er sprake is van een betaling
+			die minder is dan 100% van het overeengekomen loon, ongeacht of het
+			losse ziektedagen betreft, of dat dit het eerste of het tweede
+			loondoorbetalingsjaar betreft.
+			Waardebereik:
+			CODE BETEKENIS
+			B Bevalling of zwangerschap
+			O Onbetaald verlof
+			Z Ziekte
+			Let op!
+			Zijn er in het aangiftetijdvak meerdere inkomstenperioden? Vul dan voor
+			alle inkomstenperioden de(zelfde) code incidentele inkomstenvermindering
+			in. Dit betekent dat als een werknemer bijvoorbeeld in een aangiftetijdvak
+			twee weken ziek is en daardoor minder loon heeft ontvangen, voor het hele
+			aangiftetijdvak code Z gevuld moet worden.
+			U vult dit veld niet in:
+			- als er sprake is van 100% loondoorbetaling bij ziekte of verlof;
+			-     bij verlof wegens vakantie als in het loon over de vakantieperiode
+			volledig is voorzien door vakantiebonnen (zie voor toelichting
+			vakantiebonnen Indicatie vakantiebonnen toegepast).
+			DGA
+			Zie voor een inkomstenverhouding van een werknemer waarvoor
+			inkomenscode 17 (niet voor de werknemersverzekeringen verzekerde
+			DGA) geldt, ook paragraaf 2.2 onder het kopje Afwijkende regels voor
+			niet voor de werknemersverzekeringen verzekerde DGAs."
+	}
+
+}
+
+group "Werknemersgegevens" {
+	datum LnLbPh: Bedrag(10,2) {
+		name "Loon LB/PH"
+		description "Het loon waarover de loonbelasting/premie volksverzekeringen wordtberekend."
+		cond [0386] "Verplicht"
+
+		explanation "Geheel conform kolom 14 van de loonstaat"
+	}
+
+	datum LnSV: Bedrag(10,2)  {
+		name "Loon SV"
+		description "Het loon voor de werknemersverzekeringen."
+		cond [0387] "Verplicht"
+
+		explanation "Kolom 8 van de loonstaat. Dit is het loon zonder rekening te houdenmet maximumpremieloon en franchise. Vul 0 in als de werknemer niet
+			verzekerd is voor de werknemersverzekeringen."
+	}
+
+	datum PrLnWao: Bedrag(10,2) {
+		name "Premieloon WAO/IVA/WGA"
+		description "Het bedrag waarover in het aangiftetijdvak voor deinkomstenverhouding door de administratieve eenheid de premie voor
+			WAO/IVA/WGA is berekend."
+		cond [1033] "Verplicht"
+
+		cond [1034] "Als dit bedrag groter is dan 0, dan moet het gelijk zijn aan of
+			kleiner zijn dan het Premieloon unif. premie WAO/gediff. premie
+			WGA.
+			"
+
+		cond [1035] "Als Basispremie WAO/IVA/WGA ongelijk is aan 0, dan moet
+			ook Premieloon WAO/IVA/WGA ongelijk zijn aan 0."
+
+		explanation "Dit is het brutoloon SV met inachtneming van de (tijdvak)maximering.Voor een werknemer voor wie de ouderenvrijstelling geldt en voor wie
+			geen basispremie WAO/IVA/WGA verschuldigd is, wordt gn
+			premieloon basispremie WAO/IVA/WGA vastgesteld. Het premieloon
+			basispremie WAO/IVA/WGA voor deze werknemer wordt op 0 gesteld.
+			Deze uitzondering geldt echter niet voor een werknemer voor wie op
+			grond van de kleinebanenregeling of de premievrijstelling marginale
+			arbeid (PMA) premievrijstelling wordt genoten. Voor deze werknemer
+			moet de werkgever het premieloon opgeven, alsof er wl premies
+			verschuldigd zouden zijn geweest.
+			De premiekortingen hebben geen invloed op de hoogte van het
+			premieloon, maar alleen op de hoogte van de verschuldigde premie.
+			Doet u aangifte voor een anonieme werknemer, dan geldt voor het
+			premieloon geen (tijdvak)maximering.
+			Er kan als gevolg van de kleinebanenregeling of de premievrijstelling
+			marginale arbeid (PMA) wel sprake zijn van een premie van 0 bij een
+			premieloon dat ongelijk is aan 0.
+			Let op!
+			Op het moment dat de premievrijstelling oudere werknemer overgaat in
+			de premiekorting oudere werknemer moeten de theoretische standen
+			worden berekend van het loon volgens de systematiek van
+			voortschrijdend cumulatief rekenen. Voor zover die soll-positie leidt tot
+			te betalen basispremie WAO/IVA/WGA, in de periode dat de vrijstelling
+			van toepassing is, behoeft de basispremie WAO/IVA/WGA uiteraard
+			niet betaald te worden. In de periode waarin de premiekorting oudere
+			werknemer van toepassing is, is de basispremie WAO/IVA/WGA wel
+			verschuldigd. In deze periode kunnen na-ijleffecten vanuit de periode
+			dat de premievrijstelling oudere werknemer gold optreden die de
+			grondslag waarover de premie wordt berekend verhogen."
+	}
+
+	datum PrLnWaoWga: Bedrag(10,2) {
+		name "Premieloon unif. premie WAO / gediff. premie WGA"
+		description "Het bedrag waarover in het aangiftetijdvak voor deinkomstenverhouding door de administratieve eenheid de premie voor
+			WGA (Whk) is berekend."
+		cond [1038] "Verplicht"
+
+		cond [1039] "Voor een werknemer die in het aangiftetijdvak niet onder de
+			oude wachtgeldregeling valt (Indicatie wachtgeld oude regeling
+			moet voor iedere inkomstenperiode binnen de
+			inkomstenverhouding <> J) geldt dat Premieloon unif. premie
+			WAO/gediff. premie WGA gelijk is aan de som van het Premieloon
+			Ufo en de Premielonen premie sectorfonds.
+			"
+
+		cond [1040] "Als Uniforme premie WAO/gedifferentieerde premie WGA
+			ongelijk is aan 0, dan moet ook Premieloon unif. premie
+			WAO/gediff. premie WGA ongelijk zijn aan 0."
+
+		explanation "Let op!Bij de Tweede Kamer is het wetsvoorstel Harmonisatie (Wet
+			harmonisatie en vereenvoudiging socialezekerheidswetgeving)
+			ingediend. De parlementaire behandeling van dit wetsvoorstel is echter
+			nog niet afgerond. In dit wetsvoorstel is onder andere opgenomen dat
+			de Arbeidsongeschiktheidskas (Aok) wordt opgeheven. De beoogde
+			invoeringsdatum van deze maatregel is 1 januari 2011. Het opheffen
+			van de Aok betekent, dat ook de uniforme premie WAO met ingang van
+			de beoogde ingangsdatum van 1 januari 2011 komt te vervallen. Bij de
+			samenstelling van dit document is er van uitgegaan dat de
+			invoeringsdatum inderdaad 1 januari 2011 zal zijn, maar was het
+			technisch niet meer mogelijk om met ingang van 2011 deze
+			samengestelde rubriek te laten vervallen en te vervangen door een
+			nieuwe enkelvoudige rubriek welke uitsluitend betrekking heeft op de
+			gedifferentieerde premie WGA. Om deze reden blijft de huidige
+			samengestelde rubriek in 2011 gehandhaafd, maar met betrekking tot
+			aangiftetijdvakken vanaf 2011 moet in deze rubriek uitsluitend het
+			premieloon voor de gedifferentieerde premie WGA worden opgenomen.
+			Dit is het brutoloon SV met inachtneming van de (tijdvak)maximering.
+			Het premieloon van een werknemer die een vrijstelling op grond van de
+			kleinebanenregeling of de premievrijstelling marginale arbeid (PMA)
+			heeft, moet hier wel worden meegenomen. Het moet dus worden
+			opgegeven, alsof wel premies verschuldigd zouden zijn geweest.
+			De premiekortingen hebben geen invloed op de hoogte van het
+			premieloon, maar alleen op de hoogte van de verschuldigde premie.
+			Werkgevers, die eigenrisicodrager zijn voor de WGA, geven hier het
+			premieloon op, alsof er wl premies verschuldigd zouden zijn.
+			Werkgevers, die voor de WGA gn eigenrisicodrager zijn, betalen de
+			gedifferentieerde premie WGA en moeten in deze rubriek eveneens het
+			premieloon voor de gedifferentieerde premie WGA opgeven.
+			Doet u aangifte voor anonieme werknemers dan geldt voor het
+			premieloon geen (tijdvak)maximering.
+			Er kan als gevolg van de kleinebanenregeling of de premievrijstelling
+			marginale arbeid (PMA) en relevant eigenrisicodragerschap (ERD) wel
+			sprake zijn van een premie van 0 bij een premieloon dat ongelijk is aan
+			0."
+	}
+
+	datum PrLnWwAwf: Bedrag(10,2) {
+		name "Premieloon WW Awf"
+		description "Het bedrag waarover in het aangiftetijdvak voor deinkomstenverhouding door de administratieve eenheid de premie voor
+			Awf is berekend."
+		cond [1041] "Verplicht"
+
+		cond [1042] "Dit bedrag moet lager zijn dan of gelijk zijn aan de som van
+			de premielonen van de sectorfondsen.
+			"
+
+		cond [1043] "Als Premie WW Awf ongelijk is aan 0, dan moet ook
+			Premieloon WW Awf ongelijk zijn aan 0."
+
+		explanation "Dit is het brutoloon SV met inachtneming van de (tijdvak)maximering ende (tijdvak)franchise.
+			Het premieloon van een werknemer die een vrijstelling op grond van de
+			kleinebanenregeling of de premievrijstelling marginale arbeid (PMA)
+			heeft, moet hier wel worden meegenomen. Het moet dus worden
+			opgegeven, alsof wel premies verschuldigd zouden zijn geweest.
+			De premiekortingen hebben geen invloed op de hoogte van het
+			premieloon, maar alleen op de hoogte van de verschuldigde premie.
+			Doet u aangifte voor een anonieme werknemer, dan geldt voor het
+			premieloon geen (tijdvak)maximering en (tijdvak)franchise. Dan geldt
+			dus, dat het Premieloon WW Awf gelijk is aan de som van de
+			premielonen van de sectorfondsen.
+			Er kan als gevolg van de kleinebanenregeling of de premievrijstelling
+			marginale arbeid (PMA) en relevant eigenrisicodragerschap (ERD) wel
+			sprake zijn van een premie van 0 bij een premieloon dat ongelijk is aan
+			0."
+	}
+
+	datum PrLnUfo: Bedrag(10,2) {
+		name "Premieloon Ufo"
+		description "Het bedrag waarover in het aangiftetijdvak voor deinkomstenverhouding door de administratieve eenheid de premie voor
+			Ufo is berekend."
+		cond [1046] "Verplicht"
+
+		cond [1047] "Als Premie Ufo ongelijk is aan 0, dan moet ook Premieloon
+			Ufo ongelijk zijn aan 0."
+
+		explanation "Dit is het brutoloon SV met inachtneming van de (tijdvak)maximering.De overheidswerkgever geeft niet het premieloon op van een
+			werknemer, die een uitkering geniet op grond van de WW, de ZW, de
+			WAO of de WIA die door tussenkomst van de werkgever wordt betaald.
+			Het premieloon van een werknemer die een vrijstelling op grond van de
+			kleinebanenregeling of de premievrijstelling marginale arbeid (PMA)
+			heeft, moet hier wel worden meegenomen. Het moet dus worden
+			opgegeven, alsof wel premies verschuldigd zouden zijn geweest
+			De premiekortingen hebben geen invloed op de hoogte van het
+			premieloon, maar alleen op de hoogte van de verschuldigde premie.
+			Doet u aangifte voor een anonieme werknemer, dan geldt voor het
+			premieloon geen (tijdvak)maximering en (tijdvak)franchise.
+			Er kan als gevolg van de kleinebanenregeling of de premievrijstelling
+			marginale arbeid (PMA) en relevant eigenrisicodragerschap (ERD) wel
+			sprake zijn van een premie van 0 bij een premieloon dat ongelijk is aan
+			0.
+			Het premieloon Ufo kan alleen groter zijn dan 0, als de werkgever is
+			ingedeeld in de sector 061, 062, 063, 064, 065 of 066."
+	}
+
+	datum LnTabBB: Bedrag(10,2) {
+		name "Loon belast volgens tabel bijzondere beloningen"
+		description "Dat deel van het Loon LB/PH dat is belast onder toepassing van detabel bijzondere beloningen."
+		cond [0388] "Verplicht"
+
+		explanation ""
+	}
+
+	datum VakBsl: Bedrag(10,2) {
+		name "Vakantiebijslag"
+		description "Het (bruto) bedrag dat aan vakantiebijslag is uitbetaald in het tijdvak."
+		cond [0389] "Verplicht"
+
+		explanation "Vakantiebijslag: het (bruto) bedrag dat in het tijdvak is uitbetaald alsvakantiebijslag.
+			De werknemer heeft aanspraak op vakantiebijslag. Dit kan zijn een
+			percentage van het loon of een (vast) bedrag. De aanspraak die
+			gedurende het jaar wordt opgebouwd, is eenmaal per jaar opeisbaar,
+			tenzij anders bepaald.
+			De specificaties inzake vakantiebijslag, extra periode salaris,
+			opgebouwde recht vakantiebijslag en opgebouwde recht extra periode
+			salaris zijn nodig om een beter uitgebalanceerd dagloon te krijgen. Het
+			dagloon bepaalt de hoogte van de uitkering werknemersvezekeringen.
+			Het dagloon wordt in beginsel gebaseerd op het loon SV in het jaar
+			voorafgaande aan de ziekte, arbeidsongeschiktheid of werkloosheid.
+			De vakantiebijslag maakt deel uit van dit loon (is daarin begrepen). Om
+			te voorkomen dat het betalingsmoment van vakantiebijslag er toe kan
+			leiden dat relatief teveel of te weinig vakantiebijslag in het dagloon
+			wordt opgenomen, worden uitbetaalde bedragen aan vakantiebijslag bij
+			de dagloonberekening vervangen door de opgebouwde bedragen. Het
+			is daartoe dus voor UWV nodig het bedrag van de uitbetaalde
+			vakantiebijslag te weten, om dat op het aangegeven loon SV in mindering
+			te kunnen brengen en vervolgens het aangegeven opgebouwde bedrag
+			erbij op te tellen.
+			Let op!
+			Afwijkende situatie
+			Indien in elk aangiftetijdvak de vakantiebijslag of de aanspraak daarop is
+			opgenomen in het loon SV en er daarnaast geen reservering plaatsvindt,
+			vult u in dit veld en in het veld Opgebouwde recht vakantiebijslag beide
+			een 0 in. Het doel voor uitvraag is reeds bereikt: de vakantiebijslag is al
+			regelmatig verdeeld over de loonbetalingen zodat het voor de
+			dagloonberekening niet meer nodig is de uitbetaalde bedragen te
+			vervangen door de opgebouwde bedragen. Dit is het geval voor werkgevers
+			die met all-in lonen werken, vakantiebonnen verstrekken of werken met
+			tijdsparen.
+			DGA
+			Zie voor een inkomstenverhouding van een werknemer waarvoor
+			inkomenscode 17 (niet voor de werknemersverzekeringen verzekerde
+			DGA) geldt, ook paragraaf 2.2 onder het kopje Afwijkende regels voor
+			niet voor de werknemersverzekeringen verzekerde DGAs."
+	}
+
+	datum OpgRchtVakBsl: Bedrag(10,2) {
+		name "Opgebouwde recht vakantiebijslag"
+		description "Het (bruto) bedrag dat aan rechten op vakantiebijslag is opgebouwd inhet tijdvak."
+		cond [0390] "Verplicht"
+
+		explanation "Opgebouwde recht Vakantiebijslag: het bedrag aan (bruto) loon dat inhet tijdvak aan rechten op vakantiebijslag  is opgebouwd. De
+			werknemer heeft aanspraak op vakantiebijslag. Dit kan zijn een
+			percentage van zijn loon of een (vast) bedrag. De aanspraak die
+			gedurende het jaar wordt opgebouwd, is eenmaal per jaar opeisbaar,
+			tenzij anders bepaald.
+			De specificaties inzake vakantiebijslag, extra periode salaris,
+			opgebouwde recht vakantiebijslag en opgebouwde recht extra periode
+			salaris zijn nodig om een beter uitgebalanceerd dagloon te krijgen. Het
+			dagloon bepaalt de hoogte van de uitkering werknemersverzekeringen.
+			Het dagloon wordt in beginsel gebaseerd op het loon SV in het jaar
+			voorafgaande aan de ziekte, arbeidsongeschiktheid of werkloosheid.
+			De vakantiebijslag maakt deel uit van dit loon (is daarin begrepen).
+			Om te voorkomen dat het betalingsmoment van vakantiebijslag er toe
+			kan leiden dat relatief teveel of te weinig vakantiebijslag in het dagloon
+			wordt opgenomen, worden uitbetaalde bedragen aan vakantiebijslag bij
+			de dagloonberekening vervangen door de opgebouwde bedragen.
+			Het is daartoe dus voor UWV nodig het bedrag van de opgebouwde
+			vakantiebijslag te weten. Op het aangegeven loon SV wordt de
+			uitbetaalde vakantiebijslag in mindering gebracht, waarna het
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def
+			opgebouwde recht erbij opgeteld wordt.
+			Let op!
+			1. Ook in tijdvakken waarin een uitbetaling van vakantierechten heeft
+			plaatsgevonden, vult u het voor dat tijdvak gereserveerde bedrag
+			in.
+			2. Indien de vakantiebijslag wordt opgebouwd door elk tijdvak een
+			percentage van het salaris in dat tijdvak te reserveren, vult u het
+			voor dit tijdvak gereserveerde bedrag in (geen cumulatieve
+			bedragen).
+			3. Indien de hoogte van de uit te betalen vakantiebijslag niet wordt
+			gebaseerd op de som van per tijdvak gereserveerde rechten, maar
+			op het laatstverdiende loon of het loon op een peildatum
+			(peildatumsystematiek), wordt er wel jaarlijks een bedrag
+			uitgekeerd, maar de opbouw per aangiftetijdvak is niet of lastig vast
+			te stellen, bijvoorbeeld omdat het loon op de peildatum niet altijd
+			van tevoren bekend is. In dat geval moet u bij opgebouwde recht
+			vakantiebijslag toch een reel gereserveerd bedrag invullen alsof
+			wel een opbouwpercentage van toepassing is geweest zoals
+			bedoeld onder 2. Het volstaat om een bedrag in te vullen ter hoogte
+			van 8% van het genoten (bruto)loon in het aangiftetijdvak.
+			Afwijkende situatie
+			Indien in elk aangiftetijdvak de vakantiebijslag of de aanspraak daarop
+			is opgenomen in het loon SV en er daarnaast geen reservering
+			plaatsvindt, vult u in dit veld en in het veld Vakantiebijslag beide een
+			0 in. Het doel voor uitvraag is reeds bereikt: de vakantiebijslag is al
+			regelmatig verdeeld over de loonbetalingen zodat het voor de
+			dagloonberekening niet meer nodig is de uitbetaalde bedragen te
+			vervangen door de opgebouwde bedragen. Dit is het geval voor
+			werkgevers die met all-in lonen werken, vakantiebonnen verstrekken of
+			werken met tijdsparen.
+			DGA
+			Zie voor een inkomstenverhouding van een werknemer waarvoor
+			inkomenscode 17 (niet voor de werknemersverzekeringen verzekerde
+			DGA) geldt, ook paragraaf 2.2 onder het kopje Afwijkende regels voor
+			niet voor de werknemersverzekeringen verzekerde DGAs."
+	}
+
+	datum ExtrSal: Bedrag(10,2) {
+		name "Extra periode salaris"
+		description "Het (bruto) bedrag dat naast het loon en vakantiegeld is uitbetaald inhet tijdvak naar aanleiding van afspraken in de (individuele of
+			collectieve) arbeidsovereenkomst."
+		cond [0391] "Verplicht"
+
+		explanation "Extra periode salaris: het bedrag aan (bruto) loon dat in het tijdvak isuitbetaald als extra periode salaris.
+			Het betreft bedragen die zijn uitbetaald onder de noemer van een 13e of 14e
+			maand en/of een gratificatie, en waarvoor de werknemer in de loop van het
+			jaar reserveringen opbouwt. Recht op een extra periode salaris kan
+			bestaan op basis van afspraken in de CAO, maar ook op basis van
+			gemaakte afspraken in de arbeidsovereenkomst.
+			De specificaties inzake vakantiebijslag, extra periode salaris,
+			opgebouwde recht vakantiebijslag en opgebouwde recht extra periode
+			salaris zijn nodig om een beter uitgebalanceerd dagloon te krijgen. Het
+			dagloon wordt in beginsel gebaseerd op het loon SV in het jaar
+			voorafgaande aan de ziekte, arbeidsongeschiktheid of werkloosheid. De
+			extra periode salaris maakt deel uit van dit loon (is daarin begrepen). Om te
+			voorkomen dat het betalingsmoment van de extra periode salaris er toe kan
+			leiden dat relatief teveel of te weinig extra periode salaris in het dagloon
+			wordt opgenomen, worden uitbetaalde bedragen aan extra periode salaris
+			bij de dagloonberekening vervangen door de opgebouwde bedragen. Het is
+			daartoe dus voor UWV nodig het bedrag van de uitbetaalde extra periode
+			salaris te weten, om dat op het aangegeven loon SV in mindering te kunnen
+			brengen en vervolgens het aangegeven opgebouwde bedrag erbij op te
+			tellen.
+			Indien er geen sprake is van extra periode salaris, vult u hier de waarde '0'
+			in.
+			Let op!
+			Afwijkende situatie
+			Indien in elk aangiftetijdvak het extra periode salaris of de aanspraak
+			daarop is opgenomen in het loon SV en er daarnaast geen reservering
+			plaatsvindt, vult u in dit veld en in het veld Opgebouwde recht extra periode
+			salaris beide een 0 in. Het doel voor uitvraag is reeds bereikt: de extra
+			periode salaris is al regelmatig verdeeld over de loonbetalingen zodat het
+			voor de dagloonberekening niet meer nodig is de uitbetaalde bedragen te
+			vervangen door de opgebouwde bedragen. Deze situatie doet zich
+			bijvoorbeeld voor bij CAO-regelingen waarbij de werknemer ervoor kan
+			kiezen het bedrag van de reservering voor een extraperiode salaris steeds
+			direct te laten uitbetalen, gelijk met het reguliere loon.
+			DGA
+			Zie voor een inkomstenverhouding van een werknemer waarvoor
+			inkomenscode 17 (niet voor de werknemersverzekeringen verzekerde
+			DGA) geldt, ook paragraaf 2.2 onder het kopje Afwijkende regels voor
+			niet voor de werknemersverzekeringen verzekerde DGAs."
+	}
+
+	datum OpgRchtExtrSal: Bedrag(10,2) {
+		name "Opgebouwde recht extra periode salaris"
+		description "Het (bruto) bedrag dat aan rechten op vaste vergoedingen naast hetloon en vakantiegeld is opgebouwd in het tijdvak naar aanleiding van
+			afspraken in de (individuele of collectieve) arbeidsovereenkomst."
+		cond [0392] "Verplicht"
+
+		explanation "Extra periode salaris: het bedrag aan (bruto) loon dat in het tijdvak isopgebouwd als extra periode salaris.
+			Het betreft bedragen die zijn opgebouwd of gereserveerd onder de
+			noemer van een 13e of 14e maand en/of een gratificatie. Recht op extra
+			periode salaris kan bestaan op basis van afspraken in de CAO, maar
+			ook op basis van gemaakte afspraken in de arbeidsovereenkomst.
+			De specificaties inzake vakantiebijslag, extra periode salaris,
+			opgebouwde recht vakantiebijslag en opgebouwde recht extra periode
+			salaris zijn nodig om een beter uitgebalanceerd dagloon te krijgen. Het
+			dagloon bepaalt de hoogte van de uitkering werknemersverzekeringen. Het
+			dagloon wordt in beginsel gebaseerd op het loon SV in het jaar
+			voorafgaande aan de ziekte, arbeidsongeschiktheid of werkloosheid. Het
+			extra periode salaris maakt deel uit van dit loon (is daarin begrepen).
+			Om te voorkomen dat het betalingsmoment van het extra periodesalaris er
+			toe kan leiden dat relatief teveel of te weinig extra periode salaris in het
+			dagloon wordt opgenomen, worden uitbetaalde bedragen aan extra periode
+			salaris bij de dagloonberekening vervangen door de opgebouwde
+			bedragen.
+			Het is daartoe dus voor UWV nodig het bedrag van het opgebouwde extra
+			periode salaris te weten. Op het aangegeven loon SV wordt het uitbetaalde
+			extra periode salaris in mindering gebracht, waarna het opgebouwde recht
+			erbij opgeteld wordt.
+			Indien er geen sprake is van een opgebouwd recht, vult u hier de waarde '0'
+			in.
+			Let op!
+			1. Ook in tijdvakken waarin een uitbetaling extra periode salaris heeft
+			plaatsgevonden, vult u het voor dat tijdvak gereserveerde bedrag
+			in.
+			2. Indien het extra periodesalaris wordt opgebouwd door elk tijdvak
+			een percentage van het salaris in dat tijdvak te reserveren, vult u
+			het voor dit tijdvak gereserveerde bedrag in (geen cumulatieve
+			bedragen).
+			3. Indien de hoogte van de uit te betalen extra periode salaris niet
+			wordt gebaseerd op de som van per tijdvak gereserveerde rechten,
+			maar op het laatstverdiende loon of het loon op een peildatum
+			(peildatumsystematiek), wordt er wel jaarlijks een bedrag
+			uitgekeerd, maar de opbouw per aangiftetijdvak is niet of lastig vast
+			te stellen, bijvoorbeeld omdat het loon op de peildatum niet altijd
+			van tevoren bekend is. In dat geval moet u bij opgebouwde recht
+			extra periode salaris  toch een reel gereserveerd bedrag invullen
+			alsof wel een opbouwpercentage van toepassing is geweest zoals
+			bedoeld onder 2.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def
+			Afwijkende situatie
+			Indien in elk aangiftetijdvak het extra periode salaris of de aanspraak
+			daarop is opgenomen in het loon SV en er daarnaast geen reservering
+			plaatsvindt, vult u in dit veld en in het veld Extra periode salaris beide een
+			0 in. Het doel voor uitvraag is reeds bereikt: het extra periode salaris is al
+			regelmatig verdeeld over de loonbetalingen zodat het voor de
+			dagloonberekening niet meer nodig is de uitbetaalde bedragen te
+			vervangen door de opgebouwde bedragen. Deze situatie doet zich
+			bijvoorbeeld voor bij CAO-regelingen waarbij de werknemer ervoor kan
+			kiezen het bedrag van de reservering voor een extra periode salaris steeds
+			direct te laten uitbetalen, gelijk met het reguliere loon.
+			DGA
+			Zie voor een inkomstenverhouding van een werknemer waarvoor
+			inkomenscode 17 (niet voor de werknemersverzekeringen verzekerde
+			DGA) geldt, ook paragraaf 2.2 onder het kopje Afwijkende regels voor
+			niet voor de werknemersverzekeringen verzekerde DGAs."
+	}
+
+	datum LnInGld: Bedrag(10,2) {
+		name "Loon in geld"
+		description "Het (bruto) bedrag aan loon in geld dat belast is voor zowel deloonbelasting/premie volksverzekeringen, premies
+			werknemersverzekeringen als bijdrage Zvw."
+		cond [0393] "Verplicht"
+
+		explanation "Kolom 3 van de loonstaat"
+	}
+
+	datum WrdLn: Bedrag(10,2) {
+		name "Waarde niet in geld uitgekeerd loon"
+		description "De waarde van het loon dat niet in geld is uitgekeerd en waaroploonbelasting/premie volksverzekeringen moet worden ingehouden en
+			waarover premies voor de werknemersverzekeringen moet worden
+			afgedragen.
+			Bijvoorbeeld: de belaste waarde van vakantiebonnen en de belaste
+			waarde van aanspraken."
+		cond [0394] "Verplicht"
+
+		explanation "Kolom 4 van de loonstaat"
+	}
+
+	datum LnOwrk: Bedrag(10,2) {
+		name "Loon uit overwerk"
+		description "Het (bruto) bedrag dat aan loon is uitbetaald in verband met overwerk."
+		cond [0395] "Verplicht"
+
+		explanation "Geldt alleen voor inkomstenverhoudingen met code soortinkomstenverhouding is gelijk aan 11, 12, 13, 14 of 15. Vul voor andere
+			inkomstenverhoudingen nul (0) in.
+			Hoe te handelen in diverse situaties:
+			In dit verband is het voor de kwalificatie overwerk niet uitsluitend van
+			belang of er meer dan het reguliere aantal uren is gewerkt. Als extra
+			voorwaarde geldt dat er op basis van een CAO of een individuele
+			afspraak voor de extra gewerkte uren een toeslag wordt betaald.
+			Voorbeelden:
+			1. De full-time arbeidsduur is volgens de CAO 36 uur per week. De
+			werknemer werkt een week 41 uur, waarbij het uurloon van de 5
+			extra gewerkte uren gelijk is aan het normale uurloon. Geen
+			overwerk.
+			2. De full-time arbeidsduur is volgens de CAO 36 uur per week. De
+			werknemer werkt een week 41 uur, waarbij het uurloon van de 5
+			extra gewerkte uren 25% hoger is dan het normale uurloon. Wel
+			overwerk.
+			3. Een parttimer werkt gewoonlijk 21 uur per week. Hij werkt in een
+			week 25 uur, waarbij het uurloon van de 4 extra gewerkte uren gelijk
+			is aan het normale uurloon. Geen overwerk.
+			4. Een parttimer werkt gewoonlijk 21 uur per week. Hij werkt in een
+			week 25 uur, waarbij het uurloon van de 4 extra gewerkte uren 25%
+			hoger is dan het normale uurloon. Wel overwerk.
+			Bij overwerk moet in deze rubriek het loon over de overwerkuren
+			inclusief de toeslag over die uren vermeld worden.
+			Er is een relatie met de verloonde uren. Zowel betaalde extra uren met
+			overwerktoeslag (overwerkuren) als extra uren zonder toeslag
+			(meeruren) maken deel uit van de verloonde uren.
+			Let op!
+			Fiscaal kan het begrip overwerk anders uitgelegd worden dan het in
+			deze rubriek gehanteerde begrip overwerk."
+	}
+
+	datum VerstrAanv: Bedrag(10,2) {
+		name "Verstrekte aanvulling op uitkering werknemersverzekering"
+		description "Het bedrag aan loon SV dat als aanvulling is uitbetaald op een uitkeringwerknemersverzekeringen."
+		cond [0396] "Verplicht"
+
+		explanation "Verstrekte aanvulling op uitkering: het bedrag aan loon SV dat alsaanvulling op een uitkering WW, ZW, WAO, WIA, WAZO en TW is
+			uitbetaald in de periode waarin de dienstbetrekking nog niet is
+			beindigd.
+			Let op!
+			Als het een aanvulling op uitkering werknemersverzekeringen betreft
+			van een werknemer die inmiddels uit dienst is, is er geen sprake van
+			loon SV. De aanvulling mag dan dus niet in het loon SV zijn begrepen
+			en het veld Verstrekte aanvulling op uitkering
+			werknemersverzekeringen mag niet worden ingevuld.
+			DGA
+			Zie voor een inkomstenverhouding van een werknemer waarvoor
+			inkomenscode 17 (niet voor de werknemersverzekeringen verzekerde
+			DGA) geldt, ook paragraaf 2.2 onder het kopje Afwijkende regels voor
+			niet voor de werknemersverzekeringen verzekerde DGAs."
+	}
+
+	datum IngLbPh: Bedrag(10,2) {
+		name "Ingehouden loonbelasting/premie volksverzekeringen"
+		description "Het bedrag dat in het tijdvak op het loon aan loonbelasting en premievolksverzekeringen is ingehouden."
+		cond [0397] "Verplicht"
+
+		explanation "Conform kolom 15 van de loonstaat."
+	}
+
+	datum PrWAOAof: Bedrag(10,2) {
+		name "Basispremie WAO/IVA/WGA"
+		description "Het bedrag dat door de administratieve eenheid in het tijdvakverschuldigd is voor de inkomstenverhouding in verband met
+			WAO/IVA/WGA op grond van de basispremie."
+		cond [0398] "Verplicht"
+
+		explanation "Er is n basispremie die geldt voor de WAO, IVA en WGA.Voor bepaalde werknemers kan er een premievrijstelling gelden. In dat
+			geval moet als premie 0 worden ingevuld. Met ingang van 2009 geldt
+			voor de premievrijstelling de volgende overgangsregeling:
+			Als de werkgever de premievrijstelling in 2008 toepast voor een
+			werknemer en is deze werknemer op 1 januari 2009 55,5 jaar of ouder,
+			dan mag de werkgever de premievrijstelling blijven toepassen. De
+			werknemer moet dan nog wel bij de werkgever in dienst zijn en nog
+			geen 62 jaar zijn. Vanaf het moment dat de werknemer 62 jaar is en
+			nog bij de werkgever in dienst is, past de werkgever niet meer de
+			premievrijstelling toe, maar de premiekorting voor oudere werknemers.
+			Als de werkgever in 2008 of eerder een werknemer in dienst heeft
+			genomen die toen 50 jaar of ouder was en is deze werknemer op
+			1 januari 2009 jonger dan 55,5 jaar, dan heeft de werkgever met
+			ingang van 2009 geen recht meer op de premievrijstelling.
+			Als de vrijstelling op grond van de kleinebanenregeling of de
+			premievrijstelling marginale arbeid (PMA) van toepassing is, wordt de
+			premie op 0 gesteld.
+			Let op!
+			Als n of meer premiekortingen van toepassing zijn op een
+			werknemer, moet hier de premie wel worden vermeld. De
+			inhoudingsplichtige moet hier de premie invullen die verschuldigd zou
+			zijn als gn korting werd toegepast. Deze premiekorting komt pas in
+			mindering bij het collectief deel van de aangifte (rubrieken
+			Premiekorting arbeidsgehandicapten, Premiekorting nieuwe
+			arbeidsverhouding oudere werknemers en Premiekorting in dienst
+			hebben oudere werknemers)."
+	}
+
+	datum PrWAOAok: Bedrag(10,2) {
+		name "Uniforme premie WAO / gedifferentieerde premie WGA"
+		description "Het bedrag dat door de administratieve eenheid in het tijdvakverschuldigd is voor de inkomstenverhouding aan gedifferentieerde
+			premie WGA."
+		cond [0399] "Verplicht"
+
+		explanation "Let op!Bij de Tweede Kamer is het wetsvoorstel Harmonisatie (Wet
+			harmonisatie en vereenvoudiging socialezekerheidswetgeving)
+			ingediend. De parlementaire behandeling van dit wetsvoorstel is echter
+			nog niet afgerond. In dit wetsvoorstel is onder andere opgenomen dat
+			de Arbeidsongeschiktheidskas (Aok) wordt opgeheven. De beoogde
+			invoeringsdatum van deze maatregel is 1 januari 2011. Het opheffen
+			van de Aok betekent, dat ook de uniforme premie WAO met ingang van
+			de beoogde ingangsdatum van 1 januari 2011 komt te vervallen. Bij de
+			samenstelling van dit document is er van uitgegaan dat de
+			invoeringsdatum inderdaad 1 januari 2011 zal zijn, maar was het
+			technisch niet meer mogelijk om met ingang van 2011 deze
+			samengestelde rubriek te laten vervallen en te vervangen door een
+			nieuwe enkelvoudige rubriek welke uitsluitend betrekking heeft op de
+			gedifferentieerde premie WGA. Om deze reden blijft de huidige
+			samengestelde rubriek in 2011 gehandhaafd, maar met betrekking tot
+			aangiftetijdvakken vanaf 2011 moet in deze rubriek uitsluitend de
+			gedifferentieerde premie WGA worden opgenomen.
+			Werkgevers, die eigenrisicodrager zijn voor de WGA, geven geen
+			gedifferentieerde premie WGA aan. Dat geldt ook voor de
+			overheidswerkgevers, die eigenrisicodrager voor de WGA zijn. Als de
+			vrijstelling op grond van de kleinebanenregeling of de premievrijstelling
+			marginale arbeid (PMA) van toepassing is wordt de premie op 0
+			gesteld.
+			Als een premiekorting van toepassing is wordt de premie vermeld, die
+			verschuldigd zou zijn als gn korting werd toegepast."
+	}
+
+	datum PrAWF: Bedrag(10,2) {
+		name "Premie WW Awf"
+		description "Het bedrag dat door de administratieve eenheid in het tijdvak voor deinkomstenverhouding aan premie is verschuldigd ten behoeve van het
+			fonds Awf. Deze premie is de som van het werkgevers- en
+			werknemersdeel van de premie Awf."
+		cond [0400] "Verplicht in te vullen indien geen Premie Ufo is ingevuld.Indien wel Premie Ufo is ingevuld mag geen Premie WW Awf
+			worden aangeleverd.
+			"
+
+		cond [0401] "Wanneer Premie WW Awf is ingevuld, dan moet ook Premie
+			sectorfonds zijn ingevuld."
+
+		explanation "Deze premie is alleen verschuldigd door werkgevers, die niet behorentot de overheidssector. De werkgever moet het werkgeversdeel van de
+			premie en het werknemersdeel van de premie tezamen opgeven. Als
+			de vrijstelling op grond van de kleinebanenregeling of de
+			premievrijstelling marginale arbeid (PMA) van toepassing is wordt de
+			premie op 0 gesteld. Als n of meer premiekortingen van toepassing
+			zijn, wordt de premie vermeld die verschuldigd zou zijn als gn korting
+			werd toegepast.
+			De WW-premie is voor overheidswerknemers en voor niet overheids-
+			werknemers verschillend. Voor niet-overheidswerknemers wordt de
+			WW-premie afgestort in het Algemeen Werkloosheidsfonds (de Awf-
+			premie) respectievelijk in het sectorfonds (de premie sectorfonds). De
+			Awf-premie bestaat uit een werknemersdeel en een werkgeversdeel. Bij
+			overheidswerknemers wordt pseudo WW-premie ingehouden op het
+			salaris. Deze komt ten goede aan de werkgever, wordt niet afgestort in
+			een fonds bij UWV en hoeft niet in de aangifte loonheffingen te worden
+			opgegeven.
+			Een werkgever kan alleen f de Ufo-premie opgeven, f de premie
+			WW-Awf en premie sectorfonds. Voor een niet verzekerde werknemer
+			levert de werkgever, om aan de gestelde condities te voldoen, de
+			rubriek Premie UFO aan met de waarde  0,00."
+	}
+
+	datum PrUFO: Bedrag(10,2) {
+		name "Premie UFO"
+		description "Het bedrag dat door de administratieve eenheid in het tijdvakverschuldigd is voor de inkomstenverhouding in verband met WW-
+			voorzieningen betaald uit het Uitkeringsfonds Overheid."
+		cond [0404] "Verplicht in te vullen indien geen Premie sectorfonds en geenPremie WW Awf is ingevuld. Indien wel Premie sectorfonds en
+			Premie WW Awf is gevuld mag Premie Ufo niet worden
+			aangeleverd."
+
+		explanation "Vanaf 1 januari 2007 moet een verplichte werkgeversbijdrage in dekosten kinderopvang worden betaald. Dit vindt plaats door middel van
+			een opslag(premie) op de premie Ufo. De premiepercentages van de
+			premie UFO en de opslag(premie) staan in het Handboek
+			Loonheffingen. De opslag(premie) is nog niet verwerkt in de in het
+			Handboek Loonheffingen vermelde premie Ufo. In deze rubriek moet de
+			premie UFO inclusief de opslag(premie) worden vermeld.
+			De verplichting 'Premie Ufo' in te vullen is alleen van toepassing op
+			inhoudingsplichtigen (werkgevers), die behoren tot de overheidssector
+			(ingedeeld in sector 061, 062, 063, 064, 065 of 066).
+			Als de vrijstelling op grond van de kleinebanenregeling of de
+			premievrijstelling marginale arbeid (PMA) van toepassing is, wordt de
+			premie op 0 gesteld.
+			Als n of meer premiekortingen van toepassing zijn wordt de premie
+			vermeld, die verschuldigd zou zijn als gn korting werd toegepast.
+			Een werkgever kan op werknemersgegevensniveau alleen f de UFO-
+			premie opgeven, f de premie WW-Awf en premie sectorfonds. Voor
+			een niet verzekerde werknemer levert de werkgever, om aan de
+			gestelde condities te voldoen, de rubriek Premie UFO aan met de
+			waarde  0,00."
+	}
+
+	datum BijdrZvw: Bedrag(10,2) {
+		name "Ingehouden bijdrage Zvw"
+		description "Het bedrag dat de inhoudingsplichtige op het loon van de werknemerheeft ingehouden als bijdrage Zvw."
+		cond [0405] "Verplicht"
+
+		explanation "Bij de berekening van Zvw wordt uitgegaan van 260 dagen per jaar.Voor gemoedsbezwaarde werknemers voor de Zvw dient hieronder ook
+			de ingehouden bijdragevervangende belasting vermeld te worden."
+	}
+
+	datum VergZvw: Bedrag(10,2) {
+		name "Bedrag vergoeding Zvw door inhoudingsplichtige"
+		description "Het bedrag dat de inhoudingsplichtige aan de werknemer heeft vergoedin verband met de ingehouden bijdrage Zvw."
+		cond [0406] "Verplicht"
+
+		cond [0099] "Het opgegeven bedrag mag niet groter zijn dan de
+			ingehouden bijdrage Zvw. Alleen als voor de werknemer in het
+			voorafgaande tijdvak het anoniementarief voor alle loonheffingen is
+			toegepast, kan dit anders zijn."
+
+		explanation "Het betreft hier het bedrag dat de inhoudingsplichtige wettelijk verplichtis om aan de werknemer te vergoeden. Voor gemoedsbezwaarde
+			werknemers voor de Zvw dient hieronder ook de vergoeding voor de
+			bijdragevervangende belasting vermeld te worden. Als de
+			inhoudingsplichtige meer vergoedt dan hij wettelijk is verplicht (hij
+			vergoedt bijvoorbeeld ook de nominale premie en/of de aanvullende
+			premie), dan is het meerdere normaal te belasten loon voor alle
+			loonheffingen dat in de daarvoor bestemde rubrieken moet worden
+			opgenomen. Als de inhoudingsplichtige in het kader van de evenredige
+			bijdrageverdeling (EBV) voor een werknemer een teruggaaf van de
+			inkomensafhankelijke bijdrage ontvangt en deze in de loonadministatie
+			verwerkt, dan moet hij deze teruggaaf als negatief loon boeken. Dit
+			negatieve loon mag hij niet in deze rubriek opnemen, maar moet hij
+			opnemen in de rubriek \"Loon LB/PH\"."
+	}
+
+	datum WrdPrGebrAut: Bedrag(10,2) {
+		name "Waarde privgebruik auto"
+		description "Het bedrag van de forfaitaire waarde van het privgebruik van een aande werknemer ter beschikking gestelde auto vr aftrek van de eigen
+			bijdrage van de werknemer."
+		cond [0407] "Verplicht"
+
+		explanation "Het gaat om het tijdsevenredige bedrag: de waarde van de autovermenigvuldigd met het bijtellingspercentage gedeeld door het aantal
+			loontijdvakken in het jaar voor de administratieve eenheid."
+	}
+
+	datum WrknBijdrAut: Bedrag(10,2) {
+		name "Werknemersbijdrage privgebruik auto"
+		description "Het bedrag van de eigen bijdrage van de werknemer voor hetprivgebruik van de ter beschikking gestelde auto."
+		cond [0408] "Verplicht"
+
+		explanation "De bijtelling bij het loon in verband met een aan de werknemer terbeschikking gestelde auto mag op kalenderjaarbasis niet negatief zijn.
+			De op de waarde privgebruik auto in mindering te brengen eigen
+			bijdrage van de werknemer mag daarom op kalenderjaarbasis niet
+			hoger zijn dan de waarde privgebruik auto.
+			Het bedrag dat in het tijdvak is bijgedragen moet opgegeven worden."
+	}
+
+	datum LvLpReg: Bedrag(10,2) {
+		name "Gespaard bedrag levensloopregeling"
+		description "Het bedrag dat in het tijdvak is gespaard in een levensloopregelingdoor de werknemer (inclusief de werkgeversbijdrage)."
+		cond [0409] "Verplicht"
+
+		explanation "Het bedrag mag ook negatief zijn."
+	}
+
+	datum LvLpRegToeg: Bedrag(10,2) {
+		name "Toegepast bedrag levensloopverlofkorting"
+		description "Het bedrag dat in het tijdvak voor de inkomstenverhouding aanlevensloopverlofkorting is toegepast."
+		cond [0410] "Verplicht"
+
+		explanation ""
+	}
+
+	datum Reisk: Bedrag(10,2) {
+		name "Bedrag vergoeding reiskosten"
+		description "Het bedrag dat in het tijdvak aan onbelaste reiskosten is vergoed aande natuurlijke persoon voor de inkomstenverhouding waar de
+			nominatieve aangifte betrekking op heeft."
+		cond [0411] "Verplicht"
+
+		explanation "U vult hier in de vergoeding van maximaal  0,19 per kilometer voorzakelijke ritten en woonwerkverkeer. De vergoeding van plaatsbewijzen
+			(bijvoorbeeld voor vlieg- en treinreizen) valt hier niet onder."
+	}
+
+	datum VerrArbKrt: Bedrag(10,2) {
+		name "Verrekende arbeidskorting"
+		description "Het bedrag dat in het tijdvak voor de inkomstenverhouding aanarbeidskorting is toegepast."
+		cond [0412] "Verplicht"
+
+		explanation ""
+	}
+
+	datum AantSV: N(3) {
+		name "Aantal SV-dagen"
+		description "Het aantal dagen waarover voor de inkomstenverhouding loon isgenoten in het loontijdvak."
+		cond [0413] "Verplicht"
+
+		cond [0427] "Het aantal SV-dagen moet groter of gelijk zijn aan 0."
+
+		explanation "Zie voor een inkomstenverhouding van een werknemer waarvoorinkomenscode 17 (niet voor de werknemersverzekeringen verzekerde
+			DGA) geldt, ook paragraaf 2.2 onder het kopje Afwijkende regels voor
+			niet voor de werknemersverzekeringen verzekerde DGAs.
+			Indien de werknemer niet verzekerd is voor de werknemersverzeke-
+			ringen, dan nul (0) invullen.
+			SV-dagen (ofwel loondagen) moeten in de loonaangifte worden
+			opgegeven. Deze dagen zijn van belang voor de referte- en de
+			arbeidsverledeneis voor de WW en de WIA, hetgeen relevant is voor de
+			duur van de uitkering. De definitie van loondagen is hetzelfde als in de
+			jaren vr 2006. In tegenstelling tot 2005 zijn met ingang van 2006 SV-
+			dagen echter NIET meer nodig om de franchise en het maximum
+			premieloon te berekenen, omdat deze per loontijdvak worden bepaald.
+			Er hoeft geen samenhang te zijn tussen SV-dagen en loontijdvakken.
+			Het is mogelijk dat in een loontijdvak van een maand slechts acht
+			loondagen voorkomen als iemand twee dagen per week werkt
+			(parttime). Ziektedagen, vakantiedagen etc. zijn SV-dagen.
+			Aaneengesloten nachtdienst en SV-dagen
+			Als het werk in een aaneengesloten nachtdienst op twee
+			kalenderdagen wordt verricht, geldt dit als n SV-dag.
+			Voorbeeld:
+			Een werknemer werkt van 20 december 22.00 uur tot 21 december
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def
+			06.00 uur. Op die dagen werkt hij verder niet. Er is sprake van n SV-
+			dag.
+			Loon in natura en SV-dagen
+			Als loon in natura (zoals een telefoon of privgebruik van de auto van
+			de zaak) wordt genoten tijdens ziekte of verlof, heeft dit geen effect op
+			het aantal SV-dagen. Bij een full-timer zal het aantal SV-dagen dan
+			gelijk zijn aan het aantal dagen van het van toepassing zijnde
+			loontijdvak: dit wel zeggen maximaal 20 per 4 weken of tussen de 20
+			en 23 per maand.
+			Als een parttimer loon in natura geniet, wordt dit loon aan de gewerkte
+			dagen toegerekend (in het voorbeeld van de parttimer zijn er twee SV-
+			dagen per week in plaats van vijf, ook al wordt het loon in natura op
+			alle dagen genoten).
+			SV-dagen en onbetaald verlof (bijvoorbeeld opname van levensloop-
+			tegoed i.k.v. levensloopregeling)
+			De opname van levenslooptegoed is geen loon in de zin van de
+			werknemersverzekeringen. Als de werknemer naast de opname van
+			levenslooptegoed loon uit arbeid ontvangt (bijvoorbeeld per week 3
+			dagen opname levenslooptegoed en 2 dagen blijven werken), dan is
+			dat loon uit arbeid altijd loon voor de werknemersverzekeringen. Als de
+			werknemer naast dit loon uit arbeid ook nog een aanvulling van de
+			werkgever ontvangt, dan is die aanvulling altijd (ongeacht de hoogte
+			van de aanvulling) loon voor de werknemersverzekeringen.
+			Als het levensloopverlof maximaal een maand duurt blijft de werknemer
+			verzekerd voor de WW, ZW, WAO en Wet WIA. Een eventuele
+			aanvulling van de werkgever is dan altijd (ongeacht de hoogte van de
+			aanvulling) loon voor de werknemersverzekeringen.
+			Als het levensloopverlof langer duurt dan een maand, dan is de
+			werknemer op de dagen dat hij het levensloopverlof opneemt na die
+			maand niet langer verzekerd voor de WAO en de ZW, tenzij hij een
+			aanvulling op de opname van levensloopverlof van de werkgever
+			ontvangt van tenminste 50% van zijn normale loon.
+			Voor de Wet WIA blijft de werknemer gedurende maximaal 18 maanden
+			verzekerd, na deze periode is de werknemer alleen nog verzekerd
+			wanneer hij een aanvulling krijgt op de levensloopuitkering van
+			tenminste 50% van zijn normale loon. Gedurende de periode dat de
+			werknemer verzekerd blijft, zijn over eventuele aanvullingen (ongeacht
+			de hoogte van die aanvulling) op de levensloopuitkering premies WIA
+			verschuldigd.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def
+			Voor de WW blijft de werknemer normaal verzekerd tijdens de periode
+			van onbetaald verlof en er zijn dan ook premies WW (Awf en sector)
+			verschuldigd over de eventuele aanvullingen, ongeacht de hoogte
+			daarvan. Dagen waarover onbetaald verlof wordt genoten zijn, na de
+			eerste maand en wanneer bovendien minder dan 50% van het normale
+			loon aan aanvulling wordt genoten, geen SV-dagen. Dit wordt niet
+			anders als er een aanvulling is waarover wel premie WW en/of premie
+			WIA zijn verschuldigd. Deze dagen worden wel bij fictie door UWV
+			aangemerkt als SV-dagen t.b.v. de arbeidsverledeneis. Dit gaat echter
+			buiten de verantwoordelijkheid van de werkgever om.
+			Zolang de werknemer tijdens het levensloopverlof voor alle
+			werknemersverzekeringen verzekerd blijft (dus gedurende de eerste
+			maand en wanneer er na die eerste maand sprake is van een
+			aanvulling van 50% of meer van het normale loon) neemt u als SV-
+			dagen op het aantal dagen waarop feitelijk nog gewerkt wordt. Of als
+			de werknemer niet werkt het aantal sv-dagen waarop hij gewend was te
+			werken. Per kalenderweek mogen niet meer dan 5 dagen worden
+			opgegeven. Bij een onregelmatig arbeidspatroon kan worden uitgegaan
+			van het gemiddeld per aangiftetijdvak (over een aangiftetijdvak van 4
+			weken nooit meer dan 20 dagen) te werken dagen. Dit gemiddelde
+			wordt berekend over de periode van 13 weken voorafgaand aan het
+			verlof. Een dergelijke periode geldt dan alleen voor die situatie dat er
+			echt onregelmatig gewerkt wordt. Voor personen die gewend zijn
+			bijvoorbeeld 7 dagen op en 7 dagen af te werken, kan over een periode
+			van 4 weken altijd het daadwerkelijk aantal gewerkte dagen worden
+			opgegeven, zolang het er maar niet meer dan 20 zijn.
+			Nabetaling en SV-dagen
+			Als er een nabetaling plaatsvindt over een periode die reeds is
+			verantwoord, en het aantal SV-dagen niet verandert, dan zijn er twee
+			mogelijkheden:
+			1) De inhoudingsplichtige rekent de nabetaling toe aan eerdere
+			loontijdvakken en stuurt hiervoor een correctie.
+			2) De nabetaling is loon in het loontijdvak van uitbetalen. Het
+			aantal SV-dagen verandert hierdoor niet.
+			Als het aantal SV-dagen wel verandert, dan mag voor de verwerking
+			van het aantal dagen alleen optie 1 worden gebruikt. Dat betekent
+			corrigeren en het nieuwe (juiste) aantal SV-dagen vermelden. De
+			nabetaling zelf moet bij loon-in, afhankelijk van het
+			genietingsmoment, in de periode waarin het genietingsmoment valt,
+			worden opgenomen. Bij hantering van loon-over moet de nabetaling
+			verwerkt worden in de periode waarop de nabetaling betrekking heeft.
+			Full-timer werkt op minder dan 5 dagen per week
+			Als voor een full-timer het standaard aantal te werken uren bij de
+			werkgever 36 uur per week is, zullen de meeste werknemers deze uren
+			verdelen over 5 dagen. Zij ontvangen dan ook loon over 5 dagen. In dat
+			geval zijn er 5 SV-dagen. Er kunnen echter ook werknemers zijn die de
+			36 uur per week verdelen over 4 dagen (4 x 9 uur). In tegenstelling tot
+			2005 geldt vanaf 2006 dat zij dan werken op 4 dagen en loon genieten
+			over 4 dagen. In deze situatie zijn er 4 SV-dagen.
+			"
+	}
+
+	datum AantVerlU: N(5) {
+		name "Aantal verloonde uren"
+		description "Het aantal uren dat aan de werknemer voor de inkomstenverhouding inhet aangiftetijdvak is verloond."
+		cond [0414] "Verplicht"
+
+		cond [0429] "Het aantal verloonde uren moet groter of gelijk zijn aan 0.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def"
+
+		explanation "Hoofdregel:Als de code soort inkomstenverhouding gelijk is aan 11, 12, 13, 14, 15
+			of 17 dan moet het aantal verloonde uren groter of gelijk zijn aan nul
+			(0). Vul voor de overige inkomenscodes nul (0) in.
+			Indien de beloning geheel afhankelijk is van het aantal geleverde
+			producten of diensten (stukloon of variant daarvan) en niet van de
+			hoeveelheid gewerkte tijd, moet bij de verloonde uren nul (0) ingevuld
+			worden.
+			Nadere uitleg voor vulling van verloonde uren bij diverse situaties:
+			Verloonde uren zijn overeengekomen uren (contracturen), vermeerderd
+			met uitbetaalde meeruren en overwerkuren (mits niets gecompenseerd in
+			tijd), verminderd met niet gewerkte uren waar geen beloning tegenover
+			staat (minderuren). Overwerkuren onderscheiden zich van meeruren
+			doordat bij overwerkuren sprake is van een toeslag op het uurloon en bij
+			meeruren niet.
+			Voor werknemers zonder meer-, minder- en overwerkuren zijn de
+			verloonde uren gelijk aan de contracturen. De verloonde uren per tijdvak
+			worden afgeleid uit het aantal contracturen per dag. In de regel is sprake
+			van een van de volgende twee situaties:
+			1. Het loon per tijdvak hangt direct samen met het aantal dagen van het
+			tijdvak, bijvoorbeeld in een korte maand is het loon lager dan in een
+			lange maand. Dan hangt ook het aantal verloonde uren samen met de
+			lengte van de periode waarover in het tijdvak aangifte wordt gedaan.
+			2. Het loon per tijdvak wordt gebaseerd op het gemiddeld aantal uren per
+			tijdvak op jaarbasis. Deze situatie geldt voor het merendeel van de
+			maandlonen. Het basisloon (excl. periodieke toeslagen) is hierbij in
+			principe elke maand gelijk. In dat geval moeten de verloonde uren
+			bepaald worden als 12e deel van de uren op jaarbasis.
+			Indien de contracturen flexibel worden ingevuld (als bij een contract van 30
+			uur per week de ene keer 24 uur en de andere keer 36 uur wordt gewerkt),
+			wordt het vaste (dus gemiddelde) aantal opgegeven als de beloning in elke
+			betaalperiode eveneens gebaseerd is op dit gemiddelde aantal te werken
+			uren. Indien de vergoeding in de betaalperiode fluctueert met het aantal in
+			die periode daadwerkelijk gewerkte uren, dan moeten de daadwerkelijk
+			gewerkte en dus verloonde uren opgenomen worden. Verschoven diensten
+			en onregelmatige werktijden hebben geen invloed op de verloonde uren,
+			indien er niet gemiddeld meer of minder dan de contracturen wordt gewerkt
+			en betaald.
+			Adv-uren zijn geen verloonde uren. Een 40-uurs werkweek, waarbij 4 uur
+			adv wordt opgebouwd, wordt gezien als een contractduur van gemiddeld
+			36 uur per week. Verlof, ziekte en werkonderbrekingen hebben geen effect
+			op het aantal verloonde uren zolang geen korting op het loon plaatsvindt.
+			Voor werknemers die tijdelijk short-time werken geldt de oorspronkelijke
+			arbeidsduur per week zolang het volledige loon wordt doorbetaald.
+			Indien sprake is van onbetaald (ouderschaps)verlof, moet het aantal
+			verloonde uren worden aangepast. Voor verlof met een gedeeltelijke
+			doorbetaling worden de bijbehorende uren herberekend naar volledig
+			betaalde uren. Bijv. 100 uur ouderschapsverlof betaald tegen 75% van het
+			uurloon levert een bijdrage van 75 verloonde uren.
+			Gegevensspecificaties Aangifte Loonheffingen 2011 versie 1.0 1 oktober 2010_def
+			Meeruren en overwerkuren zijn slechts dan verloonde uren indien ze n
+			worden uitbetaald n indien ze niet worden gecompenseerd in tijd. Bij
+			uurloners (veelal met een 0-urencontract, minimumurencontract of flexibel
+			contract) worden de werkelijk gewerkte en verloonde uren opgegeven
+			Voor werknemers die werken in ploegendienst wordt het aantal
+			verloonde uren verkregen door het aantal uren op jaarbasis te delen
+			door het aantal betaalperioden per jaar.
+			Samenvattend voorbeeld:
+			Iemand met een contract voor 40 uur per week, waarvan 2 uur adv
+			opbouw, werkt in het 4-weken tijdvak A regulier 152 uur, krijgt in tijdvak
+			B 10 uur overwerk uitbetaald (daadwerkelijk overwerk zonder
+			tijdcompensatie), krijgt in tijdvak C loon terwijl hij een week ziek is
+			geweest en een aantal keren onder werktijd naar dokter is geweest en
+			neemt geheel tijdvak D onbetaald verlof. In de aangifte staat bij
+			verloonde uren in het tijdvak A: 152 uur, B: 162 uur, C: 152 uur, D: 0
+			uur."
+	}
+
+	datum BedrAlInWWB: Bedrag(10,2) {
+		name "Bedrag in uitkering begrepen doorbetaalde alimentatie"
+		description "Het bedrag van de in de WWB- of WIJ-uitkering begrepen doorbetaaldealimentatie."
+		cond [1050] "Alleen van toepassing voor inkomstenverhoudingen van hettype WWB- of WIJ-uitkering (inkomenscode 43 of 51)."
+
+		explanation ""
+	}
+
+	datum BedrRchtAl: Bedrag(10,2) {
+		name "Bedrag rechtstreeks betaalde alimentatie"
+		description "Het bedrag dat op de WWB- of WIJ-uitkering in mindering is gebracht inverband met rechtstreeks betaalde alimentatie."
+		cond [1051] "Alleen van toepassing voor inkomstenverhoudingen van hettype WWB- of WIJ-uitkering (inkomenscode 43 of 51)."
+
+		explanation ""
+	}
+
+}
+
+group "Sector risicogroep" {
+	datum DatAanv: Datum {
+		name "Datum aanvang sectorrisicogroep"
+		description "De datum van de eerste dag van de periode gedurende welke onder deinkomstenverhouding voor een sectorrisicogroep gewerkt is."
+		cond [0415] "Verplicht (binnen de groep)"
+
+		cond [0067] "Als de inkomenscode gelijk is aan 11, 12, 13, 14, 15, 17, 18,
+			21 of 23, dan geldt dat de Datum aanvang sectorrisicogroep moet
+			liggen binnen het aangiftetijdvak. Met andere woorden: de Datum
+			aanvang sectorrisicogroep moet op of na de Datum aanvang tijdvak
+			vallen en voor of op de Datum einde tijdvak."
+
+		cond [0102] "De Datum aanvang sectorrisicogroep moet gelijk zijn of
+			groter zijn dan 01-01-2006."
+
+		explanation "De Datum aanvang sectorrisicogroep begint niet voor aanvang van hetdienstverband. Een uitzondering hierop geldt voor de inkomenscodes
+			22, 24, 31-40, 42-46, 50, 51 of 52. Als met terugwerkende kracht een
+			eerste inkomstenverhouding ontstaat met deze inkomenscode, dan mag
+			eenmalig voor het eerste aangiftetijdvak de Datum aanvang
+			sectorrisicogroep buiten het aangiftetijdvak liggen."
+	}
+
+	datum DatEind: Datum {
+		name "Datum einde sectorrisicogroep"
+		description "De datum van de laatste dag van de periode gedurende welke onder deInkomstenverhouding voor een sectorrisicogroep gewerkt is."
+		cond [0068] "De datum einde sectorrisicogroep moet op of na de datumaanvang sectorrisicogroep vallen.
+			"
+
+		cond [0069] "De datum einde sectorrisicogroep moet, indien opgegeven,
+			binnen het aangiftetijdvak liggen, met andere woorden, datum
+			einde sectorrisicogroep moet op of na de datum aanvang tijdvak
+			vallen, en voor of op de datum einde tijdvak."
+
+		explanation "Als de geldigheid van de sectorrisicogroep eindigt vr het einde vanhet aangiftetijdvak, dan moet dit gegeven gevuld worden. Dit gegeven
+			moet ook gevuld worden als de geldigheid van de sectorrisicogroep
+			eindigt vr het einde van de inkomstenverhouding in het
+			aangiftetijdvak. In andere gevallen mag het gegeven worden
+			weggelaten."
+	}
+
+	datum Sect: N(3) {
+		name "Sector"
+		description "Code ter aanduiding van de sector waar de inkomstenverhouding onderviel gedurende de aangegeven periode."
+		cond [0416] "Verplicht (binnen de groep)"
+
+		explanation ""
+	}
+
+	datum RisGrp: N(2) {
+		name "Risicopremiegroep"
+		description "Code ter aanduiding van de risicopremiegroep (binnen de sector) waarde inkomstenverhouding onder viel gedurende de aangegeven periode."
+		cond [0417] "Verplicht (binnen de groep)"
+
+		cond [0070] "De (code) Risicopremiegroep moet voorkomen in de
+			gegevensgroep Specificatie premie sectorfonds in het collectieve
+			deel van de aangifte."
+
+		explanation "De sectoren 1, 3, 9, 33, 52, 54, 56, 64 en 67 kennen meer dan nrisicopremiegroep. Voor alle andere sectoren kan alleen
+			risicopremiegroep 01 opgegeven worden."
+	}
+
+	datum PrLnPrSectFnds: Bedrag(10,2) {
+		name "Premieloon premie sectorfonds"
+		description "Het bedrag waarover in het aangiftetijdvak voor deinkomstenverhouding door de administratieve eenheid de premie voor
+			de risicopremiegroep binnen het sectorfonds is berekend."
+		cond [1048] "Verplicht binnen de gegevensgroep."
+
+		cond [1054] "Als Premie sectorfonds ongelijk is aan 0, dan moet ook
+			Premieloon premie sectorfonds ongelijk zijn aan 0."
+
+		explanation "Dit is het brutoloon SV met inachtneming van de (tijdvak)maximering.Het premieloon van een werknemer die een vrijstelling op grond van de
+			kleinebanenregeling of de premievrijstelling marginale arbeid (PMA)
+			heeft, moet hier wel worden meegenomen. Het moet dus worden
+			opgegeven, alsof wel premies verschuldigd zouden zijn geweest.
+			Doet u aangifte voor anonieme werknemers dan geldt voor het
+			premieloon geen (tijdvak)maximering.
+			Er kan als gevolg van de kleinebanenregeling of de premievrijstelling
+			marginale arbeid (PMA) wel sprake zijn van een premie van 0 bij een
+			premieloon dat ongelijk is aan 0."
+	}
+
+	datum PrWgf: Bedrag(10,2) {
+		name "Premie sectorfonds"
+		description "Het bedrag dat door de administratieve eenheid in het tijdvak voor deinkomstenverhouding aan premie is verschuldigd aan de risicogroep
+			binnen het sectorfonds."
+		cond [0402] "Verplicht in te vullen indien geen Premie UFO is ingevuld.Indien wel Premie UFO is ingevuld mag geen Premie sectorfonds
+			worden aangeleverd.
+			"
+
+		cond [0403] "Wanneer Premie sectorfonds is ingevuld, dan moet ook
+			Premie WW Awf zijn ingevuld."
+
+		explanation "Vanaf 1 januari 2007 moet een verplichte werkgeversbijdrage in dekosten kinderopvang worden betaald. Dit vindt plaats door middel van
+			een opslag(premie) op de premie sectorfonds. Deze opslag(premie) is
+			al verwerkt in de tabel Premie sectorfonds (zie Handboek
+			Loonheffingen).
+			De verplichting 'premie sectorfonds in te vullen is van toepassing op
+			inhoudingsplichtigen (werkgevers), waarvan de werknemers niet
+			behoren tot de overheidssector.
+			Als de vrijstelling op grond van de kleinebanenregeling of de
+			premievrijstelling marginale arbeid (PMA) van toepassing is, wordt de
+			premie op 0 gesteld.
+			Conform de specificaties kan een werkgever op werknemersgegevens
+			niveau alleen f de UFO-premie opgeven, f de premie WW-Awf en
+			premie sectorfonds. Voor een niet verzekerde werknemer levert de
+			werkgever, om aan de gestelde condities te voldoen, de rubriek Premie
+			UFO aan met de waarde  0,00."
+	}
+
+}
+
