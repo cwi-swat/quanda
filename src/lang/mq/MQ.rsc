@@ -3,23 +3,17 @@ module lang::mq::MQ
 start syntax MQ = mq: Stat+;
 
 syntax Stat
-  = ifThen: "if" "(" Expression ")" Stat () !>> "else"
-  | ifThenElse: "if" "(" Expression ")" Stat "else" Stat 
+  = ifThen: "if" "(" Exp ")" Stat () !>> "else"
+  | ifThenElse: "if" "(" Exp ")" Stat "else" Stat 
   | block: "{" Stat* "}"
-  | assign: Path ":" Type
-  | equate: Path "=" Exp
-  | upto: Path ":" "upto" "(" Nat ")" Stat
-  | times: Path ":" "times" "(" Nat ")" Stat
-  | optional: Path ":" "optional" "(" Exp ")" Stat
+  | assign: LValue ":" Type
+  | equate: LValue "=" Exp
+  | upto: LValue ":" "upto" "(" Nat ")" Stat
+  | times: LValue ":" "times" "(" Nat ")" Stat
   ;
 
-syntax Path = PathElt+;
+syntax LValue = var: Id; 
 
-syntax PathElt
-  =  field: "." Id
-  | subscript: "[" Nat "]"
-  ;  
-  
 syntax Type
   = string: "str"
   | integer: "int"
@@ -27,44 +21,44 @@ syntax Type
   ;  
   
   
-syntax Expression
-  = path: Path
+syntax Exp
+  = lvalue: LValue
   | @category="Constant" \bool: Bool
   | @category="Constant" nat: Nat
   | @category="Constant" string: String
-  | \any: "any" "(" {Expression ","}+ ")"
-  | \all: "all" "(" {Expression ","}+ ")"
-  | sum: "sum" "(" Expression "|" {Expression ","}+ ")"
-  | avg: "avg" "(" Expression "|" {Expression ","}+ ")"
-  | bracket "(" Expression ")"
-  | field: Expression "." Id
-  > pos: "+" Expression
-  | neg: "-" Expression
-  | not: "!" Expression
-  > right pow: Expression "**" Expression
+  | \any: "any" "(" {Exp ","}+ ")"
+  | \all: "all" "(" {Exp ","}+ ")"
+  | sum: "sum" "(" Exp "|" {Exp ","}+ ")"
+  | avg: "avg" "(" Exp "|" {Exp ","}+ ")"
+  | bracket "(" Exp ")"
+  > pos: "+" Exp
+  | neg: "-" Exp
+  | not: "!" Exp
+  | field: Exp "." Id
+  > right pow: Exp "**" Exp
   > non-assoc (
-      left mul: Expression "*" Expression
-    | div: Expression "/" Expression
-    | mod: Expression "%" Expression
+      left mul: Exp "*" Exp
+    | div: Exp "/" Exp
+    | mod: Exp "%" Exp
   )
   > left (
-      add: Expression "+" Expression
-    | sub: Expression "-" Expression
+      add: Exp "+" Exp
+    | sub: Exp "-" Exp
   )
   > non-assoc (
-      lt: Expression "\<" Expression
-    | gt: Expression "\>" Expression
-    | leq: Expression "\<=" Expression
-    | geq: Expression "\>=" Expression
-    | \in: Expression "in" Expression
-    | \notin: Expression "notin" Expression
+      lt: Exp "\<" Exp
+    | gt: Exp "\>" Exp
+    | leq: Exp "\<=" Exp
+    | geq: Exp "\>=" Exp
+    | \in: Exp "in" Exp
+    | \notin: Exp "notin" Exp
   )
   > left (
-      eq: Expression "==" Expression
-    | neq: Expression "!=" Expression
+      eq: Exp "==" Exp
+    | neq: Exp "!=" Exp
     ) 
-  > left and: Expression "&&" Expression
-  > left or: Expression "||" Expression
+  > left and: Exp "&&" Exp
+  > left or: Exp "||" Exp
   ;
   
 keyword Keyword

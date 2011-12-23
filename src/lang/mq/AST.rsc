@@ -2,31 +2,34 @@ module lang::mq::AST
 
 import IO;
 
-alias Path = list[PathElt];
-
 data MQ = mq(list[Stat] stats);
 
 data Stat 
   = ifThenElse(Exp cond, Stat then, Stat other)
   | ifThen(Exp cond, Stat then)
   | block(list[Stat] stats) // make this stat: index out of bounds error TupleType.getFieldType.
-  | assign(Path path, Type \type)
-  | equate(Path path, Exp exp)
-  | upto(Path path, int bound, Stat stat)
-  | times(Path path, int times, Stat stat)
-  | optional(Path path, Exp exp, Stat stat)
+  | assign(LValue lvalue, Type \type)
+  | equate(LValue lvalue, Exp exp)
+  | upto(LValue lvalue, int bound, Stat stat)
+  | times(LValue lvalue, int times, Stat stat)
   ; 
   
-data PathElt
+alias Path = list[PathElt];
+
+data LValue
+  = var(str name)
+  | path(Path path)
+  ;
+
+data PathElt 
   = field(str name)
   | subscript(int index)
   ;
-  
 
 data Type = string() | integer() | money();  
   
 data Exp
-  = path(Path path)
+  = lvalue(LValue lvalue)
   | \bool(bool b)
   | nat(int n)
   | string(str s)
@@ -34,10 +37,10 @@ data Exp
   | \all(list[Exp] conds)
   | sum(Exp goal, list[Exp] conds)
   | avg(Exp goal, list[Exp] conds)
-  | field(Exp target, str field)
   | pos(Exp arg)
   | neg(Exp arg)
   | not(Exp arg)
+  | field(Exp exp, str name)
   | pow(Exp lhs, Exp rhs)
   | mul(Exp lhs, Exp rhs)
   | div(Exp lhs, Exp rhs)
