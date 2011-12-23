@@ -2,9 +2,9 @@ module lang::TaxSpec
 
 start syntax Spec = Group*;
 
-syntax Group = @Foldable "group" String "{" Datum* "}";
+syntax Group = @Foldable "group" String name "{" Datum* "}";
 
-syntax Datum = @Foldable "datum" Id ":" Type "{" Name Description Condition* Explanation "}";
+syntax Datum = @Foldable "datum" Id id ":" Type format "{" Name Description Condition* Explanation "}";
 
 syntax Condition = "cond" Response String;
 
