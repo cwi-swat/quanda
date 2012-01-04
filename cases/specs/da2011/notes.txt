@@ -1,0 +1,60 @@
+
+
+- In conditions, what is the meaning of [1002]<Bla bla..Ja> (or Nee)
+  is this the value of the gegeven?
+
+
+Bv.
+
+Als(is.leeg(en( [117304.J] <keuze voor binnenlandse
+belastingplicht..Ja>; [117305.J] <woonachtig in besunaar..Ja>;
+[117306.J] <verzoek toepassing 90-procent-regeling..Ja>))) dan
+(is.leeg([117319] <landcode ander land fiscale partner>))
+
+Hoe kan iets leeg zijn en toch "Ja" als waarde hebben. Verder, wat
+betekent [117304.J] (de .J)? Ook Ja? ---> zie bijv. 117303
+Dit heeft formaat "janee", met als waardebereik "J" en "N". 
+
+Bijvoorbeeld:
+
+Als(is.gevuld([117330] <verzamelinkomen aangever>)) Dan(is.gevuld(of(
+[200015.64] <aangiftesoort DA..IBPV Winst-Binnenl.>; [200015.62]
+<aangiftesoort DA..IBPV Part - Binnenl.>; [200015.52] <aangiftesoort
+DA..IBPV Buitenl>)))
+
+200015 = aangiftesoort DA, de code 64 correspondeert met value "IBPV
+Winst-Binnenl.". 
+
+- Sommige periodes zijn hebben als type DDMMEEJJ (datum), maar in
+  condities wordt soms verwezen naar [102]<Bla bla.BeginDatum> (en
+  EindDatum). Betekent dit herhaling?
+
+e.g.
+
+periode samenwonen in belastingjaar 117315 IBPV De periode in het
+belastingjaar waarin de aangever en de partner onafgebroken een
+gezamenlijke huishouding hebben gevoerd en op hetzelfde woonadres
+stonden ingeschreven.  Wet IB2001, art 1.2 DDMMEEJJ 117308 ([117315.B]
+<periode samenwonen in belastingjaar.Begindatum>) <= ([117315.E]
+<periode samenwonen in belastingjaar.Einddatum>)
+
+
+- Specificaties kunnen herhaald worden (zie toelichting voor hoe vaak,
+  99 keer). Heeft dit betrekking op alles? Of alleen de dingen die
+  "Spec" of "Specificatie" in de inhoudsopgave hebben?
+
+- De PDF files geeft de gegevens in een hierarchie. Dit zit niet in de
+  CSV. 
+
+- Tellingen zijn (simpele?) expressies:
+
+[117352] <totaal ingehouden loonheffing bij tegenwoordige arbeid> =
+Som([117356] <ingehouden loonheffing bij tegenwoordige arbeid>)
+
+Hence, 117356 moet dus herhaald kunnen worden. Kunnen we zo alle
+herhalingen vinden?
+
+
+- Berekende gegevens zijn expliciet opgenoemd in de
+  inhoudsopgave. Lijkt me een keyword waardig.
+   
