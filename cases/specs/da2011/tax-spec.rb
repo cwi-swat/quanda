@@ -70,12 +70,19 @@ module TaxSpec
       elt.attributes['format'] = format
       elt.attributes['domain'] = domain
       elt.attributes['relates_to'] = relates_to
-      labels = [:definition, :explanation,:conditions, :source, :countings, :compute_as]
+      labels = [:definition, :explanation,:source, :countings, :compute_as]
       labels.each do |label|
         kid = Element.new(label.to_s)
         kid.text = send(label)
         elt << kid
       end
+      kid = Element.new('conditions')
+      conditions.split("%%").each do |cond|
+        celt = Element.new('condition')
+        celt.text = cond
+        kid << celt
+      end
+      elt << kid
       return elt
     end
 
@@ -159,9 +166,18 @@ end
 if __FILE__ == $0 then
   spec = TaxSpec::CSV.read(ARGV[1])
   if ARGV[0] == 'to_xml' then
+    pp = REXML::Formatters::Default.new
+    File.open(ARGV[2], "w:UTF-8") do |f|
+      pp.write(spec.to_xml, f)
+    end
     pp = REXML::Formatters::Pretty.new
-    pp.write(spec.to_xml, $stdout)
+    File.open(ARGV[2] + "-pretty", "w:UTF-8") do |f|
+      pp.write(spec.to_xml, f)
+    end
+
   elsif ARGV[0] == 'to_dot' then
-    spec.to_dot($stdout)
+    File.open(ARGV[2], 'w') do |f|
+      spec.to_dot(f)
+    end
   end
 end  
