@@ -1,4 +1,9 @@
 
+TODO:
+
+- script to extract toc automatically (including removal of first 3 lines).
+  and remove page indications and last (Index) line.
+
 
 - In conditions, what is the meaning of [1002]<Bla bla..Ja> (or Nee)
   is this the value of the gegeven?

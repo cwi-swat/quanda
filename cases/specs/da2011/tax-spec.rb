@@ -45,11 +45,11 @@ module TaxSpec
     include REXML
     attr_reader :name, :id, :definition, :explanation, :format
     attr_reader :conditions, :domain, :relates_to, :source
-    attr_reader :countings, :computes_as
+    attr_reader :countings, :compute_as
 
     def initialize(name, id, definition, explanation, format, 
                    conditions, domain, relates_to, source,
-                   countings, computes_as)
+                   countings, compute_as)
       @name = name
       @id = id
       @definition = definition
@@ -60,7 +60,7 @@ module TaxSpec
       @relates_to = relates_to
       @source = source
       @countings = countings
-      @computes_as = computes_as
+      @compute_as = compute_as
     end
     
     def to_xml
@@ -70,7 +70,7 @@ module TaxSpec
       elt.attributes['format'] = format
       elt.attributes['domain'] = domain
       elt.attributes['relates_to'] = relates_to
-      labels = [:definition, :explanation,:conditions, :source, :countings, :computes_as]
+      labels = [:definition, :explanation,:conditions, :source, :countings, :compute_as]
       labels.each do |label|
         kid = Element.new(label.to_s)
         kid.text = send(label)
@@ -82,10 +82,10 @@ module TaxSpec
     def to_s
       values = [name, id, definition, explanation, format, 
                 conditions, domain, relates_to, source,
-                countings, computes_as]
+                countings, compute_as]
       labels = [:name, :id, :definition, :explanation, :format,
                 :conditions, :domain, :relates_to, :source,
-                :countings, :computes_as]
+                :countings, :compute_as]
       items = labels.zip(values).map do |label, value|
         "#{label}: #{value}"
       end
