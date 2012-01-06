@@ -1,13 +1,14 @@
 
 TODO:
 
-- script to extract toc automatically (including removal of first 3 lines).
+- [DONE] script to extract toc automatically (including removal of first 3 lines).
   and remove page indications and last (Index) line.
 
 
+---> Dingen die met Spec beginnen mogen herhaald worden.
+
 - In conditions, what is the meaning of [1002]<Bla bla..Ja> (or Nee)
   is this the value of the gegeven?
-
 
 Bv.
 
@@ -62,4 +63,24 @@ herhalingen vinden?
 
 - Berekende gegevens zijn expliciet opgenoemd in de
   inhoudsopgave. Lijkt me een keyword waardig.
+
+Boundingbox in PDF (pdf2txt):: bbox = upperleftx, upperlefty,
+lowerrightx, lowerrighty
+
+
+Evaluatie
+---------
+
+Loop van boven naar beneden door de vragen heen en evalueer de
+condities in de huidige toestand. Sla is.leeg vragen over, en stop bij
+de eerste verplichte vraag, * erbij;--overigen gewoon laten zien). Na
+beantwoording van de vraag, check de conditie of correctheid (niet
+verplichtheid etc.).
+
+
+
+
+
    
+
+
