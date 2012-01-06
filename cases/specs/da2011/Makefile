@@ -27,7 +27,7 @@ all: da20110929.xml da20110929-toc.xml
 	cat $< | ${RMBREAKS} > $@
 
 %.xml: %.txt %-nobr.csv ${PARSE_CSV}
-	${PARSE_CSV_CMD} $^ > $@
+	${PARSE_CSV_CMD} $*.txt $*-nobr.csv $@
 
 %.txt: %.pdf
 	${EXTRACT_TEXT} $<

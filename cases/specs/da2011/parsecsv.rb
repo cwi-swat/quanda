@@ -50,7 +50,9 @@ module TaxSpec
         elt.attributes['page'] = page
         root << elt
       end
-      return root
+      doc << XMLDecl.new('1.1', ENCODING)
+      doc << root
+      return doc
     end
 
     def init_pages(text)
@@ -171,11 +173,15 @@ module TaxSpec
   
   class CSV
     def self.read(file, text)
-      csv = File.readlines(file, :encoding => ENCODING)
+      src = File.read(file, :encoding => ENCODING).encode('UTF-8')
       datums = []
+      first = true
       # start at 1 to skip column headers
-      1.upto(csv.length - 1) do |i|
-        line = csv[i]
+      src.each_line do |line|
+        if first then
+          first = false
+          next
+        end
         elts = []
         loop do
           col, line = parse_value(line)
@@ -236,5 +242,7 @@ if __FILE__ == $0 then
   text = File.read(ARGV[0], :encoding => ENCODING)
   spec = TaxSpec::CSV.read(ARGV[1], text)
   pp = REXML::Formatters::Pretty.new
-  pp.write(spec.to_xml, $stdout)
+  File.open(ARGV[2], "w:#{ENCODING}") do |f|
+    pp.write(spec.to_xml, f)
+  end
 end  
