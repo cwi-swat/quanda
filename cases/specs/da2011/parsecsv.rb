@@ -150,7 +150,7 @@ module TaxSpec
         next if exps[i].empty?
         exp = Element.new('expression')
         exp.attributes['name'] = name if !name.empty?
-        exp.text = exps[i]
+        exp.text = exps[i].sub(/\.$/, '')
         kid << exp
       end
       elt << kid
