@@ -1,15 +1,23 @@
 
 require 'rexml/document'
 
+# CONFIG
+
+RIGHT_PAGE_REGEXP = /^Gegevensspecificatie DA-2011 - \(DA-2011\) (\d+)$/
+LEFT_PAGE_REGEXP = /^(\d+)/
+
+ENCODING = 'windows-1252'
+
 module TaxSpec
 
   class Spec
     include REXML
     attr_reader :datums
 
-    def initialize(name, datums)
+    def initialize(name, datums, text)
       @name = name
       @datums = datums
+      init_pages(text)
     end
 
     def to_s
@@ -35,10 +43,29 @@ module TaxSpec
       root = Element.new('tax-spec')
       root.attributes['name'] = @name
       datums.each do |datum|
-        root << datum.to_xml
+        elt = datum.to_xml
+        page = @pages[datum.id]
+        raise "No page for #{datum.id}" if page.nil?
+        elt.attributes['page'] = page
+        root << elt
       end
       return root
     end
+
+    def init_pages(text)
+      @pages = {}
+      page = nil
+      text.each_line do |line|
+        if line =~ LEFT_PAGE_REGEXP || line =~ RIGHT_PAGE_REGEXP then
+          page = $1
+        end
+        if line =~ /^Identificatienummer (\d+)$/
+          raise "No page for #{id}" if page.nil?
+          @pages[$1] = page
+        end
+      end
+    end
+
   end
   
   class Datum
@@ -101,8 +128,8 @@ module TaxSpec
   end
   
   class CSV
-    def self.read(file)
-      csv = File.readlines(file, :encoding => 'windows-1252')
+    def self.read(file, text)
+      csv = File.readlines(file, :encoding => ENCODING)
       datums = []
       # start at 1 to skip column headers
       1.upto(csv.length - 1) do |i|
@@ -115,7 +142,7 @@ module TaxSpec
         end
         datums << Datum.new(*elts)
       end
-      Spec.new(File.basename(file), datums)
+      Spec.new(File.basename(file), datums, text)
     end
     
     
@@ -164,20 +191,8 @@ end
 
 
 if __FILE__ == $0 then
-  spec = TaxSpec::CSV.read(ARGV[1])
-  if ARGV[0] == 'to_xml' then
-    pp = REXML::Formatters::Default.new
-    File.open(ARGV[2], "w:UTF-8") do |f|
-      pp.write(spec.to_xml, f)
-    end
-    pp = REXML::Formatters::Pretty.new
-    File.open(ARGV[2] + "-pretty", "w:UTF-8") do |f|
-      pp.write(spec.to_xml, f)
-    end
-
-  elsif ARGV[0] == 'to_dot' then
-    File.open(ARGV[2], 'w') do |f|
-      spec.to_dot(f)
-    end
-  end
+  text = File.read(ARGV[0], :encoding => ENCODING)
+  spec = TaxSpec::CSV.read(ARGV[1], text)
+  pp = REXML::Formatters::Pretty.new
+  pp.write(spec.to_xml, $stdout)
 end  

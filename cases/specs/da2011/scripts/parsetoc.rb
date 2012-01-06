@@ -1,98 +1,140 @@
 
 
+require 'rexml/document'
+require 'yaml'
 
-toc = File.readlines(ARGV[0], :enconding => 'windows-1252') 
+class TOC
+  include REXML
 
+  attr_reader :entries
 
-FONT = '/Library/Fonts/Microsoft/Arial.ttf'
-
-
-=begin
-idea:
- - set the current_width if it is nil and init hash[section] = [], section = line
- - if the current line is narrower then the current_width hash[section] << {line => []}
- 
-=end
-
-=begin
-def line_width(line)
-  result = `convert xc: -font #{FONT} -pointsize 9 -debug annotate -annotate 0 '#{line}' null: 2>&1`
-  if result =~ /width: (\d+(\.\d+)?);/
-    return $1.to_f
+  def initialize
+    @entries = []
   end
-  raise "Error width computation: #{result}"
-end
 
-def extract_label(line)
-  if line =~ /^(.*?)\./ then
-    return $1
+  def max_width
+    entries.map(&:width).max
   end
-  raise "Error label extraction: #{line}"
-end
 
-def extract_dots(line)
-  if line =~ /(\.+)/ then
-    return $1
+  def <<(entry)
+    entries << entry
   end
-  raise "Error extract dots: #{line}"
-end
 
-def same_level?(w1, w2, delta = 5.0)
-  (w1 - w2).abs < delta
-end
-
-# 1.upto(50) do |i|
-#   puts line_width('.' * i)
-# end
-
-
-# exit!
-
-stack = []
-last_width = Float::MAX
-last = nil
-toc.each do |line|
-  line = line.chomp
-  width = line_width(line)
-  label = extract_label(line)
-  #dots = extract_dots(line)
-  #dots_width = line_width(dots)
-  #txt_width = width - dots_width
-  #kdots_width = dots.length * 2 * 1.09375 # size of a single dot
-  #lwidth = txt_width + kdots_width
-  #puts "DOTSLENGTH = #{dots.length} DOTS_WIDTH = #{dots_width} KDOTS_WIDTH = #{kdots_width} WIDTH = #{width} LWIDTH = #{lwidth}"
-  #puts "#{dots.length} / 3 = #{dots.length / 3}"
-  #next
-
-  #puts ' '*(width / 10).to_i + label
-  puts "#{width}: #{label}"
-  if same_level?(width, last_width, 10.0) then
-    #puts "#{width} same level: #{label}"
-    stack.last[stack.last.keys.first] << {label => []}
-  elsif width < last_width then
-    # nest
-    #puts "#{width} nesting: #{label}"
-    current = {label => []}
-    stack.push(current)
-  elsif width > last_width then
-    #puts "#{width} unnest: #{label}"
-    # unnest
-    kid = stack.pop
-    stack.last[stack.last.keys.first] << kid
-    last = stack.last
+  def to_xml
+    toc = YAML.load(to_yaml)
+    root = Element.new('toc')
+    entries2xml(toc, root)
+    doc = Document.new
+    doc << root
   end
-  last_width = width
+
+  private
+
+  def entries2xml(es, elt)
+    es.each do |hash|
+      elt << entry2xml(hash)
+    end
+  end
+
+  def entry2xml(hash)
+    elt = Element.new('entry')
+    elt.attributes['title'] = hash['title']
+    elt.attributes['page'] = hash['page']
+    if hash["entries"] then
+      entries2xml(hash["entries"], elt)
+    end
+    return elt
+  end
+
+  def to_yaml(out = '')
+    # NB: the truncation makes it not very precise
+    # but it works because indents are different enough.
+    mw = max_width.truncate
+    entries.each do |e|
+      ew = e.width.truncate
+      ind = ' ' * (mw - ew)
+      title = e.title =~ /:/ ? "\"#{e.title}\"" : e.title
+      out << "#{ind}- title: #{title}\n"
+      out << "#{ind}  page: #{e.page}\n"
+      out << "#{ind}  entries: \n"
+    end
+    return out
+  end
+
 end
 
-require 'pp'
+class TOCEntry
+  attr_reader :width, :title, :page
 
-pp last
-pp stack
-
-=end
-
-toc.each do |line|
-  diff = ml - line.length
-  fill = ' ' * diff
-  puts "#{fill}#{line}"
+  def initialize(width, title, page)
+    @width = width
+    @title = title
+    @page = page
+  end
+  
+  def to_s
+    "#{width}: #{title} : #{page}"
+  end
 end
+
+class TOCParser
+  include REXML
+
+  # Config
+  ENCODING = 'UTF-8'
+  LIT_SKIP = ['29/9/2011', 'Gegevensspecificatie DA-2011 - (DA-2011)']
+  REG_SKIP = [/^\d+$/, # page number
+              /^Toelichting behorende/, 
+              /^Index/, 
+              /^Inhoudsopgave/,
+              /^Gehanteerde/, 
+              /^Inkomsten- vennoot/]
+
+  SKIP = REG_SKIP + LIT_SKIP.map { |x| 
+    Regexp.new('^' + Regexp.escape(x) + '$') 
+  }
+
+  attr_reader :doc
+
+  def initialize(filename)
+    toc = File.read(ARGV[0], :encoding => ENCODING) 
+    @doc = Document.new(toc)
+  end
+
+  def toc
+    t = TOC.new
+    doc.elements.each('pages/page/textbox/textline') do |x|
+      chars = []
+      x.elements.each('text') do |txt|
+        if txt.attributes['bbox'] then
+          chars << txt.text
+        end
+      end
+
+      line = chars.join
+      elts = line.split(/\.+/)
+      raise if elts.length > 2
+      title, page = elts
+      next if SKIP.any? { |re| re =~ title }
+      
+      bbox = x.attributes['bbox']
+      lux, luy, rlx, rly = bbox.split(',').map(&:to_f)
+      width = rlx - lux
+      
+      t << TOCEntry.new(width, title, page)
+    end
+    return t
+  end
+end
+
+
+if __FILE__ == $0 then
+  tp = TOCParser.new(ARGV[0])
+  toc = tp.toc
+  
+  doc = toc.to_xml
+  pp = REXML::Formatters::Pretty.new
+  pp.write(doc, $stdout)
+end
+
+
