@@ -4,12 +4,11 @@
 
 PAGES = "5,6,7,8,9,10,11,12,13,14,15"
 
-PARSE_TOC = scripts/parsetoc.rb
+PARSE_TOC = parsetoc.rb
 PARSE_TOC_CMD = ruby ${PARSE_TOC}
-RMBREAKS = scripts/rmhtmlbr.sh
+RMBREAKS = ./rmhtmlbr.sh
 
-# TODO: rename tax-spec
-PARSE_CSV = tax-spec.rb
+PARSE_CSV = parsecsv.rb
 PARSE_CSV_CMD = ruby ${PARSE_CSV}
 
 PDFBOX = pdfbox-app-1.6.0.jar
@@ -34,5 +33,5 @@ all: da20110929.xml da20110929-toc.xml
 	${EXTRACT_TEXT} $<
 
 clean:
-	rm -f *.{xml,dot}
+	rm -f *.{xml,dot,txt}
 	rm -f *-nobr.csv
