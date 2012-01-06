@@ -1,6 +1,6 @@
 module lang::daspec::Syntax
 
-start syntax Datum = @Foldable "gegeven" Name name "[" Nat key "]" ":" Type type "{" Section* body "}";
+start syntax Datum = /*@Foldable*/ "gegeven" Name name "[" Nat key "]" ":" Type type "{" Section* body "}";
 
 lexical Name = /*@category=Variable*/ ![\[]* >> ![\[];
 
@@ -9,12 +9,18 @@ lexical Text = /*@category=String*/ ![}]* !>> ![}];
 syntax Section 
   = definition: "definitie" "{" Text "}"
   | explanation:  "toelichting" "{" Text "}"
-  | algorithm: "bereken" "als" "{" Text "}"
+  | algorithm: "bereken" "{" Text "}"
+  | page: "pagina" Nat
   | source: "bron" "{" Text "}"
-  | condition: "conditie" Exp
-  | formula: "bereken" "als" Exp
+  | condition: "conditie" ExpLabel? Exp
+  | formula: "bereken" ExpLabel? Exp
   | usedBy: "gebruikt" "in" {Nat ","}+
   ;
+
+syntax ExpLabel = ExpName ":";
+
+lexical ExpName = ![:]+ >> [:];
+
 
 syntax Format
   = fixedAlpha: "a" Nat length
@@ -25,16 +31,25 @@ syntax Format
   ;
   
 
-keyword Keywords = 'som' | 'abs' | 'of' | 'en' | 'Als' | 'dan' | 'Gevuld';  
+keyword Keywords = 'som' | 'abs' | 'of' | 'en' | 'Als' | 'dan' | 'Gevuld' | 'rechts';  
 
 syntax Exp
   = call: "#" Id Exp
   | ref: Ref
   | const: Id // kindaf string symbols
+  | nat: Nat
   | sum: 'som'  Exp 
-  | abs: 'abs' Exp 
+  | abs: 'abs' Exp
+  | right: 'rechts' "(" Exp ";" Exp ")" 
+  | left: 'left' "(" Exp ";" Exp ")" 
+  | max: 'max' "(" Exp ";" Exp ")"
+  | max: 'min' "(" Exp ";" Exp ")"
   | bracket "(" Exp ")"
-  | left Exp "*" Exp
+  | pos: "+" Exp 
+  > left
+    ( Exp "*" Exp
+    | Exp "/" Exp
+    ) 
   >
   left (
        Exp "+" Exp
@@ -45,7 +60,7 @@ syntax Exp
      | gt: Exp "\>" Exp
      | lt: Exp "\<" Exp
      | geq: Exp "\>=" Exp
-     | leq: Exp "=\>" Exp
+     | leq: Exp "\<=" Exp
   ) 
   > non-assoc (
      defined: 'Gevuld' Exp
@@ -59,19 +74,20 @@ syntax Exp
   
 syntax Ref 
   = valuedRef: "[" Nat key "." Value "]" "\<" RefText Sub "\>"
-  | ref: "[" Nat key "]" "\<" RefText "\>";
+  | ref: "[" Nat key "]" "\<" RefTextTail "\>";
 
 syntax Value
   = nat: Nat
   | id: Id
   ;
 
-lexical RefText = /*@category=String*/ ![.\>]* [.]? >> [.\>]; 
+lexical RefText = /*@category=String*/ ![.\>]+ >> [.]; 
+lexical RefTextTail = /*@category=String*/ ![.\>]+ >> [\>]; 
 
 syntax Sub 
-  = "." Id "." RefText
-  | "." Id
-  | ".." RefText
+  = "." RefText "." RefTextTail
+  | "." RefTextTail
+  | ".." RefTextTail
   ;  
 
   
@@ -83,8 +99,10 @@ keyword CommonFormats
   
 syntax Type
   = format: Format
-  | domain: Id \ CommonFormats
+  | domain: DomainId+ 
   ;
+  
+lexical DomainId = Id \ CommonFormats;
   
 lexical Nat = [0-9]+ !>> [0-9];
 lexical String = [\"] StrChar* [\"];
@@ -103,7 +121,7 @@ lexical LAYOUT
   ;
     
 lexical Comment
-    = @category="Comment" "/*" (![*] | [*] !>> [/])* "*/" 
-    | @category="Comment" "//" ![\n]* [\n]
+    = /*@category="Comment"*/ "/*" (![*] | [*] !>> [/])* "*/" 
+    | /*@category="Comment"*/ "//" ![\n]* [\n]
     ;
   

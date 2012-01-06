@@ -19,14 +19,14 @@ public void dumpDatums(Node doc) {
 
 public tuple[str, str] datum2source(Node n) {
   attrs = ( name: x | attribute(_, name, x) <- n.children );
-  conds = [ d | e:element(_, "conditions", kids) <- n.children, element(_, "condition", [charData(d)]) <- e.children ];
-  
-  eval = ( tg : e | element(_, tg, [charData(e)]) <- n.children, tg in ["countings", "compute_as"] );
+  conds = { <nm, e> | /element(_, "condition", [attribute(_, "name", nm), charData(e)]) <- n  };
+  exps = { <nm, e> | /element(_, "expression", [attribute(_, "name", nm), charData(e)]) <- n };
+  eval = [ e | /element(_, "compute_as", [charData(e)]) <- n ];
   
   labels = ["source", "explanation", "definition"];
   docs = ( tg: x | element(_, tg, [charData(x)]) <- n.children, tg in labels );
   docs += ( tg: "" | element(_, tg, []) <- n.children, tg in labels );
-  //return "<attrs> <conds> <docs>";
+
   typ = attrs["format"];
   if (attrs["domain"] != "") {
     typ = attrs["domain"];
@@ -35,6 +35,7 @@ public tuple[str, str] datum2source(Node n) {
          '  <if (attrs["relates_to"] != "") {>
          '  gebruikt in <attrs["relates_to"]>
          '  <}>
+         '  pagina <attrs["page"]>
          '
          '  definitie {<docs["definition"]>
          '  }
@@ -46,14 +47,20 @@ public tuple[str, str] datum2source(Node n) {
          '  bron {<docs["source"]>
          '  }
          '  <}>
-         '  <for (c <- conds) {>
-         '  conditie <c>
+         '  <for (<nm, ce> <- conds, nm != "") {>
+         '  conditie <nm>: <ce>
          '  <}>
-         '  <if (trim(eval["countings"]) != "") {>
-         '  bereken als <eval["countings"]>
+         '  <for (<nm, ce> <- conds, nm == "") {>
+         '  conditie <ce>
          '  <}>
-         '  <if (trim(eval["compute_as"]) != "") {>
-         '  bereken als {<eval["compute_as"]>
+         '  <for (<nm, ee> <- exps, nm != "") {>
+         '  bereken <nm>: <ee>
+         '  <}>
+         '  <for (<nm, ee> <- exps, nm == "") {>
+         '  bereken <ee>
+         '  <}>
+         '  <for (ev <- eval, trim(ev) != "") {>
+         '  bereken  {<ev>
          '  }
          '  <}>
          '}">;
