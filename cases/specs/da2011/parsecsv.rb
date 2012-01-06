@@ -5,9 +5,34 @@ require 'rexml/document'
 
 RIGHT_PAGE_REGEXP = /^Gegevensspecificatie DA-2011 - \(DA-2011\) (\d+)$/
 LEFT_PAGE_REGEXP = /^(\d+)/
-NAME_REGEXP = /Naam : ([A-Z]+ \d*)?/
+NAME_REGEXP = /Naam :( [A-Z\-\/0-9]+)+/
 EXP_NAME_REGEXP = /Naam :( [a-zA-Z0-9]+)+/
 ENCODING = 'windows-1252'
+
+
+class Fixes
+
+  def fix_exp_119299(name, exp)
+    name == 'VPB einde boekjaar' ? '(' + exp : exp
+  end
+
+  def fix_exp_119363(name, exp)
+    name == 'IB einde boekjaar' ? '(' + exp : exp
+  end
+
+  def fix_cond_507322(name, cond)
+    name == '206' ? '(' + cond : cond
+  end
+
+  def fix_cond_512841(name, cond)
+    name == '261' ? cond.sub(/(premieplichtig\.\.Ja>)/, '\1);') : cond
+  end
+
+  def fix_cond_117838(name, cond)
+    name == '144' ? cond.sub(/\)$/, '') : cond
+  end
+
+end
 
 module TaxSpec
 
@@ -77,6 +102,8 @@ module TaxSpec
     attr_reader :conditions, :domain, :relates_to, :source
     attr_reader :expressions, :compute_as
 
+    @@fixes = Fixes.new
+
     def initialize(name, id, definition, explanation, format, 
                    conditions, domain, relates_to, source,
                    expressions, compute_as)
@@ -112,8 +139,19 @@ module TaxSpec
       conditions.split("%%").each do |cond|
         celt = Element.new('condition')
         if cond =~ NAME_REGEXP then
-          celt.attributes['name'] = $1
-          cond.sub!(NAME_REGEXP, '')
+          name = $1.strip
+          cond = cond.sub(NAME_REGEXP, '')
+          # the name regexp may have eaten the "A"
+          # of Als
+          if cond[0..1] == 'ls' # ugh this is ugly
+            cond = "A" + cond
+            name = name[0..-2]
+          end
+          fix = "fix_cond_#{id}"
+          if @@fixes.respond_to?(fix) then
+            cond = @@fixes.send(fix, name, cond)
+          end
+          celt.attributes['name'] = name
         end
 
         celt.text = cond
@@ -150,7 +188,12 @@ module TaxSpec
         next if exps[i].empty?
         exp = Element.new('expression')
         exp.attributes['name'] = name if !name.empty?
-        exp.text = exps[i].sub(/\.$/, '')
+        x = exps[i]
+        fix = "fix_exp_#{id}"
+        if @@fixes.respond_to?(fix) then
+          x = @@fixes.send(fix, name, x)
+        end
+        exp.text = x.sub(/\.$/, '')
         kid << exp
       end
       elt << kid
