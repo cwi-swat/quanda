@@ -35,3 +35,5 @@ all: da20110929.xml da20110929-toc.xml
 clean:
 	rm -f *.{xml,dot,txt}
 	rm -f *-nobr.csv
+
+.PRECIOUS: %.txt
