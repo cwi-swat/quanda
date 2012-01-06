@@ -4,8 +4,8 @@ require 'rexml/document'
 # CONFIG
 
 RIGHT_PAGE_REGEXP = /^Gegevensspecificatie DA-2011 - \(DA-2011\) (\d+)$/
-LEFT_PAGE_REGEXP = /^(\d+)/
-NAME_REGEXP = /Naam :( [A-Z\-\/0-9]+)+/
+LEFT_PAGE_REGEXP = /^(\d+)$/
+NAME_REGEXP = /Naam :(( [^A(][A-Za-z.\-\/0-9]*)+|)/
 EXP_NAME_REGEXP = /Naam :( [a-zA-Z0-9]+)+/
 ENCODING = 'windows-1252'
 
@@ -30,6 +30,18 @@ class Fixes
 
   def fix_cond_117838(name, cond)
     name == '144' ? cond.sub(/\)$/, '') : cond
+  end
+
+  def fix_cond_117304(name, cond)
+    cond.sub(/(tingplichtig\.\.Ja>)/, '\1;')
+  end
+
+  def fix_cond_117305(name, cond)
+    cond.sub(/(tingplichtig\.\.Ja>\))/, '\1;')
+  end
+
+  def fix_cond_117308(name, cond)
+    cond.sub(/(partner\.\.Ja> \) \))$/, '\1)')
   end
 
 end
@@ -138,23 +150,19 @@ module TaxSpec
       kid = Element.new('conditions')
       conditions.split("%%").each do |cond|
         celt = Element.new('condition')
+        cond = cond.squeeze(' ')
         if cond =~ NAME_REGEXP then
           name = $1.strip
           cond = cond.sub(NAME_REGEXP, '')
-          # the name regexp may have eaten the "A"
-          # of Als
-          if cond[0..1] == 'ls' # ugh this is ugly
-            cond = "A" + cond
-            name = name[0..-2]
-          end
           fix = "fix_cond_#{id}"
           if @@fixes.respond_to?(fix) then
             cond = @@fixes.send(fix, name, cond)
           end
           celt.attributes['name'] = name
+        else
+          celt.attributes['name'] = ''
         end
-
-        celt.text = cond
+        celt.text = cond.sub(/\.$/, '')
         kid << celt
       end
       elt << kid
