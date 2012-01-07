@@ -37,18 +37,22 @@ public default Entry liftEntry(Node n) {
   throw "Error <n>";
 } 
 
+// approximation
 public TOC insertDatums(TOC toc, map[str, list[NameId]] datums) {
   last_page = ( -1 | p > it ? p : it | /section(_, _, p) := toc );
   order = [ "" | _ <- [1..last_page] ];
-  top-down visit (toc) {
+  visit (toc) {
     case section(t, _, p): order[p - 1] = t;
   }
   m = ();
   for (p <- datums) {
     no = toInt(p);
-    // not good: for two consecutive same page nos it should find the first
-    // one, not the last. So, it's not possible. :-(
-    sect = ("" | order[i] | i <- [0..last_page - 1], i < no, order[i] != "" );
+    // not good: for two consecutive same page nos it's not clear if you
+    // need the last or the first. So, it's not possible to be exact. :-(
+    //sect = ("" | order[i] | i <- [0..last_page - 1], i < no, order[i] != "" );
+    sect =  "";
+    if (i <- [no-1,no-2..0], order[i] != "")
+      sect = order[i];
     if (sect notin m) {
       m[sect] = [];
     }
