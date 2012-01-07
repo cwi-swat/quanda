@@ -22,6 +22,8 @@ lexical Nat = [0-9]+ !>> [0-9];
 lexical String = [\"] StrChar* [\"];
 lexical StrChar = ![\"] | [\\][\"];
 
+keyword Keywords =;
+
 lexical Id 
   = ([a-z A-Z 0-9 _] !<< [a-z A-Z][a-z A-Z 0-9 _]* !>> [a-z A-Z 0-9 _]) \ Keywords
   ;

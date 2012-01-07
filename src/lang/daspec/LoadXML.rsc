@@ -19,6 +19,14 @@ public TOC liftTOC() {
   return liftTOC(doc.root);
 }
 
+public void dumpTOC() {
+  toc = liftTOC();
+  ind = indexDatums(DA2011XML());
+  toc = insertDatums(toc, ind);
+  writeFile(|project://quanda/input/_da2011.toc|, toc2string(toc));
+}
+
+
 public map[str, str] attributeMap(Node elt) 
   = ( n: v | attribute(_, n, v) <- elt.children );
 
@@ -36,6 +44,16 @@ public Entry liftEntry(e:element(_, "entry", kids)) {
 public default Entry liftEntry(Node n) {
   throw "Error <n>";
 } 
+
+public str toc2string(TOC toc) = ( "" | it + toc2string(e) | e <- toc.entries );
+
+public str toc2string(section(t, es, p)) =
+  "section <t> {<for (e <- es) {>
+  '  <toc2string(e)><}>
+  '}
+  '";
+
+public str toc2string(lang::daspec::model::TOC::datum(n, k)) = "<n> [<k>]";
 
 // approximation
 public TOC insertDatums(TOC toc, map[str, list[NameId]] datums) {
