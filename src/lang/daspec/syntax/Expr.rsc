@@ -43,8 +43,8 @@ syntax Exp
   ;
   
 syntax Ref 
-  = ref: "[" Nat key "." Value "]" "\<" RefText Sub "\>"
-  | ref: "[" Nat key "]" "\<" RefTextTail "\>";
+  = ref: "[" Nat key "." Value "]" "\<" LongName Sub "\>"
+  | ref: "[" Nat key "]" "\<" LongName "\>";
 
 syntax Value
   = nat: Nat
@@ -55,6 +55,5 @@ syntax Value
 syntax Sub 
   = field: "." LongName "." LongName
   | field: "." LongName
-  | field: "." LongName "."
   | \value: ".." LongName
   ;  

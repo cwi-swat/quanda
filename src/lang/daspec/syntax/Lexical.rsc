@@ -1,7 +1,8 @@
 module lang::daspec::syntax::Lexical
 
 lexical LongName 
-  = Word [.]?
+  = Word
+  | Word [.] !>> [.]
   | Word [\ \t]+ LongName
   ;
 
@@ -12,9 +13,9 @@ lexical Word
 lexical Text = /*@category=String*/ ![}]* >> [}]; 
 
 keyword CommonFormats 
-  = "an2" | "an4" | "an6" | "an8" | "an11" 
-  | "a1" | "a3"
-  | "n1" | "n2" | "n4" | "n6" | "n8" | "n12";
+  = "an2" | "an4" | "an6" | "an8" | "an11" | "a1" | "a3"
+  | "n1" | "n2" | "n4" | "n6" | "n8" | "n12"
+  ;
   
 lexical DomainId = Id \ CommonFormats;
   

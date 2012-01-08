@@ -5,7 +5,8 @@ import lang::daspec::syntax::Expr;
 
 start syntax Datum
    = /*@Foldable*/ "gegeven" LongName name "[" Nat key "]" ":" Type type
-      "{" Section* body "}";
+      "{" Section* body "}"
+   ;
 
 syntax Section 
   = definition: "definitie" "{" Text "}"
@@ -20,6 +21,11 @@ syntax Section
 
 syntax Label = LongName ":";
 
+syntax Type
+  = format: Format
+  | domain: DomainId+ 
+  ;
+
 syntax Format
   = fixedAlpha: "a" Nat length
   | fixedAlphaNumeric: "an" Nat length
@@ -28,10 +34,4 @@ syntax Format
   | numeric: "n" ".." Nat bound
   ;
   
-
-syntax Type
-  = format: Format
-  | domain: DomainId+ 
-  ;
-
   

@@ -1,6 +1,8 @@
 module lang::daspec::Sanity
 
-import lang::daspec::Syntax;
+import lang::daspec::syntax::Datum;
+import lang::daspec::syntax::Expr;
+import lang::daspec::syntax::Lexical;
 import ParseTree;
 import IO;
 
