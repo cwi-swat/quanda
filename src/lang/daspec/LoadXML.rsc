@@ -7,6 +7,7 @@ import String;
 import Integer;
 
 import lang::daspec::model::TOC;
+import lang::daspec::format::TOC2Box;
 import lang::daspec::model::Datum;
 
 private loc DA2011_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/da20110929.xml|; 
@@ -16,14 +17,15 @@ public Node DA2011XML() = readXMLDOM(DA2011_XML_FILE);
 
 public TOC liftTOC() {
   doc = readXMLDOM(DA2011_TOC_XML_FILE);
-  return liftTOC(doc.root);
+  toc = liftTOC(doc.root);
+  ind = indexDatums(DA2011XML());
+  toc = insertDatums(toc, ind);
+  return toc;
 }
 
 public void dumpTOC() {
   toc = liftTOC();
-  ind = indexDatums(DA2011XML());
-  toc = insertDatums(toc, ind);
-  writeFile(|project://quanda/input/_da2011.toc|, toc2string(toc));
+  writeFile(|project://quanda/input/_da2011.toc|, formatTOC(toc));
 }
 
 
@@ -44,16 +46,6 @@ public Entry liftEntry(e:element(_, "entry", kids)) {
 public default Entry liftEntry(Node n) {
   throw "Error <n>";
 } 
-
-public str toc2string(TOC toc) = ( "" | it + toc2string(e) | e <- toc.entries );
-
-public str toc2string(section(t, es, p)) =
-  "section <t> {<for (e <- es) {>
-  '  <toc2string(e)><}>
-  '}
-  '";
-
-public str toc2string(lang::daspec::model::TOC::datum(n, k)) = "<n> [<k>]";
 
 // approximation
 public TOC insertDatums(TOC toc, map[str, list[NameId]] datums) {

@@ -3,7 +3,9 @@ module lang::daspec::syntax::Datum
 import lang::daspec::syntax::Lexical;
 import lang::daspec::syntax::Expr;
 
-start syntax Datum = /*@Foldable*/ "gegeven" Name name "[" Nat key "]" ":" Type type "{" Section* body "}";
+start syntax Datum
+   = /*@Foldable*/ "gegeven" LongName name "[" Nat key "]" ":" Type type
+      "{" Section* body "}";
 
 syntax Section 
   = definition: "definitie" "{" Text "}"
@@ -11,13 +13,12 @@ syntax Section
   | algorithm: "bereken" "{" Text "}"
   | page: "pagina" Nat
   | source: "bron" "{" Text "}"
-  | condition: "conditie" ExpLabel? Exp
-  | formula: "bereken" ExpLabel? Exp
+  | condition: "conditie" Label? Exp
+  | formula: "bereken" Label? Exp
   | usedBy: "gebruikt" "in" {Nat ","}+
   ;
 
-syntax ExpLabel = ExpName ":";
-
+syntax Label = LongName ":";
 
 syntax Format
   = fixedAlpha: "a" Nat length

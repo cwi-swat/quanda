@@ -53,7 +53,8 @@ syntax Value
 
 
 syntax Sub 
-  = field: "." RefText "." RefTextTail
-  | field: "." RefTextTail
-  | \value: ".." RefTextTail
+  = field: "." LongName "." LongName
+  | field: "." LongName
+  | field: "." LongName "."
+  | \value: ".." LongName
   ;  

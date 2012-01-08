@@ -1,15 +1,15 @@
 module lang::daspec::syntax::Lexical
 
-lexical Name = /*@category=Variable*/ ![\[]* >> [\[];
+lexical LongName 
+  = Word [.]?
+  | Word [\ \t]+ LongName
+  ;
+
+lexical Word
+  = ![\[\]{}\ \t.]+
+  ;
 
 lexical Text = /*@category=String*/ ![}]* >> [}]; 
-
-lexical Title = /*@category=String*/ ![{]* >> [{]; 
-
-lexical ExpName = ![:]+ >> [:];
-
-lexical RefText = /*@category=String*/ ![.\>]+ >> [.]; 
-lexical RefTextTail = /*@category=String*/ ![.\>]+ >> [\>]; 
 
 keyword CommonFormats 
   = "an2" | "an4" | "an6" | "an8" | "an11" 
