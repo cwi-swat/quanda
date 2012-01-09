@@ -1,10 +1,10 @@
 module lang::daspec::LoadXML
 
-import XMLDOM;
+import lang::xml::DOM;
 import IO;
 import List;
 import String;
-import Integer;
+import util::Math;
 
 import lang::daspec::model::TOC;
 import lang::daspec::format::TOC2Box;
