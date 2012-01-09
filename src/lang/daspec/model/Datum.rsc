@@ -1,6 +1,7 @@
 module lang::daspec::model::Datum
 
 import lang::daspec::model::Expr;
+import lang::daspec::format::Expr2Box;
 
 data Datum = datum(str name, int key, Type \type, list[Section] body);
 
@@ -11,7 +12,7 @@ data Section
   | page(int no)
   | source(str text)
   | condition(list[str] label, Exp exp)
-  | formular(list[str] label, Exp exp)
+  | formula(list[str] label, Exp exp)
   | usedBy(list[int] keys)
   ;
 
