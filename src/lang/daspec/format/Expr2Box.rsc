@@ -3,9 +3,23 @@ module lang::daspec::format::Expr2Box
 import lang::daspec::model::Expr;
 import lang::daspec::format::Utils;
 import lang::box::util::Box;
+import String;
+import List;
 
-public Box expr2box(parseError(str src, _)) = 
-  H([L("PARSE_ERROR"), COMM(H([L("/*"), L(src), L("*/")]))])[@hs=1];
+public Box expr2box(parseError(str src, loc l)) = 
+  H([L("PARSE_ERROR"), COMM(H([L("/*"), 
+    L(insertMarker(src, l)), 
+    L("*/")]))])[@hs=1];
+
+public str insertMarker(str src, loc l) {
+  lines = split("\n", src);
+  lineNo = l.begin.line;
+  line = lines[lineNo - 1];
+  left = substring(line, 0, l.begin.column);
+  right = substring(line, l.begin.column, size(line));
+  lines[lineNo - 1] = left + "\<ERROR\>" + right;
+  return intercalate("\n", lines);  
+}
 
 public Box expr2box(call(n, arg)) = H([L("#<n>"), L("("), expr2box(arg), L(")")])[@hs=0];
 
@@ -13,14 +27,14 @@ public Box expr2box(Exp::ref(r)) = expr2box(r);
 
 public Box expr2box(const(v)) = expr2box(v);
 
-public Box expr2box(sum(e)) = H([KW(L("som")), L("("), expr2box(e), L(")")])[@hs=0];
+public Box expr2box(Exp::sum(e)) = H([KW(L("som")), L("("), expr2box(e), L(")")])[@hs=0];
 
 public Box expr2box(abs(e)) = H([KW(L("abs")), L("("), expr2box(e), L(")")])[@hs=0];
 
-public Box expr2box(right(a1, a2)) = func("rechts", [a1, a2]);
-public Box expr2box(left(a1, a2)) = func("links", [a1, a2]); 
-public Box expr2box(max(a1, a2)) = func("max", [a1, a2]); 
-public Box expr2box(min(a1, a2)) = func("min", [a1, a2]); 
+public Box expr2box(Exp::right(a1, a2)) = func("rechts", [a1, a2]);
+public Box expr2box(Exp::left(a1, a2)) = func("links", [a1, a2]); 
+public Box expr2box(Exp::max(a1, a2)) = func("max", [a1, a2]); 
+public Box expr2box(Exp::min(a1, a2)) = func("min", [a1, a2]); 
 
 public Box expr2box(pos(a)) = H([L("+"), expr2box(a)])[@hs=0];
 
@@ -50,16 +64,19 @@ public Box expr2box(ifThen(c, a)) =
   ]);
   
 
+
+public str normalize(str s) = trim(squeeze(replaceAll(s, "\n", " "), " ")); 
+
 public Box expr2box(Ref::ref(k, v, n, s)) = 
   H([
-    L("["), L("<k>"), L("."), expr2box(v), L("]"),
-    L("\<"), L("<n>"), expr2box(s), L("\>")
+    L("["), L("<k.key>"), L("."), expr2box(v), L("]"),
+    L("\<"), L(normalize(n)), expr2box(s), L("\>")
   ])[@hs=0];
 
 public Box expr2box(Ref::ref(k, n)) = 
   H([
-    L("["), L("<k>"), L("]"),
-    L("\<"), L("<n>"), L("\>")
+    L("["), L("<k.key>"), L("]"),
+    L("\<"), L(normalize(n)), L("\>")
   ])[@hs=0];
 
 public Box expr2box(field(n, txt)) = H([L("."), L(n), L("."), L(txt)])[@hs=0];

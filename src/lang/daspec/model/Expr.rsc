@@ -5,6 +5,9 @@ data Exp
  = parseError(str src, loc l)
  ;    
 
+
+data Key = key(int key);
+
 data Exp
   = call(str name, Exp arg)
   | ref(Ref ref)
@@ -34,8 +37,8 @@ data Exp
   ;
 
 data Ref
-  = ref(int key, Value \value, str name, Sub sub)
-  | ref(int key, str name)
+  = ref(Key key, Value \value, str name, Sub sub)
+  | ref(Key key, str name)
   ;
 
 data Value

@@ -11,6 +11,7 @@ import lang::box::util::Box2Text;
 import lang::xml::DOM;
 import ParseTree;
 import String;
+import IO;
 
  
 private loc DA2011_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/da20110929.xml|; 
@@ -18,6 +19,27 @@ private loc DA2011_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2
 public Node DA2011XML() = readXMLDOM(DA2011_XML_FILE);
 
 public str formatDatum(Datum d) = format(datum2box(d));
+
+public void dumpDatum(Datum d) {
+  // todo cannot interpolate ints in locs
+  s = "<d.key.key>";
+  l = |project://quanda/input/<s>.das|;
+  println("Dumping to: <l>");
+  writeFile(l, formatDatum(d));
+}
+
+public void dumpDatums() {
+  doc = DA2011XML();
+  root = doc.root;
+  for (e:element(_, n, kids) <- root.children) {
+    try {
+      dumpDatum(liftDatum(e));
+    }
+    catch IllegalArgument(Tree t, str msg): {
+      println("AMB: <msg>: <unparse(t)>");
+    }  
+  }
+}
 
 public Datum liftDatum(int key) {
   doc = DA2011XML();
@@ -48,11 +70,11 @@ public Datum liftDatum(Node n) {
     typ = domain(attrs["domain"]);
   }
   else {
-    typ = implodeFormat(parseFormat(attrs["format"]));
+    typ = format(implodeFormat(parseFormat(attrs["format"])));
   }
 
   sects = [
-    usedBy([ toInt(trim(k)) | k <- split(",", attrs["relates_to"]), k != "" ]),
+    usedBy([ key(toInt(trim(k))) | k <- split(",", attrs["relates_to"]), k != "" ]),
     page(toInt(attrs["page"])),
     definition(docs["definition"])
   ];
@@ -65,11 +87,12 @@ public Datum liftDatum(Node n) {
   }
   
   Exp pExp(str src) {
-    norm = squeeze(replaceAll(trim(src), "\n", " "), " ");
+    //norm = squeeze(replaceAll(trim(src), "\n", " "), " ");
+    src = trim(src);
     try
       // parse with error tree does not work
       //Tree t = parseExpWithErrorTree(trim(src));
-      return implodeExp(parseExp(norm));
+      return implodeExp(parseExp(src));
     catch ParseError(loc l):
       return parseError(src, l);
   }
@@ -85,7 +108,7 @@ public Datum liftDatum(Node n) {
   sects += for (ev <- eval, trim(ev) != "") {
     append algorithm(ev);
   }
-  return datum(attrs["name"], toInt(attrs["id"]), typ, sects);
+  return datum(attrs["name"], key(toInt(attrs["id"])), typ, sects);
 }
 
 

@@ -1,6 +1,7 @@
 module lang::daspec::format::Datum2Box
 
 import lang::daspec::model::Datum;
+import lang::daspec::model::Expr;
 import lang::daspec::format::Expr2Box;
 import lang::daspec::format::Utils;
 import lang::box::util::Box;
@@ -11,7 +12,7 @@ import List;
 public Box datum2box(datum(name, key, typ, body)) =
   V([
      H([KW(L("gegeven")), L(name), 
-        H([H([L("["), L("<key>"), L("]")])[@hs=0], L(":")])[@hs=0], datum2box(typ), L("{")]),
+        H([H([L("["), L("<key.key>"), L("]")])[@hs=0], L(":")])[@hs=0], datum2box(typ), L("{")]),
      I([V([ datum2box(s) | s <- body ])]),
      L("}")
     ]);
@@ -27,7 +28,7 @@ public Box datum2box(alphaNumericUpTo(b)) = KW(L("an..<b>"));
 public Box datum2box(numeric(n)) = KW(L("n<n>"));
 public Box datum2box(numericUpTo(b)) = KW(L("n..<b>"));
   
-public Box datum2box(page(no)) = H([KW(L("page")), L("<no>")]);
+public Box datum2box(page(no)) = H([KW(L("pagina")), L("<no>")]);
 
 public Box datum2box(usedBy([])) = H([]); //H([KW(L("gebruikt")), KW(L("in"))]);
 
@@ -35,7 +36,7 @@ public Box datum2box(usedBy(ks)) =
   V([ 
      H([KW(L("gebruikt")), KW(L("in"))]),
      I([
-       HV(sepList(L(","), [ L("<k>") | k <- ks ]))
+       HV(sepList(L(","), [ L("<k.key>") | k <- ks ]))
      ])
   ])
   when size(ks) > 0;

@@ -4,6 +4,8 @@ import lang::daspec::syntax::Lexical;
 
 keyword Keywords = 'som' | 'abs' | 'of' | 'en' | 'Als' | 'dan' | 'Gevuld' | 'rechts';  
 
+syntax Key = @category="MetaVariable" key: Nat;
+
 syntax Exp
   = call: "#" Id Exp
   | ref: Ref
@@ -26,13 +28,13 @@ syntax Exp
      | sub: Exp "-" Exp
   )
   > non-assoc (
-     eq: Exp "=" Exp
-     | gt: Exp "\>" Exp
-     | lt: Exp "\<" Exp
+     eq: Exp [\<] !<< "=" Exp
+     | gt: Exp "\>" !>> [=] Exp
+     | lt: Exp "\<" !>> [=] Exp
      | geq: Exp "\>=" Exp
      | leq: Exp "\<=" Exp
   ) 
-  > non-assoc (
+  | non-assoc (
      defined: 'Gevuld' Exp
      | isDefined: 'is.gevuld' Exp
      | isUndefined: 'is.leeg' Exp
@@ -43,8 +45,8 @@ syntax Exp
   ;
   
 syntax Ref 
-  = ref: "[" Nat key "." Value "]" "\<" LongName Sub "\>"
-  | ref: "[" Nat key "]" "\<" LongName "\>";
+  = ref: "[" Key key "." Value "]" "\<" LongName Sub "\>"
+  | ref: "[" Key key "]" "\<" LongName "\>";
 
 syntax Value
   = nat: Nat

@@ -1,9 +1,8 @@
 module lang::daspec::model::Datum
 
 import lang::daspec::model::Expr;
-import lang::daspec::format::Expr2Box;
 
-data Datum = datum(str name, int key, Type \type, list[Section] body);
+data Datum = datum(str name, Key key, Type \type, list[Section] body);
 
 data Section
   = definition(str text)
@@ -13,7 +12,7 @@ data Section
   | source(str text)
   | condition(list[str] label, Exp exp)
   | formula(list[str] label, Exp exp)
-  | usedBy(list[int] keys)
+  | usedBy(list[Key] keys)
   ;
 
 data Type

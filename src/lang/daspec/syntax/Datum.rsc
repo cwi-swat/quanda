@@ -4,27 +4,32 @@ import lang::daspec::syntax::Lexical;
 import lang::daspec::syntax::Expr;
 
 start syntax Datum
-   = /*@Foldable*/ "gegeven" LongName name "[" Nat key "]" ":" Type type
+   = @Foldable datum: "gegeven" LongName name "[" Key key "]" ":" Type type
       "{" Section* body "}"
    ;
 
 syntax Section 
-  = definition: "definitie" "{" Text "}"
-  | explanation:  "toelichting" "{" Text "}"
-  | algorithm: "bereken" "{" Text "}"
+  = @Foldable definition: "definitie" "{" Text "}"
+  | @Foldable explanation:  "toelichting" "{" Text "}"
+  | @Foldable algorithm: "bereken" "{" Text "}"
   | page: "pagina" Nat
-  | source: "bron" "{" Text "}"
+  | @Foldable source: "bron" "{" Text "}"
   | condition: "conditie" Label? Exp
   | formula: "bereken" Label? Exp
-  | usedBy: "gebruikt" "in" {Nat ","}+
+  | usedBy: "gebruikt" "in" {Key ","}+
   ;
 
 syntax Label = LongName ":";
 
 syntax Type
-  = format: Format
-  | domain: DomainId+ 
+  = @category="Type" format: Format
+  | @category="Type" domain: Domain
   ;
+
+lexical Domain
+  = DomainId
+  | DomainId [\ \t]+ Domain
+  ; 
 
 syntax Format
   = alpha: "a" Nat length

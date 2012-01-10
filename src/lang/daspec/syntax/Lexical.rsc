@@ -10,7 +10,7 @@ lexical Word
   = ![\[\]{}\ \t.]+
   ;
 
-lexical Text = /*@category=String*/ ![}]* >> [}]; 
+lexical Text = ![}]* >> [}]; 
 
 keyword CommonFormats 
   = "an2" | "an4" | "an6" | "an8" | "an11" | "a1" | "a3"
@@ -18,7 +18,7 @@ keyword CommonFormats
   ;
   
 lexical DomainId = Id \ CommonFormats;
-  
+
 lexical Nat = [0-9]+ !>> [0-9];
 lexical String = [\"] StrChar* [\"];
 lexical StrChar = ![\"] | [\\][\"];
@@ -38,7 +38,7 @@ lexical LAYOUT
   ;
 
 lexical Comment
-    = /*@category="Comment"*/ "/*" (![*] | [*] !>> [/])* "*/" 
-    | /*@category="Comment"*/ "//" ![\n]* [\n]
+    = @category="Comment" "/*" (![*] | [*] !>> [/])* "*/" 
+    | @category="Comment" "//" ![\n]* [\n]
     ;
   
