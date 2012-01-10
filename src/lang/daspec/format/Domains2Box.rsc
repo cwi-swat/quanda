@@ -17,9 +17,11 @@ public str formatDomains(Domains doms) = format(domains2box(doms));
 public Box domains2box(domains(ds)) = A([ domains2box(d) | d <- ds ]);
 
 public Box domains2box(decl(n, f, ms, rs)) = 
-  R([L(n), L(":"), datum2box(f), 
-     [str m] := ms ? L("[<m>]") : L(""), 
+  R([L(n), L(":"), datum2box(f), domains2box(ms), 
      [r] := rs ? domains2box(r) : L("")]);
+
+public Box domains2box(list[str] ps) = 
+  H([L("[")] + [ L(p) | p <- ps ] + [L("]")])[@hs=0];
 
 public Box domains2box(enum(vs)) = 
   HV(sepList(L("|"), [ expr2box(v) | v <- vs ]))[@hs=0];

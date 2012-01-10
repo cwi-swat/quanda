@@ -13,11 +13,11 @@ syntax Decl
   
 
 syntax Mask 
-  = "[" Placeholders "]"
+  = "[" Placeholder+ "]"
   ;
   
-lexical Placeholders
-  = [EJDM#.+an]+
+lexical Placeholder
+  = [EJDM#.+an]
   ;
 
 syntax Range
