@@ -5,5 +5,5 @@ import lang::daspec::model::Expr;
 
 import ParseTree;
 
-public Exp implodeExp(Tree t) = implode(#Expr, t);
+public Exp implodeExp(Tree t) = implode(#Exp, t);
 public Format implodeFormat(Tree t) = implode(#Format, t);

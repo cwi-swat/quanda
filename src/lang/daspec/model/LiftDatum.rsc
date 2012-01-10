@@ -4,19 +4,37 @@ import lang::daspec::model::Datum;
 import lang::daspec::syntax::Expr;
 import lang::daspec::util::Parse;
 import lang::daspec::util::Implode;
+import lang::daspec::format::Datum2Box;
+
+import lang::box::util::Box2Text;
 
 import lang::xml::DOM;
 import ParseTree;
+import String;
 
 // to deal with unparseable expressions
-data Exp = parseError(Tree errorTree);
+data Exp 
+ = parseError(Tree errorTree)
+ | parseError(str src, loc l)
+ ;    
 
 private loc DA2011_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/da20110929.xml|; 
 
 public Node DA2011XML() = readXMLDOM(DA2011_XML_FILE);
 
-public map[str, str] attributeMap(Node elt) 
-  = ( n: v | attribute(_, n, v) <- elt.children );
+public str formatDatum(Datum d) = format(datum2box(d));
+
+public Datum liftDatum(int key) {
+  doc = DA2011XML();
+  root = doc.root;
+  for (e:element(_, n, kids) <- root.children) {
+    attrs = attributeMap(e);
+    if (attrs["id"] == "<key>") {
+      return liftDatum(e);
+    }
+  }
+  throw "Could not find datum with id: <key>";
+}
 
 public Datum liftDatum(Node n) {
   attrs = attributeMap(n);
@@ -28,6 +46,8 @@ public Datum liftDatum(Node n) {
   docs = ( tg: x | element(_, tg, [charData(x)]) <- n.children, tg in labels );
   docs += ( tg: "" | element(_, tg, []) <- n.children, tg in labels );
 
+  docs = ( k: squeeze(replaceAll(trim(docs[k]), "\n", " "), " ") | k <- docs ); 
+
   str typ;
   if (attrs["domain"] != "") {
     typ = domain(attrs["domain"]);
@@ -37,7 +57,7 @@ public Datum liftDatum(Node n) {
   }
 
   sects = [
-    usedBy([ toInt(k) | k <- split(",", attrs["relates_to"]) ]),
+    usedBy([ toInt(trim(k)) | k <- split(",", attrs["relates_to"]) ]),
     page(toInt(attrs["page"])),
     definition(docs["definition"])
   ];
@@ -50,8 +70,13 @@ public Datum liftDatum(Node n) {
   }
   
   Exp pExp(str src) {
-    Tree t = parseExpWithErrorTree(src);
-    return t is error ? parseError(t) : implodeExp(t);
+    src = trim(src);
+    try
+      // parse with error tree does not work
+      //Tree t = parseExpWithErrorTree(trim(src));
+      return implodeExp(parseExp(src));
+    catch ParseError(loc l):
+      return parseError(src, l);
   }
   
   sects += for (<nm, ce> <- conds) {
@@ -65,6 +90,10 @@ public Datum liftDatum(Node n) {
   sects += for (ev <- eval, trim(ev) != "") {
     append algorithm(ev);
   }
-  return datum(attrs["name"], attrs["id"], typ, sects);
+  return datum(attrs["name"], toInt(attrs["id"]), typ, sects);
 }
+
+
+public map[str, str] attributeMap(Node elt) 
+  = ( n: v | attribute(_, n, v) <- elt.children );
 
