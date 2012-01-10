@@ -4,6 +4,7 @@ import util::IDE;
 import ParseTree;
 //import lang::quanda::syntax::Quanda;
 //import RegelSpraak;
+import lang::daspec::syntax::Domains;
 import lang::daspec::syntax::Datum;
 import lang::daspec::syntax::Expr;
 import lang::daspec::syntax::Lexical;
@@ -27,5 +28,8 @@ public void main() {
   registerAnnotator("DASpec", annotateHyperlinks);
   registerLanguage("TOC", "toc", start[TOC](str input, loc org) {
     return parse(#start[TOC], input, org);
+  });
+  registerLanguage("Domains", "doms", start[Domains](str input, loc org) {
+    return parse(#start[Domains], input, org);
   });
 }

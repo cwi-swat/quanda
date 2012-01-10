@@ -26,11 +26,6 @@ syntax Type
   | @category="Type" domain: Domain
   ;
 
-lexical Domain
-  = DomainId
-  | DomainId [\ \t]+ Domain
-  ; 
-
 syntax Format
   = alpha: "a" Nat length
   | alphaNumeric: "an" Nat length

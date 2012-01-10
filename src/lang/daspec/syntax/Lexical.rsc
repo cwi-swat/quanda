@@ -19,6 +19,11 @@ keyword CommonFormats
   
 lexical DomainId = Id \ CommonFormats;
 
+lexical Domain
+  = DomainId
+  | DomainId [\ \t]+ Domain
+  ; 
+
 lexical Nat = [0-9]+ !>> [0-9];
 lexical String = [\"] StrChar* [\"];
 lexical StrChar = ![\"] | [\\][\"];
