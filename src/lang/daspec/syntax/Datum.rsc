@@ -27,11 +27,11 @@ syntax Type
   ;
 
 syntax Format
-  = fixedAlpha: "a" Nat length
-  | fixedAlphaNumeric: "an" Nat length
-  | rangeAlphaNumeric: "an" ".." Nat bound
-  | fixedNumeric: "n" Nat length
-  | numeric: "n" ".." Nat bound
+  = alpha: "a" Nat length
+  | alphaNumeric: "an" Nat length
+  | alphaNumericUpTo: "an" ".." Nat bound
+  | numeric: "n" Nat length
+  | numericUpTo: "n" ".." Nat bound
   ;
   
   
