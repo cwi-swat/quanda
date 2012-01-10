@@ -3,8 +3,9 @@ module lang::daspec::format::Expr2Box
 import lang::daspec::model::Expr;
 import lang::daspec::format::Utils;
 import lang::box::util::Box;
-import lang::box::util::Box2Text;
 
+public Box expr2box(parseError(str src, _)) = 
+  H([L("PARSE_ERROR"), COMM(H([L("/*"), L(src), L("*/")]))])[@hs=1];
 
 public Box expr2box(call(n, arg)) = H([L("#<n>"), L("("), expr2box(arg), L(")")])[@hs=0];
 
@@ -72,7 +73,7 @@ public Box expr2box(nat(n)) = L("<n>");
 
 private Box func(str name, list[Exp] args) =
   H([KW(L(name)), L("("), 
-     H(sepList(L(";"), [ expr2box(a) | a <- args ]))[@hs=1], 
+     HOV(sepList(L(";"), [ expr2box(a) | a <- args ]))[@hs=1], 
      L(")")])[@hs=0];
 
   

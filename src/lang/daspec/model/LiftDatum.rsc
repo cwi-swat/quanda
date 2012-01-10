@@ -1,7 +1,7 @@
 module lang::daspec::model::LiftDatum
 
 import lang::daspec::model::Datum;
-import lang::daspec::syntax::Expr;
+import lang::daspec::model::Expr;
 import lang::daspec::util::Parse;
 import lang::daspec::util::Implode;
 import lang::daspec::format::Datum2Box;
@@ -12,12 +12,7 @@ import lang::xml::DOM;
 import ParseTree;
 import String;
 
-// to deal with unparseable expressions
-data Exp 
- = parseError(Tree errorTree)
- | parseError(str src, loc l)
- ;    
-
+ 
 private loc DA2011_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/da20110929.xml|; 
 
 public Node DA2011XML() = readXMLDOM(DA2011_XML_FILE);
@@ -57,7 +52,7 @@ public Datum liftDatum(Node n) {
   }
 
   sects = [
-    usedBy([ toInt(trim(k)) | k <- split(",", attrs["relates_to"]) ]),
+    usedBy([ toInt(trim(k)) | k <- split(",", attrs["relates_to"]), k != "" ]),
     page(toInt(attrs["page"])),
     definition(docs["definition"])
   ];
@@ -66,15 +61,15 @@ public Datum liftDatum(Node n) {
     sects += [explanation(docs["explanation"])];
   }
   if (trim(docs["source"]) != "") {
-    sects += [explanation(docs["source"])];
+    sects += [source(docs["source"])];
   }
   
   Exp pExp(str src) {
-    src = trim(src);
+    norm = squeeze(replaceAll(trim(src), "\n", " "), " ");
     try
       // parse with error tree does not work
       //Tree t = parseExpWithErrorTree(trim(src));
-      return implodeExp(parseExp(src));
+      return implodeExp(parseExp(norm));
     catch ParseError(loc l):
       return parseError(src, l);
   }

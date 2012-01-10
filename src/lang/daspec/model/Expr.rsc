@@ -1,5 +1,10 @@
 module lang::daspec::model::Expr
 
+// to deal with unparseable expressions
+data Exp 
+ = parseError(str src, loc l)
+ ;    
+
 data Exp
   = call(str name, Exp arg)
   | ref(Ref ref)

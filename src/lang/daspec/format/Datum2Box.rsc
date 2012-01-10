@@ -29,7 +29,7 @@ public Box datum2box(numericUpTo(b)) = KW(L("n..<b>"));
   
 public Box datum2box(page(no)) = H([KW(L("page")), L("<no>")]);
 
-public Box datum2box(usedBy([])) = H([KW(L("gebruikt")), KW(L("in"))]);
+public Box datum2box(usedBy([])) = H([]); //H([KW(L("gebruikt")), KW(L("in"))]);
 
 public Box datum2box(usedBy(ks)) =
   V([ 
