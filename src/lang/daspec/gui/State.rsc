@@ -1,7 +1,8 @@
 module lang::daspec::gui::State
 
+public alias State = map[int, str];
 
-private map[int, str] STATE = ();
+private State STATE = ();
 
 public void update(int key, str txt) {
   STATE[key] = txt;

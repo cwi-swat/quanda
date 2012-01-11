@@ -17,12 +17,7 @@ syntax Mask
   ;
   
 lexical Placeholder
-  = [an]
-  | Token
-  ;
-
-lexical Token
-  = [EJDM#.+]
+  = [aniEJDM#.+]
   ;
 
 syntax Range

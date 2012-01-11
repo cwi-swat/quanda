@@ -36,6 +36,11 @@ public test bool validMR6() = !validateMaskAndRanges(["a", "+", "n", "n"], [enum
 public test bool validMR7() = validateMaskAndRanges(["a", "+", "n", "n"], [enum([sym("a"), sym("b")]), range(0, 10)], "a+10");
 public test bool validMR8() = validateMaskAndRanges(["a", "+", "n", "n"], [enum([sym("a"), sym("b")]), range(0, 10)], "b+10");
 public test bool validMR9() = !validateMaskAndRanges(["a", "+", "n", "n"], [enum([sym("a"), sym("b")]), range(0, 10)], "b+11");
+public test bool validMR10() = validateMaskAndRanges(["a", "+", "i", "i"], [enum([sym("a"), sym("b")]), range(-10, 0)], "b+-2");
+public test bool validMR11() = !validateMaskAndRanges(["a", "+", "i", "i"], [enum([sym("a"), sym("b")]), range(-10, 0)], "b+2");
+
+public test bool validMR12() = validateMaskAndRanges(["a", "+", "n", "n", "n", "n", "n", "n", "n"],
+                 [enum([sym("M"), sym("E")]), range(0, 9999999)], "M+1234567");
 
 public bool validateMaskAndRanges([], [], str s) = true;
   
@@ -95,6 +100,8 @@ public bool matchToken(str token, str char) = /^[0-9]$/ := char
   when token in NUMERIC_PLACEHOLDERS;
   
 public bool matchToken("a", str char) = /^[a-zA-Z]$/ := char;
+
+public bool matchToken("i", str char) = /^[0-9\-]$/ := char;
   
 public default bool matchToken(str token, str char) = token == char;
 
