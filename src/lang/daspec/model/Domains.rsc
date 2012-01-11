@@ -5,7 +5,7 @@ import lang::daspec::model::Expr;
 
 data Domains = domains(list[Decl] decls);
 
-data Decl = decl(str name, Format format, list[str] mask, list[Range] range);
+data Decl = decl(str name, Format format, list[str] mask, list[Range] ranges);
 
 data Range
   = enum(list[Value] values)

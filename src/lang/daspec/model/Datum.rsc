@@ -26,5 +26,7 @@ data Format
   | alphaNumericUpTo(int bound)
   | numeric(int length)
   | numericUpTo(int bound)
+  | integer(int length)
+  | integerUpTo(int bound)
   ;
   

@@ -26,12 +26,15 @@ syntax Type
   | @category="Type" domain: Domain
   ;
 
+// Maybe refactor
 syntax Format
   = alpha: "a" Nat length
   | alphaNumeric: "an" Nat length
   | alphaNumericUpTo: "an" ".." Nat bound
   | numeric: "n" Nat length
   | numericUpTo: "n" ".." Nat bound
+  | integer: "i" Nat length
+  | integercUpTo: "i" ".." Nat bound
   ;
   
   

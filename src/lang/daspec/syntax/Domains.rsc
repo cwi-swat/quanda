@@ -8,7 +8,7 @@ start syntax Domains
   ;
 
 syntax Decl 
-  = decl: Domain ":" Format Mask? Range?
+  = decl: Domain ":" Format Mask? {Range ","}*
   ;
   
 
@@ -17,7 +17,12 @@ syntax Mask
   ;
   
 lexical Placeholder
-  = [EJDM#.+an]
+  = [an]
+  | Token
+  ;
+
+lexical Token
+  = [EJDM#.+]
   ;
 
 syntax Range
