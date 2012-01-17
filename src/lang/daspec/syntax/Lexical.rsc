@@ -7,8 +7,12 @@ lexical LongName
   ;
 
 lexical Word
-  = ![\[\]{}\ \t.]+
+  = ![\[\]{}\ \t.]+ \ ReservedWords
   ;
+
+// solve amb of condition with a single identifier
+// (eats up the next condition)
+keyword ReservedWords = "conditie"; // see Datum
 
 lexical Text = ![}]* >> [}]; 
 

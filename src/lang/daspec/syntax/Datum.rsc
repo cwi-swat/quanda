@@ -1,7 +1,7 @@
 module lang::daspec::syntax::Datum
 
-import lang::daspec::syntax::Lexical;
-import lang::daspec::syntax::Expr;
+extend lang::daspec::syntax::Lexical;
+extend lang::daspec::syntax::Expr;
 
 start syntax Datum
    = @Foldable datum: "gegeven" LongName name "[" Key key "]" ":" Type type
