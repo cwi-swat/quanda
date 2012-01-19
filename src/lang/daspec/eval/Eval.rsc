@@ -94,7 +94,7 @@ public SValue eval(call(n, a), Env e) =
 
 // TODO: check this
 public SValue eval(Exp::ref(ref(k, sym(s), _, _)), Env e) = 
-  valueOf(e[k]) == string(s) ? string(s) : null()
+  valueOf(e[k]) == string(s){ ? string(s) : null()
   when k in e;
 
 public SValue eval(Exp::ref(ref(k, _)), Env e) = valueOf(e[k])

@@ -9,14 +9,14 @@ start syntax Datum
    ;
 
 syntax Section 
-  = @Foldable definition: "definitie" "{" Text "}"
-  | @Foldable explanation:  "toelichting" "{" Text "}"
-  | @Foldable algorithm: "bereken" "{" Text "}"
-  | page: "pagina" Nat
-  | @Foldable source: "bron" "{" Text "}"
-  | condition: "conditie" Label? Exp
-  | formula: "bereken" Label? Exp
-  | usedBy: "gebruikt" "in" {Key ","}+
+  = @Foldable definition: "definitie" "{" Text text "}"
+  | @Foldable explanation:  "toelichting" "{" Text text "}"
+  | @Foldable algorithm: "bereken" "{" Text text "}"
+  | page: "pagina" Nat no
+  | @Foldable source: "bron" "{" Text text "}"
+  | condition: "conditie" Label? label Exp exp
+  | formula: "bereken" Label? label Exp exp
+  | usedBy: "gebruikt" "in" {Key ","}+ keys
   ;
 
 syntax Label = LongName ":";
