@@ -15,8 +15,42 @@ import IO;
 
  
 private loc DA2011_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/da20110929.xml|; 
+public loc DA2011_MAPPING_XSD_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/1.3/da20110503-mapping.xsd|; 
 
 public Node DA2011XML() = readXMLDOM(DA2011_XML_FILE);
+
+public map[int, str] bmg2tagMapping() {
+  doc = readXMLDOM(DA2011_MAPPING_XSD_FILE);
+  m = ();
+  bounds = {};
+  visit (doc) {
+  //<xs:element name="AlgemeneGegevens" id="107761">
+    //case element(_, x, _): println(x);
+    case element(_, "element", ks): {
+      if (attribute(_, "name", str n) <- ks,  attribute(_, "id", str i) <- ks) {
+        // TODO: throw error if duplicate entry.
+        bmg = toInt(i);
+        if (m[bmg]?) {
+          println("WARNING: duplicate bmg: <bmg> for <m[bmg]> and <n>");
+        }
+        m[bmg] = n;
+        int min = 1;
+        int max = 1;
+        if (attribute(_, "minOccurs", str x) <- ks) {
+           min = toInt(x);
+        }
+        if (attribute(_, "maxOccurs", str x) <- ks) {
+           max = toInt(x);
+        }
+        bounds += {<bmg, min, max>};
+      }
+    }
+  }
+  for (b <- bounds) {
+    println(b);
+  }
+  return m;
+}
 
 public str formatDatum(Datum d) = format(datum2box(d));
 
