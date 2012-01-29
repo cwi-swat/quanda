@@ -108,14 +108,20 @@ public Datum liftDatum(Node n, map[BMG, TagInfo] bmg) {
 
   k = toInt(attrs["id"]);
   
-  sects = [
-    shorthand(bmg[k].name),
-    lowerBound(bmg[k].lowerBound),
-    upperBound(bmg[k].upperBound)
-  ];
+  sects = [];
+  if (bmg[k]?) {
+	  sects = [
+	    shorthand(bmg[k].name),
+	    lowerBound(bmg[k].lowerBound),
+	    upperBound(bmg[k].upperBound)
+	  ];
+  }
+  else {
+    println("WARNING: no tagname for bmg <k>");
+  }
   
   sects += [
-    usedBy([ key(toInt(trim(k))) | k <- split(",", attrs["relates_to"]), k != "" ]),
+    usedBy([ key(toInt(trim(k))) | str k <- split(",", attrs["relates_to"]), k != "" ]),
     page(toInt(attrs["page"])),
     definition(docs["definition"])
   ];
