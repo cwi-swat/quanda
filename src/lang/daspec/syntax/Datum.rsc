@@ -17,6 +17,9 @@ syntax Section
   | condition: "conditie" Label? label Exp exp
   | formula: "bereken" Label? label Exp exp
   | usedBy: "gebruikt" "in" {Key ","}+ keys
+  | shorthand: "alias" Id
+  | lowerBound: "minimaal" "voorkomen" Int
+  | upperBound: "maximaal" "voorkomen" Int
   ;
 
 syntax Label = LongName ":";

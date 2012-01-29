@@ -19,21 +19,21 @@ public loc DA2011_MAPPING_XSD_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/sp
 
 public Node DA2011XML() = readXMLDOM(DA2011_XML_FILE);
 
-public map[int, str] bmg2tagMapping() {
+data TagInfo 
+  = tagInfo(str name, int lowerBound, int upperBound);
+ 
+alias BMG = int;
+
+public map[BMG, TagInfo] bmg2tagMapping() {
   doc = readXMLDOM(DA2011_MAPPING_XSD_FILE);
   m = ();
-  bounds = {};
   visit (doc) {
-  //<xs:element name="AlgemeneGegevens" id="107761">
-    //case element(_, x, _): println(x);
     case element(_, "element", ks): {
       if (attribute(_, "name", str n) <- ks,  attribute(_, "id", str i) <- ks) {
-        // TODO: throw error if duplicate entry.
         bmg = toInt(i);
         if (m[bmg]?) {
           println("WARNING: duplicate bmg: <bmg> for <m[bmg]> and <n>");
         }
-        m[bmg] = n;
         int min = 1;
         int max = 1;
         if (attribute(_, "minOccurs", str x) <- ks) {
@@ -42,12 +42,9 @@ public map[int, str] bmg2tagMapping() {
         if (attribute(_, "maxOccurs", str x) <- ks) {
            max = toInt(x);
         }
-        bounds += {<bmg, min, max>};
+        m[bmg] = tagInfo(n, min, max);
       }
     }
-  }
-  for (b <- bounds) {
-    println(b);
   }
   return m;
 }
@@ -65,9 +62,10 @@ public void dumpDatum(Datum d) {
 public void dumpDatums() {
   doc = DA2011XML();
   root = doc.root;
+  bmg = bmg2tagMapping();
   for (e:element(_, n, kids) <- root.children) {
     try {
-      dumpDatum(liftDatum(e));
+      dumpDatum(liftDatum(e, bmg));
     }
     catch IllegalArgument(Tree t, str msg): {
       println("AMB: <msg>: <unparse(t)>");
@@ -78,16 +76,17 @@ public void dumpDatums() {
 public Datum liftDatum(int key) {
   doc = DA2011XML();
   root = doc.root;
+  bmg = bmg2tagMapping();
   for (e:element(_, n, kids) <- root.children) {
     attrs = attributeMap(e);
     if (attrs["id"] == "<key>") {
-      return liftDatum(e);
+      return liftDatum(e, bmg);
     }
   }
   throw "Could not find datum with id: <key>";
 }
 
-public Datum liftDatum(Node n) {
+public Datum liftDatum(Node n, map[BMG, TagInfo] bmg) {
   attrs = attributeMap(n);
   conds = { <nm, e> | /element(_, "condition", [attribute(_, "name", nm), charData(e)]) <- n  };
   exps = { <nm, e> | /element(_, "expression", [attribute(_, "name", nm), charData(e)]) <- n };
@@ -107,7 +106,15 @@ public Datum liftDatum(Node n) {
     typ = format(implodeFormat(parseFormat(attrs["format"])));
   }
 
+  k = toInt(attrs["id"]);
+  
   sects = [
+    shorthand(bmg[k].name),
+    lowerBound(bmg[k].lowerBound),
+    upperBound(bmg[k].upperBound)
+  ];
+  
+  sects += [
     usedBy([ key(toInt(trim(k))) | k <- split(",", attrs["relates_to"]), k != "" ]),
     page(toInt(attrs["page"])),
     definition(docs["definition"])
@@ -142,7 +149,8 @@ public Datum liftDatum(Node n) {
   sects += for (ev <- eval, trim(ev) != "") {
     append algorithm(ev);
   }
-  return datum(attrs["name"], key(toInt(attrs["id"])), typ, sects);
+  
+  return datum(attrs["name"], key(k), typ, sects);
 }
 
 

@@ -63,6 +63,10 @@ public Box datum2box(definition(str txt)) = doc2box("definitie", txt);
 public Box datum2box(explanation(str txt)) = doc2box("toelichting", txt);
 public Box datum2box(source(str txt)) = doc2box("bron", txt);
 public Box datum2box(algorithm(str txt)) = doc2box("bereken", txt);
+
+public Box datum2box(lowerBound(int n)) = H([KW(L("minimaal")), KW(L("voorkomen")), L("<n>")])[@hs=1];  
+public Box datum2box(upperBound(int n)) = H([KW(L("maximaal")), KW(L("voorkomen")), L("<n>")])[@hs=1];  
+public Box datum2box(shorthand(str n)) = H([KW(L("alias")), L(n)])[@hs=1];
   
 private Box doc2box(str label, str txt) {
  words = [ L(w) | w <- split(" ", txt) ]; 

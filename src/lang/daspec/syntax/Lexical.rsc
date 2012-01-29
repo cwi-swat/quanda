@@ -32,6 +32,8 @@ lexical Nat = [0-9]+ !>> [0-9];
 lexical String = [\"] StrChar* [\"];
 lexical StrChar = ![\"] | [\\][\"];
 
+lexical Int = "-"? Nat;
+
 keyword Keywords =;
 
 lexical Id 

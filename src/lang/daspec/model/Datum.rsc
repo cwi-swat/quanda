@@ -13,6 +13,9 @@ data Section
   | condition(list[str] label, Exp exp)
   | formula(list[str] label, Exp exp)
   | usedBy(list[Key] keys)
+  | shorthand(str name)
+  | lowerBound(int bound)
+  | upperBound(int bound)
   ;
 
 data Type
