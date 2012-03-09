@@ -79,8 +79,13 @@ verplichtheid etc.).
 
 
 
+Checks
+======
 
-
+- name/key consistency in refs
+- correct values in valued refs
+- used in correctness (e.g. derive actual relation)
+- domain range matches format/mask.
    
 
 

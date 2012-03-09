@@ -1,117 +1,92 @@
 
+section "Personal Information"
 
+table(l,l) {
+  row { "Name"                                       edit(name) }
+  row { "SSN"                                        edit(ssn, "#####.##.###") }
+  row { "Date of birth"                              datepicker(birthday) }
+  row { "Phone"                                      edit(phone, numeric("##########")) }
+  row { "Did you receive a letter to file?"          radio(notice) }
+  row { "Does the letter contain the right bank nr?" radio(bankOk) }
+  row { "Bank account nr."                           edit(newBankNr, "##########") }
+  row { "Do you want to submit or change bank nr?"   radio(changeBankNr) }
+  row { "Bank account nr."                           edit(newBankNr, "##########") }
+  row { "Your personal situation in 2010"            select1(personalSituation) }
+}
+section "Personal information of your spouse"
 
-options yesno() {
-  true: "Yes"
-  false: "No"
+table(l,l) { 
+  row { "Name"          edit(partnerInfo.name) }
+  row { "SSN"           edit(partnerInfo.ssn, "#####.##.###") }
+  row { "Date of birth" datepicker(partnerInfo.birthday) }
+
+table(l,l,l) {
+  row { "Did you share housing with someone?"                                              cs(2) radio(houseSharing) }
+  row { "Period during which you lived together"                                           dayMonth(from) dayMonth(to) }
+  row { "Period during which you were married"                                             dayMonth(marriedFrom) dayMonth(marriedTo) }
+  row { "Did you live together with your spouse before/after tis period?"                  cs(2) radio(togetherBeforeAfter) }
+  row { "Period during which you lived together with your spouse"                          dayMonth(spouseFrom) dayMonth(spouseTo) }
+  row { "Do you and your spouse want to be considered fiscal partners?"                    cs(2) radio(fiscalPartners) }
+  row { "Did you share a house with someone else outside of the period you were married?"  cs(2) radio(marriedSharedHouse) }
+  row { "Period during which you lived together with someone other than spouse"            dayMonth(otherfrom) dayMonth(otherTo) }
 }
 
-options situation() {
-  married2010: "Married for the whole duration of 2010"
-  unmarried2010: "Not married for the whole duration of 2010"
-  partlyMarried2010: "Married during part of 2010"
+section "Box 1: work and housing"
+p "Choose the subjects that applied in 2010"
+
+table(r,l) {
+  row { check(hasWages)            "Wages, health care benefits, tips and so forth" }
+  row { check(hasPension)          "Pension, welfare, and other benefits to be taxes as income" }
+  row { check(hasAnnuity)          "Annuity buyouts (more than 4.146)" }
+  row { check(hasFreeIncome)       "Tax-free income if working for international organizations" }
+  row { check(hasForeignIncome)    "Wages, pension, benefits from abroad" }
+  row { check(hasTravelDeduction)  "Deduction for traveling with public transport" }
+  row { check(hasHouse)            "Owning a house (main stay)" }
 }
 
+subsection "Wages for <name>"
+subsection "Income from wages"
+p "Wages and healthcare benefits"
 
+table (l,l,l,l) {
+  row { "Employer/Benefits org."   "Work discount"         "Wages tax"           "Wages" }
+  row { edit(employer)             money(discount)         money(wagesTax)       money(wages) }
+  row { _                          money(totalDiscount)    money(totalWagesTax)  money(totalWages) }
+  row { "Total life plan discount" money(lifePlanDiscount) _                     _ }
+  row { cs(3) "Tips, stock options, and other income"                            money(otherIncome) }
+  row { cs(3) "Total income from working"                                        money(totalIncome) }
+}  
 
-def personalInfo() {
-  section "Personal Information"
-  form {
-    field { "Name" edit(name) }
-    field { "SSN" edit(ssn, "#####.##.###") }
-    field { "Date of birth" datepicker(birthday) }
-    field { "Phone" edit(phone, numeric("##########")) }
-    field { "Did you receive a letter to file?" yesNoRadio(notice) }
-    field { "Does the letter contain the right bank nr?" yesNoRadio(bankOk) }
-    field { "Bank account nr." edit(newBankNr, "##########") }
-    field { "Do you want to submit or change bank nr?" yesNoRadio(changeBankNr) }
-    field { "Bank account nr." edit(newBankNr, "##########") }
-    field { "Your personal situation in 2010" select1(personalSituation) }
-  }
-  section "Personal information of your spouse"
-  form { // this is shared in the branch partlyMarried and fullyMarried
-    field { "Name" edit(partnerInfo.name) }
-    field { "SSN" edit(partnerInfo.ssn, "#####.##.###") }
-    field { "Date of birth" datepicker(partnerInfo.birthday) }
-  }
-  form {
-    field { "Did you share housing with someone?" radio(houseSharing) }
-    field { "Period during which you lived together" dayMonth(from) dayMonth(to) }
-  }
-  form {
-    field { "Period during which you were married" dayMonth(marriedFrom) dayMonth(marriedTo) }
-    field { "Did you live together with your spouse before/after tis period?" radio(togetherBeforeAfter) }
-    field { "Period during which you lived together with your spouse" dayMonth(spouseFrom) dayMonth(spouseTo) }
-    field { "Do you and your spouse want to be considered fiscal partners?" radio(fiscalPartners) }
-    field { "Did you share a house with someone else outside of the period you were married?" 
-            radio(marriedSharedHouse) }
-    field { "Period during which you lived together with someone other than spouse" 
-                dayMonth(otherfrom) dayMonth(otherTo) }
-    
-  }
+subsection "Owned house <name>"
+subsubsection "Main house buying selling or reconstruction"
+
+table (l,l) {
+  row { "Did you sell a house in 2010?"                                    radio(hasSoldHouse) }
+  row { "Did you buy a house in 2010?"                                     radio(hasBoughtHouse) }
+  row { "Did enter a loan for maintenance or reconstruction of the house?" radio(hasMaintLoan) }
+  row { "Price the house was sold for without selling costs"               money(sellingPrice) }
+  row { "Private debt for the sold house"                                  money(privateDebt) }
+  row { "Value residue"                                                    money(valueResidue) }
+  row { "Buying price of the house including buying costs"                 money(buyingPrice) }
+  row { "Maintenance/reconstruction cost"                                  money(maintCost) }
+}  
+
+subsubsection "Income and deduction owned house" 
+
+table (l,l,l,l,l,l) {
+  row { cs(5) "Were you the sole owner of the house" radio(soleOwner) }
+  row { "Zipcode and streetnr." cs(2) "Period"               "WOZ value"      "% ownership"                 "Ownership forfait" }
+  row { edit(zipcodeStreetNr)   dayMonth(from) dayMonth(to)  money(wozValue)  percentage(ownershipFrac)     money(forfait) }
+  row { cs(4) "Forfait in special situation"                                  modal(specifyForfaitSpecial)  money(specifalForfait) }
+  row { cs(5) "Taxable part of benefits from capital insurance or savings account on the house"             money(taxableBenefits:money) }
+  row { cs(5) "Income from temporary renting of the place"                                                  money(tempRentIncome) }
+  row { cs(5) "Total income based on house ownership"                                                       money(totalIncome) }
+  row { cs(4) "Deductible interest and fincancing costs"                      modal(specDeductions)         money(deductions) }
+  row { cs(4) "Periodical payments for groundrent..."                         money(periodicalPayments)     _ }
+  row { cs(5) "Total deductions house ownership"                                                            money(totalDeductions) }
+  row { cs(4) "Balance income and deductions"                                 "Taxable"                     money(balanceIncomeDeductions) }
+  row { cs(5) "Were you exempted, e.g., by using money from a capital insurance?"                           radio(hasExemption) }
+  row { cs(5) "The used exemption"                                                                          money(exemption:money) }
 }
 
-def Box1/WorkHousing {
-  section "Box 1: work and housing"
-  p "Choose the subjects that applied in 2010"
-  table(r,l) {
-    row { check(hasWages)            "Wages, health care benefits, tips and so forth" }
-    row { check(hasPension)          "Pension, welfare, and other benefits to be taxes as income" }
-    row { check(hasAnnuity)          "Annuity buyouts (more than 4.146)" }
-    row { check(hasFreeIncome)       "Tax-free income if working for international organizations" }
-    row { check(hasForeignIncome)    "Wages, pension, benefits from abroad" }
-    row { check(hasTravelDeduction)  "Deduction for traveling with public transport" }
-    row { check(hasHouse)            "Owning a house (main stay)" }
-  }
-
-  subsection "Wages for <name"
-  subsection "Income from wages"
-  p "Wages and healthcare benefits"
-
-  table (l,l,l,l) {
-    row { "Employer/Benefits org."   "Work discount"         "Wages tax"           "Wages" }
-    row { edit(employer)             money(discount)         money(wagesTax)       money(wages) }
-    row { _                          money(totalDiscount)    money(totalWagesTax)  money(totalWages) }
-    row { "Total life plan discount" money(lifePlanDiscount) _                     _ }
-    row { cs(3) "Tips, stock options, and other income"                            money(otherIncome) }
-    row { cs(3) "Total income from working"                                        money(totalIncome) }
-  }  
-
-}
-
-def Box1/HouseOwning {
-  subsection "Owned house <name>"
-  subsubsection "Main house buying selling or reconstruction"
-
-  table (l,l) {
-    row { "Did you sell a house in 2010?" radio(hasSoldHouse) }
-    row { "Did you buy a house in 2010?" radio(hasBoughtHouse) }
-    row { "Did enter a loan for maintenance or reconstruction of the house?" radio(hasMaintLoan) }
-    row { "Price the house was sold for without selling costs" money(sellingPrice) }
-    row { "Private debt for the sold house" money(privateDebt) }
-    row { "Value residue" money(valueResidue) }
-    row { "Buying price of the house including buying costs" money(buyingPrice) }
-    row { "Maintenance/reconstruction cost" money(maintCost) }
-  }  
-
-  subsubsection "Income and deduction owned house" 
-  table (l,l,l,l,l,l) {
-    row { cs(5) "Were you the sole owner of the house" radio(soleOwner) }
-    row { "Zipcode and streetnr." cs(2) "Period" "WOZ value" "% ownership" "Ownership forfait" }
-    row { edit(zipcodeStreetNr) dayMonth(from) dayMonth(to) money(wozValue) percentage(ownershipFrac)
-            money(forfait) }
-    row { cs(4) "Forfait in special situation" modal(specifyForfaitSpecial) money(specifalForfait) }
-    row { cs(5) "Taxable part of benefits from capital insurance or savings account onthe house"
-              money(taxableBenefits:money) }
-    row { cs(5) "Income from temporary renting of the place" money(tempRentIncome) }
-    row { cs(5) "Total income based on house ownership" money(totalIncome) }
-    row { cs(4) "Deductible interest and fincancing costs" modal(specDeductions) money(deductions) }
-    row { cs(4) "Periodical payments for groundrent..." money(periodicalPayments) _ }
-    row { cs(5) "Total deductions house ownership" money(totalDeductions) }
-    row { cs(4) "Balance income and deductions" "Taxable" money(balanceIncomeDeductions) }
-    row { cs(5) "Were you exempted, e.g., by using money from a capital insurance?" radio(hasExemption) }
-    row { cs(5) "The used exemption" money(exemption:money) }
-  }
-
-}
-    
+  
