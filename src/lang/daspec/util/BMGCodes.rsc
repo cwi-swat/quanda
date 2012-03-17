@@ -13,11 +13,38 @@ private loc DACSV =
 
 // NB: last Code is path into XML Schema from Berichtspecificatie.
 // AantHerh: 1 required, 0 means optional, 99 means maximally 99
-alias MBMG =
-  list[tuple[int Nivo, int AantHerh, int Id, str GgrNaam, int GelId, str GelNaam, str SubelCode, 
-  str SubelNaam, str DomwCode, str DomwNaam, str Formaat, str Masker, str ImplemAanw, 
-  str MidNaam, str Code, str a, str b, str c]];
+
+alias BMGRecord = tuple[
+  int Nivo, 
+  int AantHerh, // mult
+  int Id, // id (section)
+  str GgrNaam, // name (section)
+  int GelId, // id (element)
+  str GelNaam, // (name element)
+  str SubelCode, //  (field)
+  str SubelNaam, //  (field)
+  str DomwCode, // (value)
+  str DomwNaam,  // (value)
+  str Formaat, // format 
+  str Masker, // mask
+  str ImplemAanw, // hint 
+  str MidNaam, 
+  str Code, // path
+   str a, str b, str c];
+
+
+data Node
+  = section(int id, str name, int mult, list[Node] kids)
+  | element(int id, str name, 
+       str format, str mask, str hint, str path,
+       list[Field] fields,  
+       list[Value] values);
   
+alias Value = tuple[str code, str name];
+alias Field = tuple[str code, str name];  
+  
+alias MBMG =
+  list[BMGRecord];
   
 alias DAS =
   list[tuple[str naam, int identificatienummer, str definitie, str toelichting, str formaat, 
@@ -47,63 +74,78 @@ public MBMG bmgs() {
   return readCSV(#MBMG, BMGCSV);
 }  
 
-
-data BMGTree = T(int key, str name, list[BMGTree] kids)
-  | root(list[BMGTree] kids);
-
-public BMGTree toTree(MBMG lst) {
-  stack = [root([])];
+public Node toTree(MBMG lst) {
+  stack = [];
+  void unwind(int levels) {
+    for (int i <- [1..levels]) {
+      <elt, stack> = pop(stack);
+      <parent, stack> = pop(stack);
+      parent.kids += [elt];
+      stack = push(parent, stack);
+    }
+  }
+  
+  void link(Node tree) {
+     <x, stack> = pop(stack);
+     if (parent:section(_, _, _, _) := x) { 
+       parent.kids += [tree];
+       stack = push(parent, stack);
+     }
+     else {
+       println("Attempt to add child to node that is not a section: <x>");
+       stack = push(x, stack);
+     }
+  }
+  
+  
   nivo = 0;
+  
   for (record <- lst) {
-    println("At level: <nivo> stack size: <size(stack)>");
-    if (record.Nivo == 0 || record.Id == 0) {
-      ;// value element
+    if (record.Nivo == 0) { // field or domain value
+      // belongs to the last element added to the section that
+      // is on the top of the stack.
+      <parent, stack> = pop(stack);
+      elt = last(parent.kids);
+      if (record.SubelCode != "") {
+        elt.fields += [<record.SubelCode, record.SubelNaam>];
+      }
+      else if (record.DomwCode != "") {
+        elt.values += [<record.DomwCode, record.DomwNaam>];
+      }
+      else {
+        println("WARNING: unhandled field/domainvalue: <record>");
+      }
+      parent.kids = [*prefix(parent.kids), elt];
+      stack = push(parent, stack);
       continue;
     }
-    tree = T(record.Id, record.GgrNaam, []);
-    if (record.Nivo == nivo) {
-      //println("pop in == nivo = <nivo> stack = <stack>");
-      <parent, stack> = pop(stack);
-      parent.kids += [tree];
-      stack = push(parent, stack);
-    }
-    else if (record.Nivo - nivo == 1) { // no support for bigger jumps
-      println("PUSH");
-      nivo = record.Nivo;
-      stack = push(tree, stack);
-    }
-    else if (record.Nivo - nivo < 0) {
-      println("POP");
-      unwinds = nivo - record.Nivo;
-      for (i <- [1..unwinds]) {
-        <parent, stack> = pop(stack);
-        <pparent, stack> = pop(stack);
-        pparent.kids += [parent];
-        stack = push(pparent, stack);
+    if (record.Id != 0) { // section
+      tree = section(record.Id, record.GgrNaam, record.AantHerh, []);
+      if (record.Nivo == nivo) {
+        link(tree);
       }
-      //stack = push(tree, stack);
-      println("pop");
-      <parent, stack> = pop(stack);
-      parent.kids += [tree];
-      stack = push(parent, stack);
+      else if (record.Nivo - nivo == 1) { // no support for bigger jumps
+        stack = push(tree, stack);
+      }
+      else if (record.Nivo - nivo < 0) {
+        unwind(nivo - record.Nivo);
+        link(tree);
+      }
+      else {
+        println("Warning unhandled level change: <nivo> to <record.Nivo>");
+      }
+      // only update level here, since leaf elements
+      // are not on the stack.
       nivo = record.Nivo;
+    }  
+    else { // leaf
+      tree = element(record.GelId, record.GelNaam, record.Formaat, record.Masker,
+                       record.ImplemAanw, record.Code, [], []);
+      link(tree);      
     }
-    else {
-      println("Warning unhandled level change: <nivo> to <record.Nivo>");
-    }
+        
   }
-  
-  for (i <- [1..nivo]) {
-    println("popping <i>");
-    <parent, stack> = pop(stack);
-    <pparent, stack> = pop(stack);
-    pparent.kids += [parent];
-    stack = push(pparent, stack);
-  }
-  
-  //iprintln(stack);
-  println(size(stack));
+  unwind(nivo - 1);  
   return top(stack);
-  //return root([]);
 }
 
