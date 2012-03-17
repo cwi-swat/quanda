@@ -67,52 +67,36 @@ public Node bmgTable2Node(BMGTable tbl) {
   void unwind(int levels) {
     for (int i <- [1..levels]) {
       <elt, stack> = pop(stack);
-      <parent, stack> = pop(stack);
-      parent.kids += [elt];
-      stack = push(parent, stack);
+      link(elt);
     }
   }
   
   void link(Node tree) {
-     <x, stack> = pop(stack);
-     if (parent:section(_, _, _, _) := x) { 
-       parent.kids += [tree];
-       stack = push(parent, stack);
-     }
-     else {
-       throw "Attempt to add child to node that is not a section: <x>";
-     }
+     <parent, stack> = pop(stack);
+     parent.kids += [tree];
+     stack = push(parent, stack);
   }
   
-  void recordSection(BMGRecord record) {
-    tree = section(record.Id, record.GgrNaam, record.AantHerh, []);
-    if (record.Nivo == level) {
-      link(tree);
-    }
-    else if (record.Nivo - level == 1) { // no support for bigger jumps
+  void recordNode(Node tree, int newLevel) {
+    if (newLevel == level) {
+      unwind(1);
       stack = push(tree, stack);
     }
-    else if (record.Nivo - level < 0) {
-      unwind(level - record.Nivo);
-      link(tree);
+    else if (newLevel - level == 1) { // no support for bigger jumps
+      stack = push(tree, stack);
+    }
+    else if (newLevel - level < 0) {
+      unwind(level - newLevel + 1);
+      stack = push(tree, stack);
     }
     else {
-      println("Warning unhandled level change: <nivo> to <record.Nivo>");
+      println("Warning unhandled level change: <level> to <record.Nivo>");
     }
-    level = record.Nivo;
-  }
-  
-  void recordElement(BMGRecord record) {
-    tree = element(record.GelId, record.GelNaam, record.Formaat, record.Masker,
-                       record.ImplemAanw, record.Code, [], []);
-    link(tree);
+    level = newLevel;
   }
   
   void recordSubElement(BMGRecord record) {
-    // belongs to the last element added to the section that
-    // is on the top of the stack.
-    <parent, stack> = pop(stack);
-    elt = last(parent.kids);
+    <elt, stack> = pop(stack);
     if (record.SubelCode != "") {
       elt.fields += [<record.SubelCode, record.SubelNaam>];
     }
@@ -122,23 +106,25 @@ public Node bmgTable2Node(BMGTable tbl) {
     else {
       println("WARNING: unhandled field/domainvalue: <record>");
     }
-    parent.kids = [*prefix(parent.kids), elt];
-    stack = push(parent, stack);
+    stack = push(elt, stack);
   }
 
   for (record <- tbl) {
-    if (record.Nivo == 0) { 
+    newLevel = record.Nivo;
+    if (newLevel == 0) { 
       recordSubElement(record);
     }
-    else if (record.Id != 0) { 
-      recordSection(record);
+    else if (record.Id != 0) {
+      recordNode(section(record.Id, record.GgrNaam, record.AantHerh, []), newLevel);
     }  
     else { // leaf
-      recordElement(record);      
+      recordNode(element(record.GelId, record.GelNaam, record.Formaat, record.Masker,
+                       record.ImplemAanw, record.Code, [], []), newLevel);      
     }
   }
   unwind(level - 1);  
 
+  println(size(stack));
   return top(stack);
 }
 
