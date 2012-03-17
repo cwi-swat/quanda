@@ -8,11 +8,10 @@ private loc BMGCSV =
  |project://quanda/cases/specs/da2011/1.4/2%20Gegevensspecificaties/mBMG%20DA2011%20v2_1_20110701.csv|;
  
 
-private loc DACSV = 
- |project://quanda/cases/specs/da2011/1.4/2%20Gegevensspecificaties/CSV%20-%20Gegevensspec%20da2011%20IH%20VPB%20v2.3%2020110929.csv|;
-
 // NB: last Code is path into XML Schema from Berichtspecificatie.
 // AantHerh: 1 required, 0 means optional, 99 means maximally 99
+
+alias BMGTable = list[BMGRecord];
 
 alias BMGRecord = tuple[
   int Nivo, 
@@ -28,7 +27,7 @@ alias BMGRecord = tuple[
   str Formaat, // format 
   str Masker, // mask
   str ImplemAanw, // hint 
-  str MidNaam, 
+  str MidNaam, // ??? 
   str Code, // path
    str a, str b, str c];
 
@@ -43,12 +42,6 @@ data Node
 alias Value = tuple[str code, str name];
 alias Field = tuple[str code, str name];  
   
-alias MBMG =
-  list[BMGRecord];
-  
-alias DAS =
-  list[tuple[str naam, int identificatienummer, str definitie, str toelichting, str formaat, 
-  str condities, str domein, str heeftrelatiemet, str bron, str tellingen, str berekeningswijzes]];
   
 /*
 To check:
@@ -65,17 +58,12 @@ To aggregate
 + allowed values (BMG)
 */  
   
-  
-public DAS das() {
-  return readCSV(#DAS, DACSV);
-}  
-  
-public MBMG bmgs() {
-  return readCSV(#MBMG, BMGCSV);
-}  
+public BMGTable loadBMGTable() = readCSV(#BMGTable, BMGCSV);
 
-public Node toTree(MBMG lst) {
-  stack = [];
+public Node bmgTable2Node(BMGTable tbl) {
+  int level = 0;  
+  list[Node] stack = [];
+  
   void unwind(int levels) {
     for (int i <- [1..levels]) {
       <elt, stack> = pop(stack);
@@ -92,60 +80,65 @@ public Node toTree(MBMG lst) {
        stack = push(parent, stack);
      }
      else {
-       println("Attempt to add child to node that is not a section: <x>");
-       stack = push(x, stack);
+       throw "Attempt to add child to node that is not a section: <x>";
      }
   }
   
-  
-  nivo = 0;
-  
-  for (record <- lst) {
-    if (record.Nivo == 0) { // field or domain value
-      // belongs to the last element added to the section that
-      // is on the top of the stack.
-      <parent, stack> = pop(stack);
-      elt = last(parent.kids);
-      if (record.SubelCode != "") {
-        elt.fields += [<record.SubelCode, record.SubelNaam>];
-      }
-      else if (record.DomwCode != "") {
-        elt.values += [<record.DomwCode, record.DomwNaam>];
-      }
-      else {
-        println("WARNING: unhandled field/domainvalue: <record>");
-      }
-      parent.kids = [*prefix(parent.kids), elt];
-      stack = push(parent, stack);
-      continue;
+  void recordSection(BMGRecord record) {
+    tree = section(record.Id, record.GgrNaam, record.AantHerh, []);
+    if (record.Nivo == level) {
+      link(tree);
     }
-    if (record.Id != 0) { // section
-      tree = section(record.Id, record.GgrNaam, record.AantHerh, []);
-      if (record.Nivo == nivo) {
-        link(tree);
-      }
-      else if (record.Nivo - nivo == 1) { // no support for bigger jumps
-        stack = push(tree, stack);
-      }
-      else if (record.Nivo - nivo < 0) {
-        unwind(nivo - record.Nivo);
-        link(tree);
-      }
-      else {
-        println("Warning unhandled level change: <nivo> to <record.Nivo>");
-      }
-      // only update level here, since leaf elements
-      // are not on the stack.
-      nivo = record.Nivo;
+    else if (record.Nivo - level == 1) { // no support for bigger jumps
+      stack = push(tree, stack);
+    }
+    else if (record.Nivo - level < 0) {
+      unwind(level - record.Nivo);
+      link(tree);
+    }
+    else {
+      println("Warning unhandled level change: <nivo> to <record.Nivo>");
+    }
+    level = record.Nivo;
+  }
+  
+  void recordElement(BMGRecord record) {
+    tree = element(record.GelId, record.GelNaam, record.Formaat, record.Masker,
+                       record.ImplemAanw, record.Code, [], []);
+    link(tree);
+  }
+  
+  void recordSubElement(BMGRecord record) {
+    // belongs to the last element added to the section that
+    // is on the top of the stack.
+    <parent, stack> = pop(stack);
+    elt = last(parent.kids);
+    if (record.SubelCode != "") {
+      elt.fields += [<record.SubelCode, record.SubelNaam>];
+    }
+    else if (record.DomwCode != "") {
+      elt.values += [<record.DomwCode, record.DomwNaam>];
+    }
+    else {
+      println("WARNING: unhandled field/domainvalue: <record>");
+    }
+    parent.kids = [*prefix(parent.kids), elt];
+    stack = push(parent, stack);
+  }
+
+  for (record <- tbl) {
+    if (record.Nivo == 0) { 
+      recordSubElement(record);
+    }
+    else if (record.Id != 0) { 
+      recordSection(record);
     }  
     else { // leaf
-      tree = element(record.GelId, record.GelNaam, record.Formaat, record.Masker,
-                       record.ImplemAanw, record.Code, [], []);
-      link(tree);      
+      recordElement(record);      
     }
-        
   }
-  unwind(nivo - 1);  
+  unwind(level - 1);  
+
   return top(stack);
 }
 
