@@ -49,9 +49,8 @@ public BMGTable loadBMGTable() = table2bmgTable(loadCSV(BMGCSV));
 data Node
   = section(int id, str longname, int mult, list[Node] kids)
   | element(int id, str longname, str name, 
-       str format, str mask, // todo: remove this, should come from domains
-       list[Component] components,  
-       list[Value] values); // todo: remove this, should come from domains
+       //str format, str mask, // todo: remove this, should come from domains
+       list[Component] components); // todo: remove this, should come from domains
   
 alias Value = tuple[str code, str name];
 alias Component = tuple[str code, str name];  
@@ -115,12 +114,12 @@ public tuple[Node, set[Message]] bmgTable2Node(BMGTable tbl) {
     if (record.SubelCode != "") {
       elt.components += [<record.SubelCode, record.SubelNaam>];
     }
-    else if (record.DomwCode != "") {
-      elt.values += [<record.DomwCode, record.DomwNaam>];
-    }
-    else {
-      errs += { warning("unhandled field/domain-value", record.location) };
-    }
+    //else if (record.DomwCode != "") {
+    //  elt.values += [<record.DomwCode, record.DomwNaam>];
+    //}
+    //else {
+    //  errs += { warning("unhandled field/domain-value", record.location) };
+    //}
     stack = push(elt, stack);
   }
 
@@ -134,8 +133,8 @@ public tuple[Node, set[Message]] bmgTable2Node(BMGTable tbl) {
     }  
     else { // leaf
       name = last(split("/", record.Code));
-      recordNode(element(record.GelId, record.GelNaam, name, record.Formaat, record.Masker,
-                       [], []), newLevel);      
+      recordNode(element(record.GelId, record.GelNaam, name,
+                       []), newLevel);      
     }
   }
   unwind(level - 1);  

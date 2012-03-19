@@ -8,21 +8,6 @@ import IO;
 import ParseTree;
 import String;
 
-// TODO: use this
-private loc DACSV = 
- |project://quanda/cases/specs/da2011/1.4/2%20Gegevensspecificaties/CSV%20-%20Gegevensspec%20da2011%20IH%20VPB%20v2.3%2020110929.csv|;
-
-alias DAS =
-  list[tuple[str naam, int identificatienummer, str definitie, str toelichting, str formaat, 
-  str condities, str domein, str heeftrelatiemet, str bron, str tellingen, str berekeningswijzes]];
-  
-public DAS das() {
-  return readCSV(#DAS, DACSV);
-}  
-  
-
-
-
 public list[Datum] loadDatums(list[int] keys) {
   return for (k <- keys) {
     try {

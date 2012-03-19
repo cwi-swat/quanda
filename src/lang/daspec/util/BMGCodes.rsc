@@ -4,7 +4,6 @@ import lang::csv::IO;
 import lang::csv::ast::CSV;
 
 import List;
-import IO;
 import Message;
 import String;
 

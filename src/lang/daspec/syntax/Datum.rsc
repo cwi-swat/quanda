@@ -29,7 +29,6 @@ syntax Type
   | @category="Type" domain: Domain
   ;
 
-// Maybe refactor
 syntax Format
   = alpha: "a" Nat length
   | alphaNumeric: "an" Nat length
