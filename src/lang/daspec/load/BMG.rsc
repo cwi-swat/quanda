@@ -78,28 +78,20 @@ public tuple[Node, set[Message]] bmgTable2Node(BMGTable tbl) {
   
   void unwind(int levels) {
     for (int i <- [1..levels]) {
-      <elt, stack> = pop(stack);
-      link(elt);
+      <tree, stack> = pop(stack);
+      <parent, stack> = pop(stack);
+      parent.kids += [tree];
+      stack = push(parent, stack); 
     }
-  }
-  
-  void link(Node tree) {
-     <parent, stack> = pop(stack);
-     parent.kids += [tree];
-     stack = push(parent, stack);
   }
   
   int level = 0;  
   
   void recordNode(Node tree, int newLevel) {
-    if (newLevel == level) {
-      unwind(1);
+    if (newLevel - level == 1) { // no support for bigger jumps
       stack = push(tree, stack);
     }
-    else if (newLevel - level == 1) { // no support for bigger jumps
-      stack = push(tree, stack);
-    }
-    else if (newLevel - level < 0) {
+    else if (newLevel - level <= 0) { // covers same level
       unwind(level - newLevel + 1);
       stack = push(tree, stack);
     }
@@ -114,12 +106,6 @@ public tuple[Node, set[Message]] bmgTable2Node(BMGTable tbl) {
     if (record.SubelCode != "") {
       elt.components += [<record.SubelCode, record.SubelNaam>];
     }
-    //else if (record.DomwCode != "") {
-    //  elt.values += [<record.DomwCode, record.DomwNaam>];
-    //}
-    //else {
-    //  errs += { warning("unhandled field/domain-value", record.location) };
-    //}
     stack = push(elt, stack);
   }
 
