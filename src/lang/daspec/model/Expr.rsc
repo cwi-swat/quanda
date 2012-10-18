@@ -27,6 +27,7 @@ data Exp
   | eq(Exp lhs, Exp rhs) 
   | leq(Exp lhs, Exp rhs) 
   | geq(Exp lhs, Exp rhs) 
+  | neq(Exp lhs, Exp rhs) 
   | gt(Exp lhs, Exp rhs) 
   | lt(Exp lhs, Exp rhs)
   | defined(Exp arg)

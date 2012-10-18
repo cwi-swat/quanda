@@ -26,7 +26,7 @@ syntax Exp
   | pos: "+" Exp 
   > left
     ( mul: Exp "*" Exp
-    | div: Exp "/" Exp
+    | div: Exp [\-] !<< "/" !>> [\-] Exp
     ) 
   >
   left (
@@ -60,12 +60,16 @@ syntax Value
   = nat: Nat
   | sym: Id
   | string: String
+  | float: Float
   ;
   
 lexical String
   = [\'] ![\']* [\']
   ;
 
+lexical Float
+  = [0-9]+ "," [0-9]+ !>> [0-9]
+  ;
 
 syntax Sub 
   = field: "." LongName "." LongName

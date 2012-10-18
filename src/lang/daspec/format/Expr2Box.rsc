@@ -47,6 +47,7 @@ public Box expr2box(div(lhs, rhs)) = H([expr2box(lhs), L("/"), expr2box(rhs)])[@
 public Box expr2box(eq(lhs, rhs)) = H([expr2box(lhs), L("="), expr2box(rhs)])[@hs=1];
 public Box expr2box(leq(lhs, rhs)) = H([expr2box(lhs), L("\<="), expr2box(rhs)])[@hs=1];
 public Box expr2box(geq(lhs, rhs)) = H([expr2box(lhs), L("\>="), expr2box(rhs)])[@hs=1];
+public Box expr2box(neq(lhs, rhs)) = H([expr2box(lhs), L("\<\>"), expr2box(rhs)])[@hs=1];
 public Box expr2box(gt(lhs, rhs)) = H([expr2box(lhs), L("\>"), expr2box(rhs)])[@hs=1];
 public Box expr2box(lt(lhs, rhs)) = H([expr2box(lhs), L("\<"), expr2box(rhs)])[@hs=1];
 

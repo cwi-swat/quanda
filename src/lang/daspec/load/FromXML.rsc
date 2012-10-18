@@ -47,7 +47,7 @@ public Datum node2datum(Node n) {
        case element(NS, "Identificatienummer", [charData(str nr)]):
          k = toInt(nr);
       }
-      println("Lifting <name> (<k>)");
+      //println("Lifting <name> (<k>)");
       Datum d = datum(name, key(k), t, []);
       top-down visit (kids) {
         case element(NS, "Definitie", [charData(str txt)]): 
@@ -89,6 +89,9 @@ Exp makeExp(str src) {
       break;
     }
   }
+  if (endsWith(src, ".")) {
+    src = substring(src, 0, size(src) - 1);
+  }
   try {
     // parse with error tree does not work
     //Tree t = parseExpWithErrorTree(trim(src));
@@ -102,7 +105,7 @@ Exp makeExp(str src) {
       return parseError(src, pt@\loc);
     }
     t =  implodeExp(pt);
-    println("Success");
+    //println("Success");
     return t;
   }
   catch ParseError(loc l): {
