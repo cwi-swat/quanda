@@ -10,22 +10,22 @@ import lang::daspec::model::TOC;
 import lang::daspec::format::TOC2Box;
 import lang::daspec::model::Datum;
 
-private loc DA2011_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/da20110929.xml|; 
-private loc DA2011_TOC_XML_FILE = |file:///Users/tvdstorm/CWI/quanda/cases/specs/da2011/da20110929-toc.xml|; 
+private loc XML_FILE =     |project://quanda/cases/specs/ibvpb2012-nt7.0/da2012.xml|; 
+private loc TOC_XML_FILE = |project://quanda/cases/specs/ibvpb2012-nt7.0/da2012-toc.xml|; 
 
-public Node DA2011XML() = readXMLDOM(DA2011_XML_FILE);
+public Node DA_XML() = parseXMLDOM(readFile(XML_FILE));
 
 public TOC liftTOC() {
-  doc = readXMLDOM(DA2011_TOC_XML_FILE);
-  toc = liftTOC(doc.root);
-  ind = indexDatums(DA2011XML());
-  toc = insertDatums(toc, ind);
-  return toc;
+  doc = parseXMLDOM(readFile(TOC_XML_FILE));
+  theToc = liftTOC(doc.root);
+  ind = indexDatums(DA_XML());
+  theToc = insertDatums(theToc, ind);
+  return theToc;
 }
 
 public void dumpTOC() {
   toc = liftTOC();
-  writeFile(|project://quanda/input/_da2011.toc|, formatTOC(toc));
+  writeFile(|project://quanda/input/_da2012.toc|, formatTOC(toc));
 }
 
 
@@ -40,7 +40,7 @@ public Entry liftEntry(e:element(_, "entry", kids)) {
   return section(m["title"],
      // use e instead of k and it does not match. 
      [ liftEntry(k) | k:element(_, _, _) <- kids ],
-     toInt(m["page"]));
+     toInt((m["page"]?) ? m["page"] : "0"));
 }
 
 public default Entry liftEntry(Node n) {
@@ -52,7 +52,7 @@ public TOC insertDatums(TOC toc, map[str, list[NameId]] datums) {
   last_page = ( -1 | p > it ? p : it | /section(_, _, p) := toc );
   order = [ "" | _ <- [1..last_page] ];
   visit (toc) {
-    case section(t, _, p): order[p - 1] = t;
+    case section(t, _, p): if (p > 0) order[p - 1] = t;
   }
   m = ();
   for (p <- datums) {
@@ -87,13 +87,13 @@ alias NameId = tuple[str name, str id];
 
 public map[str, list[NameId]] indexDatums(Node doc) {
   root = doc.root;
-  index = ();
+  theIndex = ();
   list[NameId] EMPTY = [];
   for (e:element(_, n, kids) <- root.children) {
     attrs = ( name: x | attribute(_, name, x) <- kids );
-    index[attrs["page"]]?EMPTY += [<attrs["name"], attrs["id"]>];
+    theIndex[attrs["page"]]?EMPTY += [<attrs["name"], attrs["id"]>];
   }
-  return index;
+  return theIndex;
 }
 
 public Datum liftDatum(Node n) {

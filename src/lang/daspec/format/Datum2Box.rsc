@@ -1,8 +1,9 @@
 module lang::daspec::format::Datum2Box
 
+extend lang::daspec::format::Expr2Box;
+
 import lang::daspec::model::Datum;
 import lang::daspec::model::Expr;
-import lang::daspec::format::Expr2Box;
 import lang::daspec::format::Utils;
 import lang::box::util::Box;
 import lang::box::util::Box2Text;

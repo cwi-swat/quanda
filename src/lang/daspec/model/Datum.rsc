@@ -1,6 +1,6 @@
 module lang::daspec::model::Datum
 
-import lang::daspec::model::Expr;
+extend lang::daspec::model::Expr;
 
 data Datum = datum(str name, Key key, Type \type, list[Section] body);
 

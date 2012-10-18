@@ -31,6 +31,8 @@ public Box expr2box(Exp::sum(e)) = H([KW(L("som")), L("("), expr2box(e), L(")")]
 
 public Box expr2box(abs(e)) = H([KW(L("abs")), L("("), expr2box(e), L(")")])[@hs=0];
 
+public Box expr2box(yearOf(e)) = H([KW(L("jaar-uit")), L("("), expr2box(e), L(")")])[@hs=0];
+
 public Box expr2box(Exp::right(a1, a2)) = func("rechts", [a1, a2]);
 public Box expr2box(Exp::left(a1, a2)) = func("links", [a1, a2]); 
 public Box expr2box(Exp::max(a1, a2)) = func("max", [a1, a2]); 
@@ -47,6 +49,9 @@ public Box expr2box(leq(lhs, rhs)) = H([expr2box(lhs), L("\<="), expr2box(rhs)])
 public Box expr2box(geq(lhs, rhs)) = H([expr2box(lhs), L("\>="), expr2box(rhs)])[@hs=1];
 public Box expr2box(gt(lhs, rhs)) = H([expr2box(lhs), L("\>"), expr2box(rhs)])[@hs=1];
 public Box expr2box(lt(lhs, rhs)) = H([expr2box(lhs), L("\<"), expr2box(rhs)])[@hs=1];
+
+public Box expr2box(inc(lhs, rhs)) = H([expr2box(lhs), L("=+"), expr2box(rhs)])[@hs=1];
+public Box expr2box(dec(lhs, rhs)) = H([expr2box(lhs), L("=-"), expr2box(rhs)])[@hs=1];
 
 public Box expr2box(defined(a)) = func("Gevuld", [a]);
 public Box expr2box(isDefined(a)) = func("is.gevuld", [a]);
@@ -86,7 +91,7 @@ public Box expr2box(\value(txt)) = H([L(".."), L(txt)])[@hs=0];
 
 public Box expr2box(sym(s)) = STRING(L(s));
 public Box expr2box(nat(n)) = L("<n>");
-
+public Box expr2box(string(s)) = L(s);
 
 private Box func(str name, list[Exp] args) =
   H([KW(L(name)), L("("), 

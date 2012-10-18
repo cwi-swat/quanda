@@ -1,6 +1,6 @@
 module lang::daspec::syntax::Expr
 
-import lang::daspec::syntax::Lexical;
+extend lang::daspec::syntax::Lexical;
 
 keyword Keywords = 'som' | 'abs' | 'of' | 'en' | 'Als' | 'dan' | 'Gevuld' | 'rechts';  
 
@@ -12,11 +12,17 @@ syntax Exp
   | const: Value
   | sum: 'som'  Exp 
   | abs: 'abs' Exp
+  | left: 'links' "(" Exp ";" Exp ")" 
   | right: 'rechts' "(" Exp ";" Exp ")" 
-  | left: 'left' "(" Exp ";" Exp ")" 
   | max: 'max' "(" Exp ";" Exp ")"
   | max: 'min' "(" Exp ";" Exp ")"
+  | yearOf: 'jaar-uit' "(" Exp ")"
+  | and: 'en' "(" {Exp ";"}+ ")"
+  | or: 'of' "(" {Exp ";"}+ ")"
   | bracket "(" Exp ")"
+  | defined: 'Gevuld' Exp
+  | isDefined: 'is.gevuld' Exp
+  | isUndefined: 'is.leeg' Exp
   | pos: "+" Exp 
   > left
     ( mul: Exp "*" Exp
@@ -26,23 +32,25 @@ syntax Exp
   left (
        add: Exp "+" Exp
      | sub: Exp "-" Exp
+     | cutoff: Exp "-/-" Exp
   )
   > non-assoc (
-     eq: Exp [\<] !<< "=" Exp
+     eq: Exp [\<] !<< "=" !>> [\>+] Exp
      | gt: Exp "\>" !>> [=] Exp
      | lt: Exp "\<" !>> [=] Exp
      | geq: Exp "\>=" Exp
      | leq: Exp "\<=" Exp
+     | neq: Exp "\<\>" Exp
   ) 
-  | non-assoc (
-     defined: 'Gevuld' Exp
-     | isDefined: 'is.gevuld' Exp
-     | isUndefined: 'is.leeg' Exp
-     | and: 'en' "(" {Exp ";"}+ ")"
-     | or: 'of' "(" {Exp ";"}+ ")"
+  >
+  non-assoc(
+   | inc: Exp "=+" Exp
+   | dec: Exp "=-" Exp
   )
   > ifThen: 'Als' Exp 'dan' Exp
   ;
+  
+  // todo: =+, = +, =-, = -, <>, =<, -/-
   
 syntax Ref 
   = ref: "[" Key key "." Value "]" "\<" LongName Sub "\>"
@@ -51,6 +59,11 @@ syntax Ref
 syntax Value
   = nat: Nat
   | sym: Id
+  | string: String
+  ;
+  
+lexical String
+  = [\'] ![\']* [\']
   ;
 
 

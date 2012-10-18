@@ -16,6 +16,7 @@ data Exp
   | abs(Exp arg)
   | right(Exp arg1, Exp arg2) 
   | left(Exp arg1, Exp arg2) 
+  | yearOf(Exp arg) 
   | max(Exp arg1, Exp arg2) 
   | min(Exp arg1, Exp arg2) 
   | pos(Exp arg)
@@ -34,6 +35,8 @@ data Exp
   | and(list[Exp] args)
   | or(list[Exp] args)
   | ifThen(Exp cond, Exp arg) 
+  | inc(Exp lhs, Exp rhs)
+  | dec(Exp lhs, Exp rhs)
   ;
 
 data Ref
@@ -44,6 +47,7 @@ data Ref
 data Value
   = sym(str strValue)
   | nat(int intValue)
+  | string(str strValue)
   ;
 
 data Sub

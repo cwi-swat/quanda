@@ -1,6 +1,5 @@
 module lang::daspec::syntax::Datum
 
-extend lang::daspec::syntax::Lexical;
 extend lang::daspec::syntax::Expr;
 
 start syntax Datum
